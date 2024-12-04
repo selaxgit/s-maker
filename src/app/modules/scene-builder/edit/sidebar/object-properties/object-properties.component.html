@@ -1,0 +1,15 @@
+<div class="jst-modal-container">
+  <div class="padding-10">
+    <div class="mt-10">
+      <jst-input label="Наименование объекта" [formControl]="controlObjectName" [clearButton]="false"></jst-input>
+    </div>
+    <smc-properties-container
+      [properties]="propertiesList()"
+      (changeEvent)="onChangeProperties($event)"
+    ></smc-properties-container>
+  </div>
+</div>
+<div class="jst-modal-footer-buttons">
+  <button mat-raised-button color="primary" (click)="onApply()">{{ applyTitle }}</button>
+  <button mat-raised-button color="accent" (click)="onClose()">Закрыть</button>
+</div>

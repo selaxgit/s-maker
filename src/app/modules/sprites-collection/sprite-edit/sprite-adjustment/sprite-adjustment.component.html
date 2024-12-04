@@ -1,0 +1,96 @@
+@let spriteEditState = spriteEditState$ | async;
+@let currentAnimation = currentAnimation$ | async;
+@let animationPlaying = animationPlaying$ | async;
+
+<div class="flex-row-align-center border-bottom pl-5 pr-5">
+  <div class="flex-row-align-center flex-auto">
+    <smc-scale-buttons buttonColor="primary" (zoomEvent)="onZoom($event)"></smc-scale-buttons>
+    @if (spriteEditState === 'animations') {
+      <div class="tools-divider">&nbsp;</div>
+      <button
+        mat-icon-button
+        title="Первый фрейм"
+        color="primary"
+        [disabled]="!currentAnimation?.id"
+        (click)="onAnimationSetFrame('first')"
+      >
+        <mat-icon>first_page</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        title="Предыдущий фрейм"
+        color="primary"
+        [disabled]="!currentAnimation?.id"
+        (click)="onAnimationSetFrame('prev')"
+      >
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      @if (animationPlaying?.playing) {
+        <button mat-icon-button title="Остановить" color="primary" (click)="onSetAnimationPlaying(false)">
+          <mat-icon>stop</mat-icon>
+        </button>
+      } @else {
+        <button
+          mat-icon-button
+          title="Проиграть"
+          color="primary"
+          [disabled]="!currentAnimation?.id"
+          (click)="onSetAnimationPlaying(true)"
+        >
+          <mat-icon>play_arrow</mat-icon>
+        </button>
+      }
+      <button
+        mat-icon-button
+        title="Следующий фрейм"
+        color="primary"
+        [disabled]="!currentAnimation?.id"
+        (click)="onAnimationSetFrame('next')"
+      >
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        title="Последний фрейм"
+        color="primary"
+        [disabled]="!currentAnimation?.id"
+        (click)="onAnimationSetFrame('last')"
+      >
+        <mat-icon>last_page</mat-icon>
+      </button>
+    }
+  </div>
+  <button
+    mat-button
+    color="primary"
+    [class.button-font-size-lg]="spriteEditState === 'adjustment'"
+    [disabled]="spriteEditState === 'adjustment'"
+    (click)="onSetSpriteEditState('adjustment')"
+  >
+    Режим спрайта
+  </button>
+  <button
+    mat-button
+    color="primary"
+    [class.button-font-size-lg]="spriteEditState === 'animations'"
+    [disabled]="spriteEditState === 'animations'"
+    (click)="onSetSpriteEditState('animations')"
+  >
+    Режим анимации
+  </button>
+</div>
+
+@if (spriteEditState === 'animations') {
+  <div class="flex-row-align-center padding-10">
+    <div class="flex-auto">
+      <strong>Анимация:</strong>
+      <span class="ml-10">{{ currentAnimation?.name ?? '<не выбрана>' }}</span>
+    </div>
+    <strong>Фрейм:</strong>
+    <span class="ml-10">{{ animationFrameFromTotal() }}</span>
+  </div>
+}
+
+<div class="flex-auto flex-col p-relative">
+  <div #pixiContainer class="pixi-container"></div>
+</div>

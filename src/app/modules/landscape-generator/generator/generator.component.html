@@ -1,0 +1,15 @@
+@if (projectStore.isInitializing$ | async) {
+  <div class="flex-auto flex-row-centered">
+    <mat-spinner></mat-spinner>
+  </div>
+} @else {
+  @if (projectStore.project$ | async; as project) {
+    <smc-header [project]="project" [currentModule]="currentModule"> </smc-header>
+    <div class="flex-auto flex-row">
+      <lg-generator-draw class="flex-auto"></lg-generator-draw>
+      <lg-generator-params class="border-left"></lg-generator-params>
+    </div>
+  } @else {
+    <smc-page-not-found></smc-page-not-found>
+  }
+}

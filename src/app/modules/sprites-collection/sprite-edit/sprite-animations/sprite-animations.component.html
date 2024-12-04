@@ -1,0 +1,76 @@
+<div class="flex-row-align-center border-bottom pl-5 pr-5">
+  <button class="flex-auto" mat-button color="primary" (click)="onAddAnimation()">Добавить анимацию</button>
+</div>
+
+@let animationPlaying = animationPlaying$ | async;
+
+@if (animations$ | async; as animations) {
+  @if (animations.length > 0) {
+    <div class="scroll-container mt-10">
+      <div class="scroll">
+        <div class="animation-list" cdkDropList [cdkDropListData]="animations">
+          @for (item of animations; track item.id) {
+            <div class="animation-item" cdkDrag>
+              <div class="animation-item-line" [class.selected]="(currentAnimation$ | async)?.id === item.id">
+                @if ((spriteEditState$ | async) === 'animations') {
+                  @if (animationPlaying && animationPlaying.id === item.id && animationPlaying?.playing) {
+                    <button
+                      class="ml-10"
+                      mat-icon-button
+                      color="primary"
+                      title="Остановить анимацию"
+                      tabindex="-1"
+                      (click)="onSetAnimationPlaying(item, false)"
+                    >
+                      <mat-icon>stop</mat-icon>
+                    </button>
+                  } @else {
+                    <button
+                      class="ml-10"
+                      mat-icon-button
+                      color="primary"
+                      title="Запустить анимацию"
+                      tabindex="-1"
+                      (click)="onSetAnimationPlaying(item, true)"
+                    >
+                      <mat-icon>play_arrow</mat-icon>
+                    </button>
+                  }
+                }
+                <div
+                  class="animation-title"
+                  (click)="onSelectAnimation(item)"
+                  (dblclick)="onEditAnimation($event, item)"
+                >
+                  <span matTooltip="{{ item.default ? 'Анимация по умолчанию' : '' }}" [class.text-bold]="item.default">
+                    ({{ item.id }}) {{ item.name }}
+                  </span>
+                </div>
+                <button
+                  mat-icon-button
+                  color="primary"
+                  title="Редактировать анимацию"
+                  tabindex="-1"
+                  (click)="onEditAnimation($event, item)"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button
+                  mat-icon-button
+                  color="accent"
+                  title="Удалить анимацию"
+                  tabindex="-1"
+                  (click)="onRemoveAnimation($event, item)"
+                >
+                  <mat-icon>highlight_off</mat-icon>
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="empty-message">Нет данных</div>
+  }
+}

@@ -1,0 +1,59 @@
+<div *ngIf="loadingState()" class="loading-container">
+  <mat-spinner></mat-spinner>
+</div>
+
+<div class="jst-modal-container">
+  <div class="container" [formGroup]="formGroup">
+    <label class="text-center text-bold mt-10">Размер тайлов</label>
+    <div class="flex-row-centered mt-10">
+      <jst-touchspin
+        class="w-coords"
+        label="Ширина"
+        formControlName="tileWidth"
+        [clearButton]="false"
+        [min]="10"
+      ></jst-touchspin>
+      <jst-touchspin
+        class="w-coords"
+        label="Высота"
+        formControlName="tileHeight"
+        [clearButton]="false"
+        [min]="10"
+      ></jst-touchspin>
+    </div>
+    <jst-input class="mt-10" label="Файл для нарезки" [readonlyState]="true" [value]="bgFilename">
+      <ng-container JSTIconSuffix>
+        <button
+          mat-icon-button
+          color="accent"
+          title="Удалить файл для нарезки"
+          [disabled]="!hasBgFile() || loadingState()"
+          (click)="onClearBgFile()"
+        >
+          <mat-icon>highlight_off</mat-icon>
+        </button>
+        <button
+          class="ml-10"
+          mat-icon-button
+          color="primary"
+          title="Выбрать файл для нарезки"
+          [disabled]="loadingState()"
+          (click)="onChoiceBgFile()"
+        >
+          <mat-icon>more_horiz</mat-icon>
+        </button>
+      </ng-container>
+      <ng-container JSTHint>
+        <span *ngIf="hasFileError()" class="text-danger">Выберите файл</span>
+      </ng-container>
+    </jst-input>
+    <jst-input class="mt-10" label="Имя фрейма" formControlName="frameName" [clearButton]="false">
+      <ng-container JSTTextSuffix>-$x-$y</ng-container>
+    </jst-input>
+    <jst-checkbox label="Убрать дубликаты фреймов" formControlName="checkDuplicates"></jst-checkbox>
+  </div>
+  <div class="jst-modal-footer-buttons">
+    <button mat-raised-button color="primary" [disabled]="loadingState()" (click)="onApply()">Нарезать фреймы</button>
+    <button mat-raised-button color="accent" [disabled]="loadingState()" (click)="onClose()">Закрыть</button>
+  </div>
+</div>

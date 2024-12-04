@@ -1,0 +1,77 @@
+@if (isProcessing()) {
+  <div class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
+} @else {
+  <div class="jst-modal-container flex-col padding-10 mt-10" [formGroup]="formGroup">
+    <div class="flex-row">
+      <jst-input label="Наименование" formControlName="name" [clearButton]="false"></jst-input>
+    </div>
+    <div class="flex-col">
+      <label class="text-center text-bold">Размер сетки (в тайлах)</label>
+      <div class="flex-row-centered mt-10">
+        <jst-touchspin
+          class="w-coords"
+          label="Ширина"
+          formControlName="mapWidth"
+          [clearButton]="false"
+          [min]="1"
+        ></jst-touchspin>
+        <jst-touchspin
+          class="w-coords"
+          label="Высота"
+          formControlName="mapHeight"
+          [clearButton]="false"
+          [min]="1"
+        ></jst-touchspin>
+      </div>
+    </div>
+    <div class="flex-col mt-10">
+      <label class="text-center text-bold">Размер тайлов</label>
+      <div class="flex-row-centered mt-10">
+        <jst-touchspin
+          class="w-coords"
+          label="Ширина"
+          formControlName="tileWidth"
+          [clearButton]="false"
+          [min]="10"
+        ></jst-touchspin>
+        <jst-touchspin
+          class="w-coords"
+          label="Высота"
+          formControlName="tileHeight"
+          [clearButton]="false"
+          [min]="10"
+        ></jst-touchspin>
+      </div>
+    </div>
+    <div class="flex-col mt-10">
+      <jst-input label="Файл подложки под сетку" [readonlyState]="true" [value]="bgValue">
+        <ng-container JSTIconSuffix>
+          <button
+            mat-icon-button
+            color="accent"
+            title="Удалить файл подложки"
+            [disabled]="!hasBgFile"
+            (click)="onClearBgFile()"
+          >
+            <mat-icon>highlight_off</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" title="Выбрать файл подложки" (click)="onChoiceBgFile()">
+            <mat-icon>more_horiz</mat-icon>
+          </button>
+        </ng-container>
+      </jst-input>
+      <label class="text-center text-bold">Прозрачность подложки</label>
+      <div class="flex-row" style="padding: 0 10px">
+        <mat-slider class="flex-auto" min="0.1" max="1" step="0.1">
+          <input matSliderThumb formControlName="bgOpacity" />
+        </mat-slider>
+      </div>
+    </div>
+  </div>
+  <div class="jst-modal-footer-buttons">
+    <button mat-raised-button color="primary" (click)="onApply()">{{ applyButtonTitle }}</button>
+    <button mat-raised-button color="accent" (click)="onClose()">Закрыть</button>
+  </div>
+}

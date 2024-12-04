@@ -1,0 +1,87 @@
+<div class="flex-row-align-center flex-auto">
+  @if (project) {
+    @if (currentModule) {
+      <button mat-button [matMenuTriggerFor]="modulesMenu">
+        <div class="flex-row-align-center">
+          <span>Другие модули</span>
+          <mat-icon>arrow_drop_down</mat-icon>
+        </div>
+      </button>
+    }
+
+    <div class="cur-project ml-10">Текущий проект:</div>
+    <div class="breadcrumbs ml-10">
+      <div class="breadcrumb-item">
+        <span class="breadcrumb-link" routerLink="/{{ project.id }}" [class.disabled]="!currentModule">
+          {{ project.name }}
+        </span>
+      </div>
+      @if (currentModule) {
+        <div class="breadcrumb-item">
+          <span
+            class="breadcrumb-link"
+            routerLink="/{{ project.id }}/{{ currentModule.code }}"
+            [class.disabled]="!currentModulePage"
+          >
+            {{ currentModule.name }}
+          </span>
+        </div>
+      }
+      @if (currentModulePage) {
+        <div class="breadcrumb-item">
+          <span class="breadcrumb-link disabled"> {{ currentModulePage }} </span>
+        </div>
+      }
+    </div>
+  }
+</div>
+
+<mat-menu #modulesMenu="matMenu">
+  @for (module of modules; track module.code) {
+    @if (module.code !== currentModule?.code) {
+      @if (module.code !== currentModule?.code) {
+        @if (module.useListMenu) {
+          <button mat-menu-item [matMenuTriggerFor]="moduleSubmenu" [matMenuTriggerData]="{ module: module }">
+            {{ module.name }}
+          </button>
+        } @else {
+          <button mat-menu-item routerLink="/{{ project?.id }}/{{ module.code }}">
+            {{ module.name }}
+          </button>
+        }
+      }
+    }
+  }
+</mat-menu>
+
+<mat-menu #moduleSubmenu>
+  <ng-template matMenuContent let-module="module">
+    <menu mat-menu-item routerLink="/{{ project?.id }}/{{ module.code }}">{{ module.listMenuTitle }}</menu>
+    @if (module.code === tilesGridEditorCode) {
+      @if (tilesGridStore.gridsList$ | async; as gridsList) {
+        @if (gridsList.length > 0) {
+          <mat-divider></mat-divider>
+          @for (grid of gridsList; track grid.id) {
+            <menu mat-menu-item routerLink="/{{ project?.id }}/{{ module.code }}/{{ grid.id }}">
+              {{ grid.name }}
+            </menu>
+          }
+        }
+      }
+    }
+    @if (module.code === sceneBuilderCode) {
+      @if (scenesStore.scenesList$ | async; as scenesList) {
+        @if (scenesList.length > 0) {
+          <mat-divider></mat-divider>
+          @for (scene of scenesList; track scene.id) {
+            <menu mat-menu-item routerLink="/{{ project?.id }}/{{ module.code }}/{{ scene.id }}">
+              {{ scene.name }}
+            </menu>
+          }
+        }
+      }
+    }
+  </ng-template>
+</mat-menu>
+
+<ng-content></ng-content>

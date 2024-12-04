@@ -1,0 +1,33 @@
+<div class="jst-modal-container">
+  <div class="flex-auto flex-col">
+    @if (filename()) {
+      <div class="toolbar">
+        <smc-scale-buttons (zoomEvent)="onZoom($event)"></smc-scale-buttons>
+        <div class="flex-auto text-right">Для смещения изображения зажмите клавишу "пробел"</div>
+      </div>
+    }
+    <div class="flex-auto flex-col p-relative">
+      <div #pixiContainer class="pixi-container"></div>
+    </div>
+    <div *ngIf="!filename()" class="drop-container">
+      <jst-select-file-container
+        class="select-file-container"
+        accept="image/*"
+        (selectFilesEvent)="onSelectFile($event)"
+      ></jst-select-file-container>
+    </div>
+  </div>
+  <div class="jst-modal-footer-buttons" [class.jst-not-align]="filename()">
+    <div class="flex-row-align-center">
+      <div class="flex-auto flex-row-align-center">
+        @if (filename()) {
+          <button mat-stroked-button color="primary" (click)="onSelectOtherFile()">Выбрать другой файл</button>
+          <div class="ml-10">Файл:</div>
+          {{ filename() }}
+        }
+      </div>
+      <button mat-raised-button color="primary" [disabled]="!filename()" (click)="onApply()">Применить фрейм</button>
+      <button mat-raised-button color="accent" (click)="onClose()">Закрыть</button>
+    </div>
+  </div>
+</div>

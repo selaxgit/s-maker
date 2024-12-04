@@ -1,0 +1,49 @@
+<div class="layer">
+  <div class="layer-title">
+    <button
+      mat-icon-button
+      color="primary"
+      title="Показать/скрыть фреймы"
+      [disabled]="!layerInfo().layerId"
+      (click)="toggleVisibleFrames()"
+    >
+      <mat-icon>lists</mat-icon>
+    </button>
+    <select class="ml-10 select" [(ngModel)]="layerId">
+      <option disabled [value]="null">--- Выберите слой ---</option>
+      @for (item of layersList; track item.id) {
+        <option [value]="item.id">{{ item.name }}</option>
+      }
+    </select>
+  </div>
+  <div class="layer-loop">
+    <button mat-icon-button (click)="onToggleLoop()">
+      @if (layerInfo().loop) {
+        <mat-icon color="success"> task_alt </mat-icon>
+      } @else {
+        <mat-icon color="accent"> block_flipped </mat-icon>
+      }
+    </button>
+  </div>
+  <div class="layer-speed">
+    <sc-inline-number-input [(value)]="speed"></sc-inline-number-input>
+  </div>
+  <div class="layer-button">
+    <button mat-icon-button color="accent" title="Удалить слой" (click)="onRemove()">
+      <mat-icon>highlight_off</mat-icon>
+    </button>
+  </div>
+</div>
+
+@if (visibleFrames()) {
+  <div class="flex-col">
+    @for (frame of layerInfo().frames; track frame.id) {
+      <div class="frame-item">
+        <div class="flex-auto">{{ frame.name }}</div>
+        <sc-inline-number-input [(value)]="frame.speed" (valueChange)="onChangeFrame()"></sc-inline-number-input>
+      </div>
+    } @empty {
+      <div class="empty-message">Нет фреймов</div>
+    }
+  </div>
+}

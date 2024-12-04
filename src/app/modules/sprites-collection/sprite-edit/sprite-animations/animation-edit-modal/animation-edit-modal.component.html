@@ -1,0 +1,13 @@
+<div class="jst-modal-container">
+  <div class="content">
+    <sc-animation-params></sc-animation-params>
+    <div class="ml-10 flex-auto flex-col">
+      <sc-animation-layers class="flex-auto" [layersList]="layersList"></sc-animation-layers>
+      <sc-animation-preview class="mt-10" [sprite]="sprite" [layersList]="layersList"></sc-animation-preview>
+    </div>
+  </div>
+</div>
+<div class="jst-modal-footer-buttons">
+  <button mat-raised-button color="primary" (click)="onApply()">{{ applyTile }}</button>
+  <button mat-raised-button color="accent" (click)="onClose()">Закрыть</button>
+</div>

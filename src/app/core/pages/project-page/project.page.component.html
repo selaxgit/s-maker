@@ -1,0 +1,38 @@
+@if (isInitializing | async) {
+  <div class="flex-auto flex-row-centered">
+    <mat-spinner></mat-spinner>
+  </div>
+} @else {
+  @if (project$ | async; as project) {
+    <smc-header [project]="project">
+      <button mat-button color="primary" (click)="onExportProject(project.id)">
+        <mat-icon>save_alt</mat-icon>
+        Экспорт проекта
+      </button>
+      <button class="ml-10" mat-button color="primary" (click)="onChangeProject(project)">
+        <mat-icon>edit</mat-icon>
+        Изменить наименование проекта
+      </button>
+    </smc-header>
+
+    <div class="flex-auto flex-col-centered">
+      <div class="grid-container">
+        @for (module of modulesList; track module.code) {
+          <div class="project-tile" routerLink="/{{ project.id }}/{{ module.code }}">
+            <div class="project-tile__image">
+              <img alt="" [src]="module.imgUrl" />
+            </div>
+            <div class="project-tile__info">
+              <div class="project-tile__info-title">
+                {{ module.name }}
+              </div>
+              <div class="tile-info-desc">{{ module.desc }}</div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
+    <smc-page-not-found></smc-page-not-found>
+  }
+}

@@ -1,0 +1,26 @@
+<div class="jst-modal-container">
+  @if (frameInfo()) {
+    <div class="flex-items-center padding-10 border-bottom">
+      <img style="width: 64px; height: 64px" [src]="frameInfo()?.src" />
+      <div class="flex-col flex-auto ml-10">
+        <div class="ml-10">
+          <strong>{{ frameInfo()?.name }}</strong>
+          ({{ frameInfo()?.width }}x{{ frameInfo()?.height }})
+        </div>
+        <div>
+          <button mat-button color="primary" (click)="onDownloadFrame(frameInfo())">Скачать фрейм</button>
+        </div>
+      </div>
+    </div>
+  }
+  <div class="padding-10">
+    <smc-properties-container
+      [properties]="properties()"
+      (changeEvent)="onChangeProperties($event)"
+    ></smc-properties-container>
+  </div>
+</div>
+<div class="jst-modal-footer-buttons">
+  <button mat-raised-button color="primary" (click)="onApply()">Применить</button>
+  <button mat-raised-button color="accent" (click)="onClose()">Закрыть</button>
+</div>

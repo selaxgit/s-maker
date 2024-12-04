@@ -1,0 +1,51 @@
+<div class="flex-row-align-center border-bottom pl-5 pr-5 mat-small-button-icon">
+  <button class="flex-auto" mat-button color="primary" (click)="onAdd()">Добавить слой</button>
+  <ng-container *ngIf="{ value: allLayerVisibledState$ | async } as allLayerVisibledState">
+    <button
+      mat-icon-button
+      color="primary"
+      title="Переключить видимость всех слоев"
+      (click)="onToggleVisible(allLayerVisibledState.value)"
+    >
+      @if (allLayerVisibledState.value) {
+        <mat-icon>visibility</mat-icon>
+      } @else {
+        <mat-icon>visibility_off</mat-icon>
+      }
+    </button>
+  </ng-container>
+</div>
+
+@if (isLoading$ | async) {
+  <div class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
+}
+
+@if (layers$ | async; as layers) {
+  @if (layers.length > 0) {
+    <div class="scroll-container mt-10">
+      <div class="scroll">
+        <div
+          class="layers-list"
+          cdkDropList
+          [cdkDropListData]="(layers$ | async) || []"
+          (cdkDropListDropped)="onDropLayer($event)"
+        >
+          @for (layer of layers; track layer.id) {
+            <sc-sprite-layer-item
+              cdkDrag
+              [projectId]="projectId"
+              [spriteId]="spriteId"
+              [layer]="layer"
+              [layerName]="layer.name"
+              [layerVisible]="layer.visible"
+            ></sc-sprite-layer-item>
+          }
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="empty-message">Нет данных</div>
+  }
+}

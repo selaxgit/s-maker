@@ -1,0 +1,23 @@
+@if (scenesStore.editorSceneObjects$ | async; as sceneObjects) {
+  @if (sceneObjects.length > 0) {
+    <div class="scroll-container">
+      <div class="scroll">
+        @for (layer of sceneObjects; track layer.id) {
+          <sb-edit-sidebar-layer-line
+            [layer]="layer"
+            [layerName]="layer.name"
+            [layerType]="layer.type"
+            [layerVisible]="layer.visible"
+            [children]="layer.children"
+          ></sb-edit-sidebar-layer-line>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="empty-message">Нет объектов</div>
+  }
+} @else {
+  <div class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
+}

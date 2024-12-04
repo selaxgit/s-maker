@@ -1,0 +1,14 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  height: 510px;
+}
+
+.w-coords {
+  width: 136px;
+  margin-left: 15px;
+  &:first-child {
+    margin-left: 0;
+  }
+}

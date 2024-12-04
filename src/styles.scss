@@ -1,0 +1,21 @@
+@use "colors";
+@use "../node_modules/@jst/ui/styles";
+@use "./styles/materail";
+@use "./styles/elements";
+@use "./styles/helpers";
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  min-height: 100%;
+  background-color: colors.$white;
+  color: colors.$black;
+}

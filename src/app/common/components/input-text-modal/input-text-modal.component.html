@@ -1,0 +1,14 @@
+<div class="jst-modal-container">
+  <div class="input-container">
+    <jst-input
+      class="jst-mat-without-bottom"
+      [label]="label"
+      [formControl]="controlValue"
+      (enterKeyEvent)="onApply()"
+    ></jst-input>
+  </div>
+  <div class="jst-modal-footer-buttons">
+    <button mat-raised-button color="primary" (click)="onApply()">{{ applyTitle }}</button>
+    <button mat-raised-button color="accent" (click)="onClose()">Закрыть</button>
+  </div>
+</div>

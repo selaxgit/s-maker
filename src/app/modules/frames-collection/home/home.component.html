@@ -1,0 +1,25 @@
+@if (isInitializing | async) {
+  <div class="flex-auto flex-row-centered">
+    <mat-spinner></mat-spinner>
+  </div>
+} @else {
+  @if (project$ | async; as project) {
+    <smc-header [project]="project" [currentModule]="currentModule"> </smc-header>
+
+    <div class="flex-auto flex-row">
+      <div class="flex-col w-350 border-right">
+        <smc-tree
+          treeStorageKey="fc-tree-selected"
+          askRemoveTree="Вы действительно хотите удалить эту ветку и ее потомков?<br>При этом удалятся все связанными с ними фреймы"
+          [projectId]="project.id"
+          (dropToNodeEvent)="onFrameToTreeNode($event)"
+        ></smc-tree>
+      </div>
+      <div class="flex-col flex-auto">
+        <fc-frames-list [projectId]="project.id"></fc-frames-list>
+      </div>
+    </div>
+  } @else {
+    <smc-page-not-found></smc-page-not-found>
+  }
+}

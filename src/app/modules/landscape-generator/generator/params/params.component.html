@@ -1,0 +1,72 @@
+<div class="flex-row-align-center border-bottom pl-5 pr-5" style="height: 38px">
+  <button class="flex-auto" mat-button color="primary" (click)="generatorService.onGenerate()">
+    Генерировать ландшафт
+  </button>
+</div>
+
+<div class="flex-auto flex-col padding-10 mt-10" [formGroup]="generatorService.paramsFormGroup">
+  <div class="scroll-container">
+    <div class="scroll">
+      <div class="flex-col">
+        <div class="flex-row-align-center mt-10">
+          <div class="control-container">
+            <jst-touchspin
+              label="Ширина мира"
+              formControlName="width"
+              min="10"
+              max="1024"
+              [allowDecimals]="false"
+            ></jst-touchspin>
+          </div>
+          <div class="control-container ml-10">
+            <jst-touchspin
+              label="Высота мира"
+              formControlName="height"
+              min="10"
+              max="1024"
+              [allowDecimals]="false"
+            ></jst-touchspin>
+          </div>
+        </div>
+        <div class="flex-row-align-center mt-10">
+          <div class="control-container">
+            <jst-touchspin label="Сид карты высот" formControlName="elevationSid" min="1" [allowDecimals]="false">
+              <ng-container JSTIconSuffix>
+                <button mat-icon-button color="primary" (click)="onShuffleSidControl('elevationSid')">
+                  <mat-icon>shuffle</mat-icon>
+                </button>
+              </ng-container>
+            </jst-touchspin>
+          </div>
+          <div class="control-container ml-10">
+            <jst-touchspin label="Сид карты влажности" formControlName="humiditySid" min="1" [allowDecimals]="false">
+              <ng-container JSTIconSuffix>
+                <button mat-icon-button color="primary" (click)="onShuffleSidControl('humiditySid')">
+                  <mat-icon>shuffle</mat-icon>
+                </button>
+              </ng-container>
+            </jst-touchspin>
+          </div>
+        </div>
+        <div class="flex-row-align-center mt-10">
+          <div class="control-container">
+            <jst-touchspin
+              label="Exp для высот"
+              formControlName="elevationExp"
+              min="1"
+              [allowDecimals]="false"
+            ></jst-touchspin>
+          </div>
+          <div class="control-container ml-10">
+            <jst-touchspin
+              label="Exp для влажности"
+              formControlName="humidityExp"
+              min="1"
+              [allowDecimals]="false"
+            ></jst-touchspin>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

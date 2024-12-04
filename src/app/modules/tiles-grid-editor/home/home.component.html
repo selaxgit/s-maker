@@ -1,0 +1,42 @@
+@if (project$ | async; as project) {
+  <smc-header [project]="project" [currentModule]="currentModule"> </smc-header>
+
+  <div class="content">
+    <div class="projects-container">
+      <div class="projects-container__head">
+        <button mat-stroked-button color="primary" (click)="onAddGrid(project.id)">Новая сетка</button>
+      </div>
+
+      <div class="projects-container__content">
+        @if (isLoading$ | async) {
+          <div class="loading-container">
+            <mat-spinner></mat-spinner>
+          </div>
+        } @else {
+          @if (gridsList$ | async; as gridsList) {
+            @if (gridsList.length > 0) {
+              <div class="scroll-container">
+                <div class="scroll">
+                  @for (grid of gridsList; track grid.id) {
+                    <div class="projects-container-list-item" (dblclick)="onGoToGrid(project.id, grid.id)">
+                      <div class="projects-container-list-item__title">{{ grid.name }}</div>
+                      <button mat-button color="primary" (click)="onGoToGrid(project.id, grid.id)">
+                        Редактировать
+                      </button>
+                      <button mat-button color="primary" (click)="onExportGrid(grid.id)">Экспорт</button>
+                      <button mat-button color="accent" (click)="onRemoveGrid(project.id, grid.id)">Удалить</button>
+                    </div>
+                  }
+                </div>
+              </div>
+            } @else {
+              <div class="empty-message">Нет сеток</div>
+            }
+          }
+        }
+      </div>
+    </div>
+  </div>
+} @else {
+  <smc-page-not-found></smc-page-not-found>
+}

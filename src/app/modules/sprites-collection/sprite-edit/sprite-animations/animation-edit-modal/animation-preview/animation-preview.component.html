@@ -1,0 +1,13 @@
+<fieldset class="flex-auto p-relative">
+  <div class="buttons-container">
+    <smc-scale-buttons buttonColor="primary" (zoomEvent)="onZoom($event)"></smc-scale-buttons>
+    <div class="divider"></div>
+    <button mat-icon-button color="primary" title="Проиграть анимацию" [disabled]="isPlaying" (click)="onPlay(true)">
+      <mat-icon>play_circle_outline</mat-icon>
+    </button>
+    <button mat-icon-button color="primary" title="Остановить анимацию" [disabled]="!isPlaying" (click)="onPlay(false)">
+      <mat-icon>stop</mat-icon>
+    </button>
+  </div>
+  <div #pixiContainer class="pixi-container"></div>
+</fieldset>

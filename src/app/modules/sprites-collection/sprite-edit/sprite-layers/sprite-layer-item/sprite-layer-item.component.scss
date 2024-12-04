@@ -1,0 +1,36 @@
+@use "colors";
+
+:host {
+  display: flex;
+  flex-direction: column;
+  cursor: default;
+  &.selected {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  &:hover {
+    background-color: colors.$hover-color;
+  }
+  &.selected {
+    background-color: colors.$selected-color;
+    color: colors.$white;
+    .mat-mdc-icon-button {
+      &.mat-primary {
+        color: colors.$white;
+      }
+    }
+  }
+  .title {
+    flex: auto;
+    font-size: 14px;
+  }
+}
+
+.frames-list {
+  display: flex;
+  flex-direction: column;
+}

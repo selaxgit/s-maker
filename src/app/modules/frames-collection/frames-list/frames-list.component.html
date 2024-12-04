@@ -1,0 +1,73 @@
+<div class="flex-row-align-center border-bottom">
+  <button class="ml-10" mat-button color="primary" (click)="onAddFromFiles()">Добавить фрейм из файла</button>
+  <div class="ml-10 v-divider"></div>
+  <button class="ml-10" mat-button color="primary" (click)="onCutFramesFromFile()">Нарезать фреймы из файла</button>
+  <div class="ml-10 v-divider"></div>
+  <button class="ml-10" mat-button color="primary" (click)="onCutFromFile()">Вырезать один фрейм из файла</button>
+  <div class="ml-10 v-divider"></div>
+  <button class="ml-10 mat-button-with-icon" mat-button color="primary" [matMenuTriggerFor]="settingsMenu">
+    <div class="flex-row-align-center">
+      <span>Настройки</span>
+      <mat-icon>arrow_drop_down</mat-icon>
+    </div>
+  </button>
+
+  <div class="tree-title">
+    <span>{{ (selectedNode$ | async)?.name ?? 'Корень дерева' }}</span>
+  </div>
+
+  <mat-menu #settingsMenu="matMenu">
+    <button mat-menu-item (click)="setSortBy('used')">
+      <span [class.text-bold]="sortBy() === 'used'">Показывать сперва используемые фреймы</span>
+    </button>
+    <button mat-menu-item (click)="setSortBy('not-used')">
+      <span [class.text-bold]="sortBy() === 'not-used'">Показывать сперва неиспользуемые фреймы</span>
+    </button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item [disabled]="countNotUsed() === 0" (click)="onRemoveNotUsedFrames()">
+      <span class="text-danger">Удалить неиспользуемые фреймы</span>
+    </button>
+    <button mat-menu-item [disabled]="tiles().length === 0" (click)="onRemoveDuplicatesFrames()">
+      <span class="text-danger">Удалить дубли фреймов</span>
+    </button>
+  </mat-menu>
+</div>
+
+@if (isLoading()) {
+  <div class="loading-container">
+    <mat-spinner></mat-spinner>
+    @if (loadingMessage()) {
+      <div class="loading-container__message">{{ loadingMessage() }}</div>
+    }
+  </div>
+}
+
+@if (tiles().length > 0) {
+  <smc-tiles-list
+    [visibleUsed]="true"
+    [visibleDownload]="true"
+    [visibleRemove]="true"
+    [tiles]="tiles()"
+    (removeEvent)="onRemove($event)"
+    (downloadEvent)="onDownload($event)"
+    (clickEvent)="onClickTile($event)"
+    (dragEndEvent)="onDragEndTile($event)"
+  ></smc-tiles-list>
+
+  <div class="statusbar">
+    <span>
+      Всего:
+      <strong>{{ tiles().length }}</strong>
+    </span>
+    <span class="ml-10">
+      Неиспользуемых:
+      <strong>{{ countNotUsed() }}</strong>
+    </span>
+    <span class="ml-10">
+      Используются:
+      <strong>{{ countUsed() }}</strong>
+    </span>
+  </div>
+} @else {
+  <div class="empty-message">Нет данных</div>
+}

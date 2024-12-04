@@ -1,0 +1,64 @@
+@use "colors";
+
+:host {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: auto;
+}
+
+:host ::ng-deep {
+  .mat-tree-node {
+    box-sizing: border-box;
+    min-height: 26px !important;
+    cursor: pointer;
+    padding: 0;
+    border-top: 2px dotted transparent;
+    border-bottom: 2px dotted transparent;
+    &:hover {
+      background-color: colors.$hover-color;
+    }
+    &.selected {
+      background-color: colors.$blue;
+      color: colors.$white;
+      .text-selected {
+        font-weight: bold;
+      }
+      .mat-mdc-icon-button {
+        &.mat-primary {
+          color: colors.$white;
+        }
+      }
+    }
+    &:not(.selected).selected-chars {
+      background-color: colors.$warning-color;
+      color: colors.$white;
+    }
+    &:not(.selected) {
+      .text-selected {
+        color: colors.$blue;
+        font-weight: bold;
+      }
+    }
+    &.drop-above {
+      border-top-color: colors.$success-color;
+    }
+    &.drop-below {
+      border-bottom-color: colors.$success-color;
+    }
+    &.drop-center {
+      background-color: rgba(52, 157, 23, 0.5) !important;
+    }
+    .mat-mdc-icon-button {
+      width: 24px;
+      height: 24px;
+      line-height: 20px;
+      .mat-icon {
+        line-height: 18px;
+        height: 18px;
+        width: 18px;
+        font-size: 16px;
+      }
+    }
+  }
+}

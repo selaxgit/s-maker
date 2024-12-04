@@ -1,0 +1,37 @@
+<div class="flex-auto flex-row">
+  <div class="flex-col w-350 border-right">
+    <smc-tree treeStorageKey="ssm-tree-selected" [canEditTree]="false" [projectId]="projectId"></smc-tree>
+  </div>
+  <div class="flex-col flex-auto p-relative">
+    <div class="flex-col flex-auto">
+      @if (tiles().length > 0) {
+        <smc-tiles-list
+          backgroundIcon=""
+          [draggable]="false"
+          [useCheckbox]="true"
+          [useCheckboxMulti]="multiple"
+          [visibleUsed]="false"
+          [visibleDownload]="false"
+          [visibleRemove]="false"
+          [tiles]="tiles()"
+          (selectedEvent)="onSelectedTiles($event)"
+        ></smc-tiles-list>
+      } @else {
+        <div class="empty-message">Нет данных</div>
+      }
+    </div>
+    <div class="statusbar">
+      <div class="flex-auto flex-row fs-12">
+        <div class="counter">Всего: {{ allCount() }}</div>
+        <div class="counter">Выбрано: {{ selectedTiles().length }}</div>
+      </div>
+      <button mat-raised-button color="primary" [disabled]="disableApplyState()" (click)="onApply()">Применить</button>
+      <button class="ml-10" mat-raised-button color="accent" (click)="onClose()">Закрыть</button>
+    </div>
+    @if (isLoading()) {
+      <div class="loading-container">
+        <mat-spinner></mat-spinner>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,24 @@
+<div class="item mat-small-button-icon" [class.selected]="(currentFrame$ | async)?.id === this.frame.id">
+  <span class="title" (dblclick)="onEditName($event)" (click)="onSelect()">
+    {{ name }}
+  </span>
+  <button
+    mat-icon-button
+    color="primary"
+    title="Редактировать наименование фрейма"
+    tabindex="-1"
+    (click)="onEditName($event)"
+  >
+    <mat-icon>edit</mat-icon>
+  </button>
+  <button mat-icon-button color="accent" title="Удалить фрейм" tabindex="-1" (click)="onRemoveFrame($event)">
+    <mat-icon>highlight_off</mat-icon>
+  </button>
+  <button mat-icon-button color="primary" title="Видимость фрейма" tabindex="-1" (click)="onToggleVisible($event)">
+    @if (visible) {
+      <mat-icon color="success">visibility</mat-icon>
+    } @else {
+      <mat-icon>visibility_off</mat-icon>
+    }
+  </button>
+</div>

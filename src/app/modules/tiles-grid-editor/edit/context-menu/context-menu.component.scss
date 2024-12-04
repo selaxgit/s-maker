@@ -1,0 +1,39 @@
+@use "colors";
+
+.context-menu {
+  display: inline-flex;
+  flex-direction: column;
+  background-color: rgb(255, 255, 255);
+  padding: 6px 0;
+  box-shadow:
+    0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  .context-menu-item {
+    outline: none;
+    cursor: pointer;
+    line-height: 36px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    .mat-icon {
+      &.arrow {
+        flex: auto;
+        display: flex;
+        justify-content: flex-end;
+      }
+      &.icon {
+        margin-right: 10px;
+      }
+    }
+    &.disabled {
+      color: #c6c6c6;
+      cursor: default;
+    }
+  }
+  .context-menu-item:not(.disabled):hover {
+    background-color: colors.$hover-color;
+    /* color: #ffffff; */
+  }
+}

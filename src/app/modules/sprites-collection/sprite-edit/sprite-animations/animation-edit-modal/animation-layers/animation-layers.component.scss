@@ -1,0 +1,27 @@
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding-right: 5px;
+}
+
+.header-title {
+  text-align: center;
+  font-weight: bold;
+}
+
+.header-loop {
+  width: 150px;
+}
+
+.header-speed {
+  width: 150px;
+}
+
+.header-button {
+  width: 32px;
+}

@@ -1,0 +1,64 @@
+<div
+  class="item mat-small-button-icon"
+  [class.selected]="(currentLayer$ | async)?.id === this.layer.id && !(currentFrame$ | async)?.id"
+>
+  @if (layer.frames.length === 0) {
+    <button mat-icon-button disabled="disabled"></button>
+  } @else {
+    <button mat-icon-button (click)="onToggleExpand($event)">
+      <mat-icon class="mat-icon-rtl-mirror">
+        {{ expanded() ? 'expand_more' : 'chevron_right' }}
+      </mat-icon>
+    </button>
+  }
+  <span class="title" (dblclick)="onToggleExpand($event)" (click)="onSelect()">
+    {{ layerName }}
+  </span>
+  <button
+    mat-icon-button
+    color="primary"
+    title="Добавить фрейм"
+    tabindex="-1"
+    [matMenuTriggerFor]="addFramesMenu"
+    (click)="$event.stopPropagation()"
+  >
+    <mat-icon>add</mat-icon>
+  </button>
+  <button
+    mat-icon-button
+    color="primary"
+    title="Редактировать наименование слоя"
+    tabindex="-1"
+    (click)="onEditName($event)"
+  >
+    <mat-icon>edit</mat-icon>
+  </button>
+  <button mat-icon-button color="accent" title="Удалить слой" tabindex="-1" (click)="onRemove($event)">
+    <mat-icon>highlight_off</mat-icon>
+  </button>
+  <button mat-icon-button color="primary" title="Видимость слоя" tabindex="-1" (click)="onToggleVisible($event)">
+    @if (layerVisible) {
+      <mat-icon color="success">visibility</mat-icon>
+    } @else {
+      <mat-icon>visibility_off</mat-icon>
+    }
+  </button>
+</div>
+
+@if (expanded()) {
+  <div class="frames-list" cdkDropList [cdkDropListData]="layer.frames" (cdkDropListDropped)="onDropFrame($event)">
+    @for (frame of layer.frames; track frame.id) {
+      <sc-sprite-layer-item-frame
+        cdkDrag
+        [frame]="frame"
+        [name]="frame.name"
+        [visible]="frame.visible"
+      ></sc-sprite-layer-item-frame>
+    }
+  </div>
+}
+
+<mat-menu #addFramesMenu>
+  <menu mat-menu-item (click)="onAddFrame('file')">Добавить фрейм из файла</menu>
+  <menu mat-menu-item (click)="onAddFrame('collection')">Добавить фрейм из коллекции</menu>
+</mat-menu>

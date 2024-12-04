@@ -1,0 +1,41 @@
+@use "colors";
+
+:host {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  width: 375px;
+  background-color: colors.$white;
+}
+
+.frame-panel {
+  margin-top: 3px;
+  .frame-panel_header {
+    display: flex;
+    background-color: colors.$blue;
+    color: #fff;
+    padding: 3px 5px 3px 10px;
+    font-weight: bold;
+    user-select: none;
+    border-radius: 4px;
+    cursor: pointer;
+    .frame-panel_header-title {
+      flex: auto;
+    }
+    .mat-icon {
+      line-height: 18px;
+      height: 18px;
+      width: 18px;
+      font-size: 16px;
+      color: #fff;
+    }
+  }
+}
+
+.no-frame-message {
+  font-size: 16px;
+  padding: 5px 0;
+}

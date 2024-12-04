@@ -1,0 +1,26 @@
+<div class="jst-modal-container">
+  <div class="title-container">
+    <strong>Наименование:</strong>
+    {{ title() }}
+  </div>
+  <div class="view-container">
+    <img [src]="scrImage" [style.transform]="imgTransform" />
+    <div class="slider">
+      <mat-slider min="1" max="800" step="1">
+        <input matSliderThumb [(ngModel)]="scale" />
+      </mat-slider>
+    </div>
+  </div>
+  <div class="jst-modal-footer-buttons jst-not-align">
+    <div class="flex-row">
+      <div class="flex-auto">
+        <button mat-raised-button color="primary" (click)="onChangeFile()">Изменить файл</button>
+        <button mat-raised-button color="primary" [disabled]="!hasTile" (click)="onChangeName()">
+          Изменить наименование
+        </button>
+      </div>
+      <button mat-raised-button color="primary" [disabled]="!hasChanged" (click)="onApply()">Применить</button>
+      <button mat-raised-button color="accent" (click)="onClose()">Закрыть</button>
+    </div>
+  </div>
+</div>

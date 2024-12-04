@@ -1,0 +1,34 @@
+@use "colors";
+
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: auto;
+  width: 750px;
+  height: 450px;
+}
+
+.file-drop {
+  text-align: center;
+  padding: 15px;
+  margin-top: 15px;
+  cursor: default;
+  border: 1px dashed colors.$border-color;
+  user-select: none;
+  &.jst-file-drop-hover {
+    border-color: colors.$success-color;
+  }
+}
+
+.filelist {
+  display: flex;
+  flex-direction: column;
+  flex: auto;
+  margin-top: 15px;
+  .filelist-item {
+    display: flex;
+    .filelist-item__name {
+      flex: auto;
+    }
+  }
+}

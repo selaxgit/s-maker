@@ -1,0 +1,92 @@
+@if (animation$ | async; as animation) {
+  <fieldset class="pt-10">
+    <jst-input
+      label="Наименование анимации"
+      [controlRequred]="true"
+      [value]="animation.name"
+      (valueChange)="onChangeAnimation('name', $event)"
+    ></jst-input>
+    <jst-checkbox
+      label="Анимация по умолчанию"
+      mode="SLIDER-LEFT"
+      [value]="animation.default"
+      (valueChange)="onChangeAnimation('default', $event)"
+    ></jst-checkbox>
+  </fieldset>
+
+  <fieldset class="mt-20 pt-10">
+    <legend>Точка соприкосновения с землей</legend>
+    <div class="flex-row">
+      <div class="coords-container mat-without-hint">
+        <jst-touchspin
+          label="X"
+          [permanentValueChange]="false"
+          [value]="animation.groundPoint?.x"
+          (valueChange)="onChangeGroundPoint('x', $event)"
+        ></jst-touchspin>
+      </div>
+      <div class="ml-10 coords-container mat-without-hint">
+        <jst-touchspin
+          label="Y"
+          [permanentValueChange]="false"
+          [value]="animation.groundPoint?.y"
+          (valueChange)="onChangeGroundPoint('y', $event)"
+        ></jst-touchspin>
+      </div>
+    </div>
+    <jst-checkbox
+      class="mt-10"
+      label="Скрыть/показать точку"
+      mode="SLIDER-LEFT"
+      [value]="animation.visibleGround"
+      (valueChange)="onChangeAnimation('visibleGround', $event)"
+    ></jst-checkbox>
+  </fieldset>
+
+  <fieldset class="mt-20 pt-10">
+    <legend>Рамка коллизий</legend>
+    <div class="flex-row">
+      <div class="coords-container mat-without-hint">
+        <jst-touchspin
+          label="X"
+          [permanentValueChange]="false"
+          [value]="animation.collisionFrame?.x"
+          (valueChange)="onChangeCollisionFrame('x', $event)"
+        ></jst-touchspin>
+      </div>
+      <div class="ml-10 coords-container mat-without-hint">
+        <jst-touchspin
+          label="Y"
+          [permanentValueChange]="false"
+          [value]="animation.collisionFrame?.y"
+          (valueChange)="onChangeCollisionFrame('y', $event)"
+        ></jst-touchspin>
+      </div>
+    </div>
+    <div class="mt-10 flex-row">
+      <div class="coords-container mat-without-hint">
+        <jst-touchspin
+          label="Ширина"
+          [permanentValueChange]="false"
+          [value]="animation.collisionFrame?.width"
+          (valueChange)="onChangeCollisionFrame('width', $event)"
+        ></jst-touchspin>
+      </div>
+      <div class="ml-10 coords-container mat-without-hint">
+        <jst-touchspin
+          label="Высота"
+          [permanentValueChange]="false"
+          [value]="animation.collisionFrame?.height"
+          (valueChange)="onChangeCollisionFrame('height', $event)"
+        ></jst-touchspin>
+      </div>
+    </div>
+    <jst-checkbox
+      class="mt-10"
+      label="Скрыть/показать рамку"
+      mode="SLIDER-LEFT"
+      [value]="animation.visibleCollision"
+      (valueChange)="onChangeAnimation('visibleCollision', $event)"
+    ></jst-checkbox>
+  </fieldset>
+}

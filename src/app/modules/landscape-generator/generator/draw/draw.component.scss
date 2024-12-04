@@ -1,0 +1,15 @@
+:host {
+  flex: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.pixi-container {
+  position: absolute;
+  left: 5px;
+  right: 5px;
+  top: 5px;
+  bottom: 5px;
+  z-index: 0;
+  overflow: hidden;
+}

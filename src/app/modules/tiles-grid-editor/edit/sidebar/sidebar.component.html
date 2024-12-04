@@ -1,0 +1,63 @@
+@let editorFlatTreeFrames = tilesGridStore.editorFlatTreeFrames$ | async;
+
+<div class="flex-row-align-center pl-10 pr-10 border-bottom">
+  <div class="flex-auto flex-row-align-center">
+    <button
+      mat-icon-button
+      title="Раскрыть все"
+      [disabled]="!editorFlatTreeFrames || editorFlatTreeFrames.length === 0"
+      (click)="tilesGridStore.expandEditorFlatTreeFrames(false)"
+    >
+      <mat-icon>keyboard_arrow_up</mat-icon>
+    </button>
+    <button
+      class="ml-10"
+      mat-icon-button
+      title="Схлопнуть все"
+      [disabled]="!editorFlatTreeFrames || editorFlatTreeFrames.length === 0"
+      (click)="tilesGridStore.expandEditorFlatTreeFrames(true)"
+    >
+      <mat-icon>keyboard_arrow_down</mat-icon>
+    </button>
+  </div>
+  <button mat-icon-button color="accent" (click)="tilesGridStore.setEditorVisibleSidebar(false)">
+    <mat-icon>cancel</mat-icon>
+  </button>
+</div>
+
+@if (!editorFlatTreeFrames || editorFlatTreeFrames.length === 0) {
+  <div class="empty-message">Нет данных</div>
+} @else {
+  <div class="flex-auto flex-col pl-10 pr-10 mt-10">
+    <div class="scroll-container">
+      <div #scroll class="scroll">
+        @for (tree of editorFlatTreeFrames; track tree.id) {
+          <div class="frame-panel">
+            <div class="frame-panel_header" (click)="tree.collapse = !tree.collapse">
+              <div class="frame-panel_header-title">{{ tree.name }}</div>
+              @if (tree.collapse) {
+                <mat-icon title="Раскрыть">expand_more</mat-icon>
+              } @else {
+                <mat-icon title="Схлопнуть">expand_less</mat-icon>
+              }
+            </div>
+            <div class="flex-col" [class.display-none]="tree.collapse">
+              @if (tree.frames.length === 0) {
+                <div class="empty-message no-frame-message">Нет фреймов</div>
+              } @else {
+                <smc-tiles-list
+                  backgroundIcon="draw"
+                  [tiles]="tree.frames"
+                  [scrolling]="false"
+                  [draggable]="false"
+                  [useCheckbox]="true"
+                  (selectedEvent)="tilesGridStore.setEditorDrawTile($any($event))"
+                ></smc-tiles-list>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}

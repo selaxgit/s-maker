@@ -1,0 +1,49 @@
+@use "colors";
+
+:host {
+  display: flex;
+  box-sizing: border-box;
+  align-items: center;
+  height: 40px;
+  border-bottom: 1px solid colors.$border-color;
+  padding: 0 48px 0 78px;
+}
+
+.cur-project {
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.breadcrumbs {
+  flex: auto;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  line-height: 20px;
+  .breadcrumb-item {
+    &:first-child {
+      font-weight: bold;
+      &::before {
+        display: none;
+      }
+    }
+    &::before {
+      content: "\27A4";
+      display: inline-block;
+      width: 20px;
+      text-align: center;
+      font-size: 18px;
+      margin-left: 10px;
+    }
+    .breadcrumb-link {
+      cursor: pointer;
+      &.disabled {
+        pointer-events: none;
+        cursor: default;
+      }
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

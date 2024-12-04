@@ -1,0 +1,92 @@
+<ng-template #menu>
+  @let data = tilesGridStore.editorContextMenuData$ | async;
+  <div class="context-menu" cdkMenu>
+    @for (item of data?.tiles; track item.referenceId) {
+      <div
+        class="context-menu-item"
+        cdkMenuItem
+        [cdkMenuTriggerFor]="menuFrame"
+        [cdkMenuTriggerData]="{ tile: item, coords: data?.coords }"
+      >
+        Frame #{{ item.referenceId }}
+        <mat-icon class="arrow">arrow_right</mat-icon>
+      </div>
+    }
+    <div
+      class="context-menu-item text-danger"
+      cdkMenuItem
+      [class.disabled]="!data || data.tiles.length === 0"
+      [cdkMenuItemDisabled]="!data || data.tiles.length === 0"
+      (click)="
+        data && data.tiles.length > 0 && tilesGridStore.onActionContextMenu('clear-cell', { coords: data.coords })
+      "
+    >
+      Удалить все фреймы из ячейки
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #menuFrame let-tile="tile" let-coords="coords">
+  <div class="context-menu" cdkMenu>
+    <div
+      class="context-menu-item"
+      cdkMenuItem
+      (click)="tilesGridStore.onActionContextMenu('switch-flip-vertical', { coords, tile })"
+    >
+      @if (tile.flipVertical) {
+        <mat-icon class="icon">check_box</mat-icon>
+      } @else {
+        <mat-icon class="icon">check_box_outline_blank</mat-icon>
+      }
+      Отобразить по вертикали
+    </div>
+    <div
+      class="context-menu-item"
+      cdkMenuItem
+      (click)="tilesGridStore.onActionContextMenu('switch-flip-horizontal', { coords, tile })"
+    >
+      @if (tile.flipHorizontal) {
+        <mat-icon class="icon">check_box</mat-icon>
+      } @else {
+        <mat-icon class="icon">check_box_outline_blank</mat-icon>
+      }
+      Отобразить по горизонтали
+    </div>
+    <div
+      class="context-menu-item"
+      cdkMenuItem
+      (click)="tilesGridStore.onActionContextMenu('switch-stretch', { coords, tile })"
+    >
+      @if (tile.stretch) {
+        <mat-icon class="icon">check_box</mat-icon>
+      } @else {
+        <mat-icon class="icon">check_box_outline_blank</mat-icon>
+      }
+      По размерам ячейки
+    </div>
+    <div
+      class="context-menu-item"
+      cdkMenuItem
+      (click)="tilesGridStore.onActionContextMenu('property-frame', { coords, tile })"
+    >
+      <mat-icon class="icon">settings</mat-icon>
+      Свойства тайла
+    </div>
+    <div
+      class="context-menu-item"
+      cdkMenuItem
+      (click)="tilesGridStore.onActionContextMenu('top-z-index', { coords, tile })"
+    >
+      <mat-icon class="icon">upload</mat-icon>
+      Поднять наверх
+    </div>
+    <div
+      class="context-menu-item text-danger"
+      cdkMenuItem
+      (click)="tilesGridStore.onActionContextMenu('remove-frame', { coords, tile })"
+    >
+      <mat-icon class="icon">delete</mat-icon>
+      Удалить этот фрейм
+    </div>
+  </div>
+</ng-template>

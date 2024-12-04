@@ -1,0 +1,25 @@
+@let coords = tilesGridStore.editorCurrentCoords$ | async;
+@let editorDrawOverlay = tilesGridStore.editorDrawOverlay$ | async;
+@let editorStatusHint = tilesGridStore.editorStatusHint$ | async;
+
+<span class="cell-coords border-right">
+  Текущая ячейка:
+  @if (coords) {
+    {{ coords.x }}x{{ coords.y }}
+  } @else {
+    нет
+  }
+</span>
+
+<span class="cell-overlay border-right ml-10">
+  Несколько фреймов в ячейке:
+  @if (editorDrawOverlay) {
+    да
+  } @else {
+    нет
+  }
+</span>
+
+@if (editorStatusHint) {
+  <span class="ml-10">{{ editorStatusHint }}</span>
+}

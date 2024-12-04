@@ -1,0 +1,57 @@
+@use "colors";
+
+:host {
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+}
+
+.animation-list {
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  .animation-item {
+    .mat-mdc-icon-button {
+      width: 24px;
+      height: 24px;
+      line-height: 20px;
+      .mat-icon {
+        line-height: 18px;
+        height: 18px;
+        width: 18px;
+        font-size: 16px;
+      }
+    }
+    .animation-item-line {
+      display: flex;
+      align-items: center;
+      &:hover {
+        background-color: colors.$hover-color;
+      }
+      &.selected {
+        background-color: colors.$selected-color;
+        color: #ffffff;
+        .mat-mdc-icon-button {
+          color: #ffffff !important;
+        }
+      }
+      .animation-title {
+        flex: auto;
+        padding-left: 10px;
+      }
+    }
+  }
+}
+
+.animation-list.cdk-drop-list-dragging .animation-item:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.animation-item.cdk-drag-preview {
+  .animation-item-line {
+    display: flex;
+    .animation-title {
+      flex: auto;
+    }
+  }
+}

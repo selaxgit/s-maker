@@ -1,0 +1,126 @@
+@if (isLoading$ | async) {
+  <div class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
+}
+
+<div class="flex-row border-bottom">
+  <button class="flex-auto" mat-button color="primary" (click)="onRootNode()">Корень дерева</button>
+  @if (canEditTree) {
+    <button class="flex-auto" mat-button color="primary" (click)="onAddNode($event, null)">Добавить ветку</button>
+  }
+</div>
+
+@if (dataSource.data.length === 0) {
+  <div class="empty-message">Нет данных</div>
+} @else {
+  <div class="scroll-container mt-10">
+    <div class="scroll">
+      <mat-tree cdkDropList [dataSource]="dataSource" [treeControl]="treeControl">
+        <mat-tree-node
+          *matTreeNodeDef="let node"
+          matTreeNodePadding
+          matTreeNodePaddingIndent="18"
+          [draggable]="canEditTree"
+          [class.selected]="node.id === (selectedNode | async)?.id"
+          [class.selected-chars]="node.selectedChars"
+          [ngClass]="getNodeStyle(node)"
+          (click)="onNodeClick(node)"
+          (dragstart)="onDragStart($event, node)"
+          (dragover)="onDragOver($event, node)"
+          (dragleave)="onDragLeave()"
+          (dragend)="onDragEnd($event)"
+          (drop)="onDrop($event, node)"
+        >
+          <button mat-icon-button disabled></button>
+          <div class="flex-row-align-center flex-auto">
+            <span class="flex-auto no-select" [innerHTML]="node.title" (dblclick)="onEditNode($event, node)"></span>
+            @if (canEditTree) {
+              <button
+                mat-icon-button
+                color="primary"
+                title="Добавить ветку"
+                tabindex="-1"
+                (click)="onAddNode($event, node.id)"
+              >
+                <mat-icon>add</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                color="primary"
+                title="Редактировать наименование ветки"
+                tabindex="-1"
+                (click)="onEditNode($event, node)"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                color="accent"
+                title="Удалить ветку"
+                tabindex="-1"
+                (click)="onRemoveNode($event, node)"
+              >
+                <mat-icon>highlight_off</mat-icon>
+              </button>
+            }
+          </div>
+        </mat-tree-node>
+
+        <mat-tree-node
+          *matTreeNodeDef="let node; when: hasChild"
+          matTreeNodePadding
+          matTreeNodePaddingIndent="18"
+          [draggable]="canEditTree"
+          [class.selected]="node.id === (selectedNode | async)?.id"
+          [class.selected-chars]="node.selectedChars"
+          [ngClass]="getNodeStyle(node)"
+          (click)="onNodeClick(node)"
+          (dragstart)="onDragStart($event, node)"
+          (dragover)="onDragOver($event, node)"
+          (dragleave)="onDragLeave()"
+          (dragend)="onDragEnd($event)"
+          (drop)="onDrop($event, node)"
+        >
+          <button mat-icon-button matTreeNodeToggle>
+            <mat-icon class="mat-icon-rtl-mirror">
+              {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
+            </mat-icon>
+          </button>
+          <div class="flex-row-align-center flex-auto">
+            <span class="flex-auto" [innerHTML]="node.title"></span>
+            @if (canEditTree) {
+              <button
+                mat-icon-button
+                color="primary"
+                title="Добавить ветку"
+                tabindex="-1"
+                (click)="onAddNode($event, node.id)"
+              >
+                <mat-icon>add</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                color="primary"
+                title="Редактировать наименование ветки"
+                tabindex="-1"
+                (click)="onEditNode($event, node)"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                color="accent"
+                title="Удалить ветку"
+                tabindex="-1"
+                (click)="onRemoveNode($event, node)"
+              >
+                <mat-icon>highlight_off</mat-icon>
+              </button>
+            }
+          </div>
+        </mat-tree-node>
+      </mat-tree>
+    </div>
+  </div>
+}

@@ -1,0 +1,32 @@
+<div class="flex-row-align-center border-bottom padding-10">
+  @if (replacerVisible) {
+    <div class="flex-auto">
+      <mat-radio-group [(ngModel)]="replaceTypeValue">
+        <mat-radio-button value="add">Добавить к текущим</mat-radio-button>
+        <mat-radio-button class="ml-10" value="replace">Заменить текущие</mat-radio-button>
+      </mat-radio-group>
+    </div>
+  }
+  <div class="flex-auto flex-justify-end">
+    <button mat-button color="primary" (click)="onAddProperty()">Добавить свойство</button>
+  </div>
+</div>
+<div class="properties-container" [class.hold-height]="propertiesList().length >= 5">
+  <div class="scroll-container">
+    <div class="scroll pl-10 pr-10 pb-10" [class.no-scroll]="propertiesList().length < 5">
+      <pre>{{ propertiesList | json }}</pre>
+      @for (property of propertiesList(); track $index; let idx = $index) {
+        <smc-property-line
+          class="mt-10"
+          [(key)]="property.key"
+          [(type)]="property.type"
+          [(value)]="property.value"
+          (removeEvent)="onRemoveProperty(idx)"
+          (changeEvent)="onChange()"
+        ></smc-property-line>
+      } @empty {
+        <div class="empty-message">Свойств нет</div>
+      }
+    </div>
+  </div>
+</div>

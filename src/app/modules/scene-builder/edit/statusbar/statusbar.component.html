@@ -1,0 +1,8 @@
+@let coords = scenesStore.editorCoordsEvent$ | async;
+
+Текущие координаты:
+@if (coords) {
+  {{ coords.x }}x{{ coords.y }}
+} @else {
+  нет
+}

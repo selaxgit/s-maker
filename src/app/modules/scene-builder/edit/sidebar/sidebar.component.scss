@@ -1,0 +1,18 @@
+@use "colors";
+
+:host {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 375px;
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 33px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  border-bottom: 1px solid colors.$border-color;
+}

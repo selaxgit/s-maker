@@ -1,0 +1,13 @@
+:host {
+  flex: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 20px 20px 20px;
+}

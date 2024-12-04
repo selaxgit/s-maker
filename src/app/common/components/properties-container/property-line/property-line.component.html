@@ -1,0 +1,25 @@
+<div>
+  <jst-input label="Наименование" [clearButton]="false" [(value)]="keyValue"></jst-input>
+</div>
+<div>
+  <jst-select label="Тип свойства" [options]="typesList" [clearButton]="false" [(value)]="typeValue"></jst-select>
+</div>
+<div style="width: 235px">
+  @switch (typeValue) {
+    @case ('string') {
+      <jst-input label="Значение" [clearButton]="true" [(value)]="valueValue"></jst-input>
+    }
+    @case ('number') {
+      <jst-touchspin label="Значение" [clearButton]="true" [(value)]="valueValue"></jst-touchspin>
+    }
+    @case ('boolean') {
+      <mat-radio-group [(ngModel)]="valueValue">
+        <mat-radio-button [value]="true">Да</mat-radio-button>
+        <mat-radio-button [value]="false">Нет</mat-radio-button>
+      </mat-radio-group>
+    }
+  }
+</div>
+<button mat-icon-button color="accent" (click)="removeEvent.emit()">
+  <mat-icon>cancel</mat-icon>
+</button>

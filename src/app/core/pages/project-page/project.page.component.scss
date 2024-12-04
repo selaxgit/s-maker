@@ -1,0 +1,54 @@
+@use "colors";
+
+:host {
+  flex: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.grid-container {
+  display: grid;
+  grid-auto-flow: row dense;
+  grid-auto-columns: 1fr 1fr;
+  grid-template-columns: auto auto;
+  grid-template-rows: 1fr;
+  gap: 5px 5px;
+  grid-template-areas: ". .";
+}
+
+.project-tile {
+  display: flex;
+  border: 1px solid colors.$border-color;
+  border-radius: 6px;
+  padding: 10px;
+  cursor: pointer;
+  max-width: 430px;
+  background-color: colors.$white;
+  .project-tile__image {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 128px;
+    height: 128px;
+    overflow: hidden;
+    img {
+      max-width: 100%;
+      border-radius: 6px;
+    }
+  }
+  .project-tile__info {
+    flex: auto;
+    padding: 0 10px;
+    .project-tile__info-title {
+      font-weight: bold;
+      font-size: 24px;
+      text-align: center;
+    }
+    .project-tile__info__desc {
+      font-size: 16px;
+      font-style: italic;
+      padding-top: 15px;
+    }
+  }
+}

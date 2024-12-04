@@ -1,0 +1,174 @@
+@if (sprite$ | async; as sprite) {
+  <div class="scroll-container">
+    <div class="scroll">
+      <fieldset class="mt-10">
+        <legend>Параметры спрайта</legend>
+        <div class="flex-col mt-10">
+          <div class="flex-row mat-without-hint">
+            <div class="w-coords">
+              <jst-touchspin
+                label="Ширина"
+                mode="compactmode"
+                [min]="10"
+                [max]="10000"
+                [value]="sprite.width"
+                [permanentValueChange]="false"
+                (valueChange)="onChangeSprite('width', $event)"
+              ></jst-touchspin>
+            </div>
+            <div class="w-coords">
+              <jst-touchspin
+                label="Высота"
+                mode="compactmode"
+                [min]="10"
+                [max]="10000"
+                [value]="sprite.height"
+                [permanentValueChange]="false"
+                (valueChange)="onChangeSprite('height', $event)"
+              ></jst-touchspin>
+            </div>
+          </div>
+          <div class="mt-15 mat-without-hint">
+            <jst-color-picker
+              label="Подсветка фона спрайта"
+              [clearButton]="true"
+              [value]="sprite.bgColor"
+              (valueChange)="onChangeSprite('bgColor', $event)"
+            ></jst-color-picker>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="mt-10">
+        <legend>Точка соприкосновения с землей</legend>
+        <div class="flex-col mt-10">
+          <div class="flex-row mat-without-hint">
+            <div class="w-coords">
+              <jst-touchspin
+                label="X"
+                mode="compactmode"
+                [value]="sprite.groundPointX"
+                [permanentValueChange]="false"
+                (valueChange)="onChangeSprite('groundPointX', $event)"
+              ></jst-touchspin>
+            </div>
+            <div class="w-coords">
+              <jst-touchspin
+                label="Y"
+                mode="compactmode"
+                [value]="sprite.groundPointY"
+                [permanentValueChange]="false"
+                (valueChange)="onChangeSprite('groundPointY', $event)"
+              ></jst-touchspin>
+            </div>
+          </div>
+          <div class="mt-10 mat-without-hint">
+            <jst-checkbox
+              label="Скрыть/показать точку"
+              [value]="sprite.visibleGroundPoint"
+              (valueChange)="onChangeSprite('visibleGroundPoint', $event)"
+            ></jst-checkbox>
+          </div>
+        </div>
+      </fieldset>
+      @if (currentLayer$ | async; as currentLayer) {
+        <fieldset class="mt-10">
+          <legend>Параметры слоя</legend>
+          <div class="flex-col mt-10">
+            <div class="flex-row mat-without-hint">
+              <div class="w-coords">
+                <jst-touchspin
+                  label="X"
+                  mode="compactmode"
+                  [value]="currentLayer.x"
+                  [permanentValueChange]="false"
+                  (valueChange)="onChangeLayer(currentLayer.id, 'x', $event)"
+                ></jst-touchspin>
+              </div>
+              <div class="w-coords">
+                <jst-touchspin
+                  label="Y"
+                  mode="compactmode"
+                  [value]="currentLayer.y"
+                  [permanentValueChange]="false"
+                  (valueChange)="onChangeLayer(currentLayer.id, 'y', $event)"
+                ></jst-touchspin>
+              </div>
+            </div>
+            <div class="flex-row mt-15">
+              <div class="w-coords mat-without-hint">
+                <jst-touchspin
+                  label="Z-индекс"
+                  mode="compactmode"
+                  [value]="currentLayer.zIndex"
+                  [permanentValueChange]="false"
+                  (valueChange)="onChangeLayer(currentLayer.id, 'zIndex', $event)"
+                ></jst-touchspin>
+              </div>
+              <div class="w-coords mat-without-hint">
+                <jst-color-picker
+                  label="Подсветка фона слоя"
+                  emptyColorTitle="Нет"
+                  [clearButton]="true"
+                  [value]="currentLayer.bgColor"
+                  (valueChange)="onChangeLayer(currentLayer.id, 'bgColor', $event)"
+                ></jst-color-picker>
+              </div>
+            </div>
+            <div class="mt-10 flex-col">
+              <jst-checkbox
+                label="Видимость слоя"
+                [value]="currentLayer.visible"
+                (valueChange)="onChangeLayer(currentLayer.id, 'visible', $event)"
+              ></jst-checkbox>
+              <jst-checkbox
+                label="Отразить по горизонтали"
+                [value]="currentLayer.flipHorizontal"
+                (valueChange)="onChangeLayer(currentLayer.id, 'flipHorizontal', $event)"
+              ></jst-checkbox>
+              <jst-checkbox
+                label="Отразить по вертикали"
+                [value]="currentLayer.flipVertical"
+                (valueChange)="onChangeLayer(currentLayer.id, 'flipVertical', $event)"
+              ></jst-checkbox>
+            </div>
+          </div>
+        </fieldset>
+        @if (currentFrame$ | async; as currentFrame) {
+          <fieldset class="mt-10 mb-10">
+            <legend>Параметры фрейма ({{ currentFrame.width }}x{{ currentFrame.height }})</legend>
+            <div class="flex-col mt-10">
+              <div class="flex-row mat-without-hint">
+                <div class="w-coords">
+                  <jst-touchspin
+                    label="X"
+                    mode="compactmode"
+                    [value]="currentFrame.x"
+                    [permanentValueChange]="false"
+                    (valueChange)="onChangeFrame(currentLayer.id, currentFrame.id, 'x', $event)"
+                  ></jst-touchspin>
+                </div>
+                <div class="w-coords">
+                  <jst-touchspin
+                    label="Y"
+                    mode="compactmode"
+                    [value]="currentFrame.y"
+                    [permanentValueChange]="false"
+                    (valueChange)="onChangeFrame(currentLayer.id, currentFrame.id, 'y', $event)"
+                  ></jst-touchspin>
+                </div>
+              </div>
+              <div class="mt-10 mat-without-hint">
+                <jst-checkbox
+                  label="Видимость фрейма"
+                  [value]="currentFrame.visible"
+                  (valueChange)="onChangeFrame(currentLayer.id, currentFrame.id, 'visible', $event)"
+                ></jst-checkbox>
+              </div>
+            </div>
+          </fieldset>
+        }
+      }
+    </div>
+  </div>
+}

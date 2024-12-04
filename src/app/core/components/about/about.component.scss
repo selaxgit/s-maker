@@ -1,0 +1,13 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 60vh;
+  width: 60vw;
+}
+
+.project {
+  font-size: 36px;
+  font-weight: bold;
+  padding: 10px;
+  text-align: center;
+}

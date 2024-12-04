@@ -1,0 +1,71 @@
+@let currObject = scenesStore.editorCurrentSceneObject$ | async;
+
+<div class="item mat-small-button-icon" [class.selected]="currObject?.id === layer.id">
+  @if (layerType === 'layer-grid') {
+    <button mat-icon-button disabled="disabled"></button>
+  } @else {
+    <button mat-icon-button [disabled]="children.length === 0" (click)="onToggleExpand($event)">
+      <mat-icon class="mat-icon-rtl-mirror">
+        {{ expanded() ? 'expand_more' : 'chevron_right' }}
+      </mat-icon>
+    </button>
+  }
+  <span
+    class="title"
+    (dblclick)="children.length > 0 && onToggleExpand($event)"
+    (click)="scenesStore.setSelectedSceneObject(layer)"
+  >
+    @switch (layerType) {
+      @case ('layer-events') {
+        <span class="layer-type">&laquo;слой событий&raquo;</span>
+      }
+      @case ('layer-grid') {
+        <span class="layer-type">&laquo;слой сетки&raquo;</span>
+      }
+      @case ('layer-ground') {
+        <span class="layer-type">&laquo;слой земли&raquo;</span>
+      }
+      @case ('layer-sprites') {
+        <span class="layer-type">&laquo;слой спрайтов&raquo;</span>
+      }
+    }
+    <span>{{ layerName }}</span>
+  </span>
+  @if (layerType !== 'layer-grid') {
+    <button mat-icon-button color="primary" tabindex="-1" [title]="tooltipAddButton" (click)="onLayerAddChild($event)">
+      <mat-icon>add</mat-icon>
+    </button>
+  }
+  <button
+    mat-icon-button
+    color="primary"
+    title="Редактировать наименование слоя"
+    tabindex="-1"
+    (click)="onEditLayerName($event)"
+  >
+    <mat-icon>edit</mat-icon>
+  </button>
+  <button mat-icon-button color="accent" title="Удалить слой" tabindex="-1" (click)="onRemoveLayer($event)">
+    <mat-icon>highlight_off</mat-icon>
+  </button>
+  <button mat-icon-button color="primary" title="Видимость слоя" tabindex="-1" (click)="onToggleLayerVisible($event)">
+    @if (layerVisible) {
+      <mat-icon color="success">visibility</mat-icon>
+    } @else {
+      <mat-icon>visibility_off</mat-icon>
+    }
+  </button>
+</div>
+
+@if (expanded() && children.length > 0) {
+  <div class="children-container">
+    @for (child of children; track child.id) {
+      <sb-edit-sidebar-object-line
+        [objectName]="child.name"
+        [objectType]="child.type"
+        [objectVisible]="child.visible"
+        [object]="child"
+      ></sb-edit-sidebar-object-line>
+    }
+  </div>
+}

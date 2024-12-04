@@ -1,0 +1,24 @@
+:host {
+  position: relative;
+  flex: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  position: absolute;
+  left: 10px;
+  top: 3px;
+  width: 55px;
+  height: 32px;
+  cursor: pointer;
+}
+
+.about {
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}

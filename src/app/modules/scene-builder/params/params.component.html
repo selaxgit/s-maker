@@ -1,0 +1,41 @@
+<div class="jst-modal-container flex-col padding-10 mt-10">
+  <mat-tab-group class="tabjst-container flex-auto" animationDuration="0ms" [formGroup]="formGroup">
+    <mat-tab label="Сцена">
+      <div class="mt-20">
+        <jst-input #name label="Наименование" formControlName="name" [clearButton]="false"></jst-input>
+        <div class="flex-row-centered">
+          <div class="w-coords">
+            <jst-touchspin label="X" formControlName="offsetX" [clearButton]="false"></jst-touchspin>
+          </div>
+          <div class="w-coords">
+            <jst-touchspin label="Y" formControlName="offsetY" [clearButton]="false"></jst-touchspin>
+          </div>
+          <div class="w-coords">
+            <jst-touchspin label="Ширина" formControlName="width" [clearButton]="false"></jst-touchspin>
+          </div>
+          <div class="w-coords">
+            <jst-touchspin label="Высота" formControlName="height" [clearButton]="false"></jst-touchspin>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab label="Герой">
+      <div class="mt-20">
+        <jst-select label="Слой героев" formControlName="actorLayerId" [options]="layersList"></jst-select>
+        <div class="flex-row-centered">
+          <div class="w-coords">
+            <jst-touchspin label="X" formControlName="actorX" [clearButton]="false"></jst-touchspin>
+          </div>
+          <div class="w-coords">
+            <jst-touchspin label="Y" formControlName="actorY" [clearButton]="false"></jst-touchspin>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+
+<div class="jst-modal-footer-buttons">
+  <button mat-raised-button color="primary" (click)="onApply()">Применить</button>
+  <button mat-raised-button color="accent" (click)="onClose()">Закрыть</button>
+</div>

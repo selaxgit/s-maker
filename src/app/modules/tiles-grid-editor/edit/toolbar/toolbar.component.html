@@ -1,0 +1,92 @@
+@let editorToolState = tilesGridStore.editorToolState$ | async;
+@let editorDrawOverlay = tilesGridStore.editorDrawOverlay$ | async;
+@let editorVisibleGrid = tilesGridStore.editorVisibleGrid$ | async;
+@let editorVisibleBg = tilesGridStore.editorVisibleBg$ | async;
+@let editorVisibleSidebar = tilesGridStore.editorVisibleSidebar$ | async;
+
+<div class="flex-auto flex-row-align-center">
+  <button
+    mat-icon-button
+    title="Перетаскивание сетки"
+    color="primary"
+    [class.selected-button]="editorToolState === 'move'"
+    (click)="tilesGridStore.setEditorToolState('move')"
+  >
+    <mat-icon>pan_tool</mat-icon>
+  </button>
+  <button
+    class="ml-10"
+    mat-icon-button
+    title="Информация о ячейке"
+    color="primary"
+    [class.selected-button]="editorToolState === 'info'"
+    (click)="tilesGridStore.setEditorToolState('info')"
+  >
+    <mat-icon>info</mat-icon>
+  </button>
+  <button
+    class="ml-10"
+    mat-icon-button
+    title="Удаление фреймов"
+    color="primary"
+    [class.selected-button]="editorToolState === 'remove'"
+    (click)="tilesGridStore.setEditorToolState('remove')"
+  >
+    <mat-icon>delete</mat-icon>
+  </button>
+  <button
+    class="ml-10"
+    mat-icon-button
+    title="Отрисовка фреймов"
+    color="primary"
+    [class.selected-button]="editorToolState === 'draw'"
+    (click)="tilesGridStore.setEditorToolState('draw')"
+  >
+    <mat-icon>app_registration</mat-icon>
+  </button>
+
+  <div class="tools-divider"></div>
+  <smc-scale-buttons buttonColor="primary" (zoomEvent)="tilesGridStore.sendEditorZoom($event)"></smc-scale-buttons>
+  <div class="tools-divider"></div>
+
+  <button
+    mat-icon-button
+    title="Несколько фреймов в ячейке"
+    color="primary"
+    [class.unselected-button]="!editorDrawOverlay"
+    (click)="tilesGridStore.switchEditorDrawOverlay()"
+  >
+    <mat-icon>layers</mat-icon>
+  </button>
+  <button
+    class="ml-10"
+    mat-icon-button
+    title="Скрыть/показать сетку"
+    color="primary"
+    [class.unselected-button]="!editorVisibleGrid"
+    (click)="tilesGridStore.switchEditorVisibleGrid()"
+  >
+    <mat-icon>grid_on</mat-icon>
+  </button>
+  <button
+    class="ml-10"
+    mat-icon-button
+    title="Скрыть/показать подложку"
+    color="primary"
+    [class.unselected-button]="!editorVisibleBg"
+    (click)="tilesGridStore.switchEditorVisibleBg()"
+  >
+    <mat-icon>visibility</mat-icon>
+  </button>
+</div>
+
+@if (editorToolState === 'draw') {
+  <button
+    mat-button
+    color="primary"
+    [disabled]="editorVisibleSidebar"
+    (click)="tilesGridStore.setEditorVisibleSidebar(true)"
+  >
+    Выбрать фрейм для отрисовки
+  </button>
+}

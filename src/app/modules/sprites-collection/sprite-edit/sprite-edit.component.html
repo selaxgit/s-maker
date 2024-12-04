@@ -1,0 +1,68 @@
+@if (projectStore.isInitializing$ | async) {
+  <div class="flex-auto flex-row-centered">
+    <mat-spinner></mat-spinner>
+  </div>
+} @else {
+  @if (projectStore.project$ | async; as project) {
+    <smc-header
+      [project]="project"
+      [currentModule]="currentModule"
+      [currentModulePage]="(sprite$ | async)?.name ?? 'Спрайт не найден'"
+    >
+      @if (sprite$ | async; as sprite) {
+        <button mat-button color="primary" [matMenuTriggerFor]="exportMenu">
+          <div class="flex-row-align-center">
+            <span>Экспорт спрайта</span>
+            <mat-icon>arrow_drop_down</mat-icon>
+          </div>
+        </button>
+        <button mat-button color="primary" [matMenuTriggerFor]="doMenu">
+          <div class="flex-row-align-center">
+            <span>Действия над спрайтом</span>
+            <mat-icon>arrow_drop_down</mat-icon>
+          </div>
+        </button>
+
+        <mat-menu #exportMenu="matMenu">
+          <button
+            mat-menu-item
+            title="Нельзя будет использовать для импорта в S-Maker!!!"
+            (click)="onExportSprite(sprite, 'default')"
+          >
+            Обычный экспорт спрайта
+          </button>
+          <button mat-menu-item (click)="onExportSprite(sprite, 'for-game')">Экспорт спрайта для игры</button>
+        </mat-menu>
+
+        <mat-menu #doMenu="matMenu">
+          <button mat-menu-item (click)="onChangeNameSprite(sprite)">Изменить наименование спрайта</button>
+          <button mat-menu-item (click)="onCloneSprite(sprite)">Создать копию спрайта</button>
+          <button mat-menu-item (click)="onRemoveSprite(sprite)">
+            <span class="text-danger">Удалить спрайт</span>
+          </button>
+        </mat-menu>
+      }
+    </smc-header>
+
+    @if (sprite$ | async; as sprite) {
+      <div class="flex-auto flex-col">
+        <div class="flex-auto flex-row">
+          <sc-sprite-layers class="border-right" [projectId]="project.id" [spriteId]="sprite.id"></sc-sprite-layers>
+          <sc-sprite-params class="border-right"></sc-sprite-params>
+          <sc-sprite-adjustment class="flex-auto border-right"></sc-sprite-adjustment>
+          <sc-sprite-animations [projectId]="project.id"></sc-sprite-animations>
+        </div>
+      </div>
+    } @else {
+      @if (isSpriteInitializing$ | async) {
+        <div class="flex-auto flex-row-centered">
+          <mat-spinner></mat-spinner>
+        </div>
+      } @else {
+        <smc-page-not-found [goHomeOnClick]="false"></smc-page-not-found>
+      }
+    }
+  } @else {
+    <smc-page-not-found></smc-page-not-found>
+  }
+}

@@ -1,0 +1,31 @@
+<button
+  mat-icon-button
+  color="primary"
+  (mousedown)="onDecrementMouseDown()"
+  (mouseup)="onStop()"
+  (mouseout)="onStop()"
+  (click)="onDecrementClick()"
+>
+  <mat-icon>remove_circle_outline</mat-icon>
+</button>
+<input
+  class="input"
+  type="number"
+  min="0"
+  max="10"
+  step="0.1"
+  [(ngModel)]="viewValue"
+  (keydown)="onTextKeyDown($event)"
+  (focus)="onSelectText($event)"
+  (ngModelChange)="onChange()"
+/>
+<button
+  mat-icon-button
+  color="primary"
+  (mousedown)="onIncrementMouseDown()"
+  (mouseup)="onStop()"
+  (mouseout)="onStop()"
+  (click)="onIncrementClick()"
+>
+  <mat-icon>add_circle_outline</mat-icon>
+</button>

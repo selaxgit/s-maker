@@ -1,0 +1,93 @@
+@if (scenesStore.editorCurrentSceneObject$ | async; as sceneObject) {
+  <div class="head">
+    <div class="obj-identificator">#{{ sceneObject.id }}</div>
+    @switch (sceneObject.type) {
+      @case ('sprite') {
+        <button
+          mat-button
+          color="primary"
+          routerLink="/{{ sceneObject.projectId }}/{{ routeSprite }}/{{ sceneObject.referenceId }}"
+        >
+          <div class="flex-row-align-center">
+            <span>Редактировать спрайт</span>
+            <mat-icon class="ml-10">open_in_new</mat-icon>
+          </div>
+        </button>
+      }
+      @case ('layer-grid') {
+        <button
+          mat-button
+          color="primary"
+          routerLink="/{{ sceneObject.projectId }}/{{ routeGrid }}/{{ sceneObject.referenceId }}"
+        >
+          <div class="flex-row-align-center">
+            <span>Редактировать сетку</span>
+            <mat-icon class="ml-10">open_in_new</mat-icon>
+          </div>
+        </button>
+      }
+    }
+  </div>
+  @if (isLoading()) {
+    <div class="loading-container">
+      <mat-spinner></mat-spinner>
+    </div>
+  } @else {
+    <div class="flex-col padding-10" [formGroup]="formGroup">
+      <div class="flex-row-align-center">
+        <div class="control-container">
+          <jst-touchspin label="X" formControlName="x" (userChangeEvent)="onChangeForm()"></jst-touchspin>
+        </div>
+        <div class="control-container ml-10">
+          <jst-touchspin label="Y" formControlName="y" (userChangeEvent)="onChangeForm()"></jst-touchspin>
+        </div>
+      </div>
+      @if (['ground', 'event'].includes(sceneObject.type)) {
+        <div class="flex-row-align-center mt-15">
+          <div class="control-container">
+            <jst-touchspin label="Ширина" formControlName="width" (userChangeEvent)="onChangeForm()"></jst-touchspin>
+          </div>
+          <div class="control-container ml-10">
+            <jst-touchspin label="Высота" formControlName="height" (userChangeEvent)="onChangeForm()"></jst-touchspin>
+          </div>
+        </div>
+      }
+      <div class="flex-row-align-center mt-15">
+        @if (['layer-sprites', 'sprite', 'layer-grid'].includes(sceneObject.type)) {
+          <div class="control-container">
+            <jst-touchspin label="Z-индекс" formControlName="zIndex" (userChangeEvent)="onChangeForm()"></jst-touchspin>
+          </div>
+        }
+        <div class="control-container ml-10">
+          <mat-slide-toggle formControlName="visible" (change)="onChangeForm()">Видимость</mat-slide-toggle>
+        </div>
+      </div>
+      @if (sceneObject.type === 'sprite') {
+        <div class="flex-row-align-center mt-15">
+          <div class="flex-auto">
+            <jst-select
+              label="Анимация"
+              [options]="optionsAnimations"
+              [formControl]="controlAnimation"
+              [disabledState]="optionsAnimations.length === 0"
+            ></jst-select>
+          </div>
+          <button
+            class="ml-10"
+            mat-icon-button
+            color="primary"
+            [disabled]="animPlayDisabled()"
+            (click)="onSetAnimationPlay(true)"
+          >
+            <mat-icon>play_circle_outline</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" [disabled]="animStopDisabled()" (click)="onSetAnimationPlay(false)">
+            <mat-icon>stop</mat-icon>
+          </button>
+        </div>
+      }
+    </div>
+  }
+} @else {
+  <div class="empty-message">Объект не выбран</div>
+}

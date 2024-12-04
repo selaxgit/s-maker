@@ -1,0 +1,40 @@
+<div class="flex-row-align-center border-bottom">
+  <button class="ml-10" mat-button color="primary" (click)="onAdd()">Создать спрайт</button>
+  <div class="ml-10 v-divider"></div>
+  <button class="ml-10" mat-button color="primary" (click)="onImport()">Импортировать спрайт</button>
+  <div class="ml-10 v-divider"></div>
+  <button class="ml-10" mat-button color="primary" (click)="onMultiAdd()">Мультисоздание простых спрайтов</button>
+
+  <div class="tree-title">
+    <span>{{ (selectedNode$ | async)?.name ?? 'Корень дерева' }}</span>
+  </div>
+</div>
+
+@if (isLoading()) {
+  <div class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
+}
+
+@if (tiles().length > 0) {
+  <smc-tiles-list
+    backgroundIcon="edit"
+    [visibleUsed]="false"
+    [visibleDownload]="true"
+    [visibleRemove]="true"
+    [tiles]="tiles()"
+    (removeEvent)="onRemove($event)"
+    (downloadEvent)="onDownload($event)"
+    (clickEvent)="onClickTile($event)"
+    (dragEndEvent)="onDragEndTile($event)"
+  ></smc-tiles-list>
+
+  <div class="statusbar">
+    <span>
+      Всего:
+      <strong>{{ tiles().length }}</strong>
+    </span>
+  </div>
+} @else {
+  <div class="empty-message">Нет данных</div>
+}

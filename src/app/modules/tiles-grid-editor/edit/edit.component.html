@@ -1,0 +1,59 @@
+@if (projectStore.isInitializing$ | async) {
+  <div class="flex-auto flex-row-centered">
+    <mat-spinner></mat-spinner>
+  </div>
+} @else {
+  @if (projectStore.project$ | async; as project) {
+    <smc-header
+      [project]="project"
+      [currentModule]="currentModule"
+      [currentModulePage]="(tilesGridStore.currentTileGrid$ | async)?.name ?? 'Сетка не найдена'"
+    >
+      @if (tilesGridStore.currentTileGrid$ | async; as grid) {
+        <button class="ml-10" mat-button color="primary" (click)="onExportGrid(grid.id)">Экспорт сетки</button>
+        <button mat-button color="primary" [matMenuTriggerFor]="utilsMenu">
+          <div class="flex-row-align-center">
+            <span>Утилиты</span>
+            <mat-icon>arrow_drop_down</mat-icon>
+          </div>
+        </button>
+        <button class="ml-10" mat-button color="primary" (click)="onGridParams(project.id, grid)">
+          Параметры сетки
+        </button>
+      }
+    </smc-header>
+
+    @if (tilesGridStore.currentTileGrid$ | async) {
+      <div class="flex-auto flex-col">
+        <tge-edit-toolbar class="border-bottom"></tge-edit-toolbar>
+        <div class="flex-auto flex-col p-relative">
+          <tge-edit-draw
+            [cdkContextMenuTriggerFor]="contextMenu.menu"
+            [cdkContextMenuDisabled]="!tilesGridStore.canUseContextMenu()"
+            (cdkContextMenuOpened)="tilesGridStore.onContextMenuState(true)"
+            (cdkContextMenuClosed)="tilesGridStore.onContextMenuState(false)"
+          ></tge-edit-draw>
+          <tge-context-menu #contextMenu></tge-context-menu>
+          @if (tilesGridStore.editorVisibleSidebar$ | async) {
+            <tge-edit-sidebar class="border-left"></tge-edit-sidebar>
+          }
+        </div>
+        <tge-edit-statusbar class="border-top"></tge-edit-statusbar>
+      </div>
+    } @else {
+      @if (tilesGridStore.isCurrentTileGridInitializing$ | async) {
+        <div class="flex-auto flex-row-centered">
+          <mat-spinner></mat-spinner>
+        </div>
+      } @else {
+        <smc-page-not-found [goHomeOnClick]="false"></smc-page-not-found>
+      }
+    }
+  } @else {
+    <smc-page-not-found></smc-page-not-found>
+  }
+}
+
+<mat-menu #utilsMenu="matMenu">
+  <button mat-menu-item (click)="onUtils('set-property-for-all')">Установить свойства для всех фреймов</button>
+</mat-menu>

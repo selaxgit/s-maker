@@ -1,0 +1,16 @@
+@use "colors";
+
+:host {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid colors.$border-color;
+  border-radius: 6px;
+}
+
+.properties-container {
+  display: flex;
+  flex-direction: column;
+  &.hold-height {
+    height: 305px;
+  }
+}

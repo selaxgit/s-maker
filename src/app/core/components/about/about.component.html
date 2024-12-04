@@ -1,0 +1,16 @@
+<div class="project">S-Maker v{{ version }}</div>
+<div class="text-center text-bold">Автор: Selax &copy; 2022-2024</div>
+<p class="text-center">История изменений:</p>
+<div class="flex-col flex-auto">
+  @if (loadingState()) {
+    <div class="flex-auto flex-row-centered">
+      <mat-spinner></mat-spinner>
+    </div>
+  } @else {
+    <div class="scroll-container">
+      <div class="scroll">
+        <div class="changelog" [innerHtml]="infoHtml"></div>
+      </div>
+    </div>
+  }
+</div>

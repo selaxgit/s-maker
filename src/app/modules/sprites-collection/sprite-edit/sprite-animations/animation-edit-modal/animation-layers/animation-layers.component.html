@@ -1,0 +1,30 @@
+<fieldset class="flex-auto flex-col">
+  <div class="header">
+    <div class="header-title flex-auto">Слой</div>
+    <div class="header-title header-loop">Цикличность</div>
+    <div class="header-title header-speed">Скорость</div>
+    <div class="header-title header-button">
+      <button mat-icon-button color="primary" title="Добавить слой" (click)="onAddLayer()">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+  </div>
+  <div class="scroll-container flex-col">
+    @if (layers$ | async; as layers) {
+      @if (layers.length > 0) {
+        <div class="scroll">
+          @for (layer of layers; track idx; let idx = $index) {
+            <sc-animation-layer-item
+              [layer]="layer"
+              [layersList]="layersList"
+              (layerChangeEvent)="onLayerChange(idx, $event)"
+              (layerRemoveEvent)="onLayerRemove(idx)"
+            ></sc-animation-layer-item>
+          }
+        </div>
+      } @else {
+        <div class="empty-message">Нет данных</div>
+      }
+    }
+  </div>
+</fieldset>

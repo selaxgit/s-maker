@@ -1,0 +1,63 @@
+@if (isProcessing()) {
+  <div class="loading-container">
+    <mat-spinner></mat-spinner>
+    <div class="mt-10">{{ processingMessage() }}</div>
+  </div>
+} @else {
+  <div class="jst-modal-container flex-col padding-10">
+    <div class="mt-10">
+      <jst-input
+        label="Выберите или укажите новую ветку дерева коллекции фреймов"
+        [(value)]="treeName"
+        (keyUpEvent)="onTreeNameKeyUp($event)"
+      >
+        <ng-container JSTIconPrefix>
+          <button mat-icon-button color="primary" [matMenuTriggerFor]="treeMenu.childMenu">
+            <mat-icon>more_horiz</mat-icon>
+          </button>
+        </ng-container>
+        <ng-container JSTHint>
+          <mat-icon>info</mat-icon>
+          <span>Если не указать ветку, то будет использован корень дерева</span>
+        </ng-container>
+      </jst-input>
+
+      <jst-tree-menu
+        #treeMenu
+        [useRouterLink]="false"
+        [items]="treeMenuList"
+        (itemClickEvent)="onItemMenuClick($event)"
+      ></jst-tree-menu>
+    </div>
+    <div
+      class="file-drop"
+      JSTFileDrop
+      JSTFileDropClickChoice="click"
+      [JSTFileDropMultiFile]="true"
+      (JSTFileDropEvent)="onFileDrop($event)"
+    >
+      Перетащите или нажмите для выбора файлов
+    </div>
+    <div class="filelist">
+      <div class="scroll-container">
+        <div class="scroll">
+          @for (file of fileList(); track idx; let idx = $index) {
+            <div class="filelist-item">
+              <div class="filelist-item__name">{{ file.name }}</div>
+              <button mat-icon-button color="accent" (click)="onRemoveFile(idx)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="jst-modal-footer-buttons">
+    <button mat-raised-button color="primary" [disabled]="fileList().length === 0" (click)="onGenerate()">
+      Генерация спрайтов ({{ fileList().length }})
+    </button>
+    <button mat-raised-button color="accent" (click)="onClose()">Закрыть</button>
+  </div>
+}

@@ -1,0 +1,20 @@
+@use "colors";
+
+:host {
+  position: relative;
+  flex: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.tree-title {
+  flex: auto;
+  text-align: right;
+  padding-right: 10px;
+}
+
+.statusbar {
+  font-size: 12px;
+  padding: 5px 10px;
+  border-top: 1px solid colors.$border-color;
+}

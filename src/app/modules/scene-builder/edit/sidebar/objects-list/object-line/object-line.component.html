@@ -1,0 +1,38 @@
+@let currObject = scenesStore.editorCurrentSceneObject$ | async;
+
+<div class="item mat-small-button-icon" [class.selected]="currObject?.id === object.id">
+  <mat-icon class="subdirectory-icon ml-10">subdirectory_arrow_right</mat-icon>
+  <span class="title" (click)="scenesStore.setSelectedSceneObject(object)">
+    @switch (objectType) {
+      @case ('event') {
+        <span class="layer-type">&laquo;событие&raquo;</span>
+      }
+      @case ('ground') {
+        <span class="layer-type">&laquo;земля&raquo;</span>
+      }
+      @case ('sprite') {
+        <span class="layer-type">&laquo;спрайт&raquo;</span>
+      }
+    }
+    <span>{{ objectName }}</span>
+  </span>
+  <button
+    mat-icon-button
+    color="primary"
+    title="Редактировать наименование слоя"
+    tabindex="-1"
+    (click)="onObjectProperties($event)"
+  >
+    <mat-icon>edit</mat-icon>
+  </button>
+  <button mat-icon-button color="accent" title="Удалить слой" tabindex="-1" (click)="onRemoveObject($event)">
+    <mat-icon>highlight_off</mat-icon>
+  </button>
+  <button mat-icon-button color="primary" title="Видимость слоя" tabindex="-1" (click)="onToggleObjectVisible($event)">
+    @if (objectVisible) {
+      <mat-icon color="success">visibility</mat-icon>
+    } @else {
+      <mat-icon>visibility_off</mat-icon>
+    }
+  </button>
+</div>

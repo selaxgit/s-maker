@@ -1,0 +1,34 @@
+@let editorToolState = scenesStore.editorToolState$ | async;
+
+<button
+  mat-icon-button
+  title="Перетаскивание сетки"
+  color="primary"
+  [class.selected-button]="editorToolState === 'move'"
+  (click)="scenesStore.setEditorToolState('move')"
+>
+  <mat-icon>pan_tool</mat-icon>
+</button>
+<button
+  class="ml-10"
+  mat-icon-button
+  title="Информация об объекте"
+  color="primary"
+  [class.selected-button]="editorToolState === 'info'"
+  (click)="scenesStore.setEditorToolState('info')"
+>
+  <mat-icon>info</mat-icon>
+</button>
+<button
+  class="ml-10"
+  mat-icon-button
+  title="Перетаскивание объекта"
+  color="primary"
+  [class.selected-button]="editorToolState === 'drag-object'"
+  (click)="scenesStore.setEditorToolState('drag-object')"
+>
+  <mat-icon>open_with</mat-icon>
+</button>
+
+<div class="tools-divider"></div>
+<smc-scale-buttons buttonColor="primary" (zoomEvent)="scenesStore.sendEditorZoom($event)"></smc-scale-buttons>

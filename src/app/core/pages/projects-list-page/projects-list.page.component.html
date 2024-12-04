@@ -1,0 +1,33 @@
+<div class="projects-container">
+  <div class="projects-container__head">
+    <button mat-stroked-button color="primary" (click)="onAddProject()">Новый проект</button>
+    <button mat-stroked-button color="primary" (click)="onImportProject()">Импортировать проект</button>
+  </div>
+
+  <div class="projects-container__content">
+    @if (isLoading$ | async) {
+      <div class="loading-container">
+        <mat-spinner></mat-spinner>
+      </div>
+    } @else {
+      @if (projectsList$ | async; as projects) {
+        @if (projects.length > 0) {
+          <div class="scroll-container">
+            <div class="scroll">
+              @for (project of projects; track project.id) {
+                <div class="projects-container-list-item" (dblclick)="onGoToProject(project.id)">
+                  <div class="projects-container-list-item__title">{{ project.name }}</div>
+                  <button mat-button color="primary" (click)="onGoToProject(project.id)">Редактировать</button>
+                  <button mat-button color="primary" (click)="onExportProject(project.id)">Экспорт</button>
+                  <button mat-button color="accent" (click)="onRemoveProject(project.id)">Удалить</button>
+                </div>
+              }
+            </div>
+          </div>
+        } @else {
+          <div class="empty-message">Нет проектов</div>
+        }
+      }
+    }
+  </div>
+</div>

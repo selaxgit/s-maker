@@ -1,0 +1,32 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  width: 80vw;
+  height: 80vh;
+}
+
+.title-container {
+  padding: 10px;
+}
+
+.view-container {
+  position: relative;
+  flex: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.slider {
+  position: absolute;
+  left: 40px;
+  right: 20px;
+  bottom: 5px;
+  z-index: 1;
+  .mat-mdc-slider {
+    width: 99%;
+    margin: 0;
+  }
+}

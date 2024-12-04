@@ -1,0 +1,48 @@
+@let gridsList = tilesGridStore.gridsList$ | async;
+
+@if (scenesStore.currentScene$ | async; as currentScene) {
+  <div class="head">
+    <button mat-button color="primary" [matMenuTriggerFor]="createMenu">
+      <div class="flex-row-align-center">
+        <span>Добавить слой для объектов</span>
+        <mat-icon>arrow_drop_down</mat-icon>
+      </div>
+    </button>
+  </div>
+
+  <mat-menu #createMenu>
+    <menu mat-menu-item (click)="onAddObject(currentScene.projectId, currentScene.id, 'layer-sprites')">
+      Добавить слой спрайтов
+    </menu>
+    <menu mat-menu-item (click)="onAddObject(currentScene.projectId, currentScene.id, 'layer-ground')">
+      Добавить слой земли
+    </menu>
+    <menu mat-menu-item (click)="onAddObject(currentScene.projectId, currentScene.id, 'layer-events')">
+      Добавить слой событий
+    </menu>
+    <menu mat-menu-item [disabled]="!(gridsList && gridsList.length > 0)" [matMenuTriggerFor]="gridsMenu">
+      Добавить слой сетку
+    </menu>
+  </mat-menu>
+
+  <mat-menu #gridsMenu>
+    @for (grid of gridsList; track grid.id) {
+      <menu
+        mat-menu-item
+        (click)="onAddObject(currentScene.projectId, currentScene.id, 'layer-grid', grid.name, grid.id)"
+      >
+        {{ grid.name }}
+      </menu>
+    }
+  </mat-menu>
+
+  <div class="flex-auto flex-col">
+    <sb-edit-sidebar-objects-list></sb-edit-sidebar-objects-list>
+  </div>
+
+  <sb-edit-sidebar-current-object class="border-top"></sb-edit-sidebar-current-object>
+} @else {
+  <div class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
+}

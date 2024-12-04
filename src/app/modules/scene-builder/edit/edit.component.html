@@ -1,0 +1,53 @@
+@if (projectStore.isInitializing$ | async) {
+  <div class="flex-auto flex-row-centered">
+    <mat-spinner></mat-spinner>
+  </div>
+} @else {
+  @if (projectStore.project$ | async; as project) {
+    <smc-header
+      [project]="project"
+      [currentModule]="currentModule"
+      [currentModulePage]="(scenesStore.currentScene$ | async)?.name ?? 'Сцена не найдена'"
+    >
+      @if (scenesStore.currentScene$ | async; as scene) {
+        <button mat-button color="primary" [matMenuTriggerFor]="exportMenu" [matMenuTriggerData]="{ id: scene.id }">
+          <div class="flex-row-align-center">
+            <span>Экспорт сцены</span>
+            <mat-icon>arrow_drop_down</mat-icon>
+          </div>
+        </button>
+        <button class="ml-10" mat-button color="primary" (click)="onSceneParams(scene)">Параметры сцены</button>
+      }
+    </smc-header>
+
+    @if (scenesStore.currentScene$ | async) {
+      <div class="flex-auto flex-row">
+        <div class="flex-auto flex-col">
+          <sb-edit-toolbar class="border-bottom"></sb-edit-toolbar>
+          <div class="flex-auto p-relative">
+            <sb-edit-draw></sb-edit-draw>
+          </div>
+          <sb-edit-statusbar class="border-top"></sb-edit-statusbar>
+        </div>
+        <sb-edit-sidebar class="border-left"></sb-edit-sidebar>
+      </div>
+    } @else {
+      @if (scenesStore.isLoading$ | async) {
+        <div class="flex-auto flex-row-centered">
+          <mat-spinner></mat-spinner>
+        </div>
+      } @else {
+        <smc-page-not-found [goHomeOnClick]="false"></smc-page-not-found>
+      }
+    }
+  } @else {
+    <smc-page-not-found></smc-page-not-found>
+  }
+}
+
+<mat-menu #exportMenu>
+  <ng-template matMenuContent let-id="id">
+    <menu mat-menu-item (click)="onExportScene(id)">Экспортировать просто сцену</menu>
+    <menu mat-menu-item (click)="onExportScenePack(id)">Экспортировать весь набор сцены</menu>
+  </ng-template>
+</mat-menu>
