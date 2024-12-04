@@ -179,13 +179,14 @@ export class ImportProjectService {
         };
         if (item.type === 'sprite' && item.referenceId) {
           if (spritesMap.has(item.referenceId)) {
+            params.referenceId = spritesMap.get(item.referenceId);
             if (spritesAnimationsMap.has(Number(item.animationId))) {
               params.animationId = spritesAnimationsMap.get(Number(item.animationId));
               params.playing = item.playing;
-              params.referenceId = spritesMap.get(item.referenceId);
             } else {
-              console.log('Import project pass scene object (sprite) - not animation', item);
-              continue;
+              console.log('Import project: scene object (sprite) - not animation', item);
+              params.animationId = null;
+              params.playing = false;
             }
           } else {
             console.log('Import project pass scene object (sprite)', item);

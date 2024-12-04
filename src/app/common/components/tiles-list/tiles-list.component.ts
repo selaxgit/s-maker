@@ -17,11 +17,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { IViewTile } from '../../interfaces';
 
 @Component({
-    selector: 'smc-tiles-list',
-    imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule],
-    templateUrl: './tiles-list.component.html',
-    styleUrl: './tiles-list.component.scss',
-    changeDetection: ChangeDetectionStrategy.Default
+  selector: 'smc-tiles-list',
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule],
+  templateUrl: './tiles-list.component.html',
+  styleUrl: './tiles-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class SMCTilesListComponent {
   readonly tiles = input.required<IViewTile[]>();
@@ -55,12 +55,9 @@ export class SMCTilesListComponent {
   tilesList: WritableSignal<IViewTile[]> = signal([]);
 
   constructor() {
-    effect(
-      () => {
-        this.tilesList.set(this.tiles());
-      },
-      { allowSignalWrites: true },
-    );
+    effect(() => {
+      this.tilesList.set(this.tiles());
+    });
   }
 
   onRemove(e: MouseEvent, tile: IViewTile): void {

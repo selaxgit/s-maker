@@ -61,7 +61,7 @@ export class ProjectsListPageComponent {
 
   onImportProject(): void {
     FileHelper.uploadFile<File>('.zip').subscribe((file: File) => {
-      this.jstDialogService.showWait('Импорт спрайта...');
+      this.jstDialogService.showWait('Импорт проекта...');
       const reader = new FileReader();
       reader.onload = async (e: ProgressEvent<FileReader>) => {
         if (e.target?.result) {
