@@ -1,0 +1,66 @@
+<s-slide-panel-container
+  class="flex-auto"
+  cancelButtonTitle="Закрыть"
+  [panelTitle]="panelTitle()"
+  [visibleFooter]="multiple()"
+  (closeEvent)="handleClose()"
+  (applyEvent)="handleApply()"
+>
+  <div class="flex-row-align-center border-bottom">
+    <div class="flex-row">
+      <button matButton [disabled]="accordionPanels().length === 0" (click)="accordion().openAll()">
+        Развернуть все
+      </button>
+      <button matButton [disabled]="accordionPanels().length === 0" (click)="accordion().closeAll()">
+        Свернуть все
+      </button>
+    </div>
+  </div>
+  <div class="container">
+    <div class="scroll-container" [class.display-none]="accordionPanels().length === 0">
+      <div #scroll class="scroll">
+        <mat-accordion multi>
+          @let rootObjects = getTreeObjects();
+          @if (rootObjects.length > 0) {
+            <mat-expansion-panel [expanded]="hasSelectedTile(rootObjects)">
+              <mat-expansion-panel-header>
+                <mat-panel-title> Корень дерева </mat-panel-title>
+              </mat-expansion-panel-header>
+              <smc-tiles-list
+                [withBlackout]="false"
+                [scrolling]="false"
+                [backgroundIcon]="null"
+                [tiles]="rootObjects"
+                [useCheckbox]="true"
+                [useCheckboxMulti]="multiple()"
+                (selectedEvent)="handleSelectTile($event)"
+              ></smc-tiles-list>
+            </mat-expansion-panel>
+          }
+          @for (tree of framesTreeStore.flatTree(); track tree.id) {
+            @let treeObjects = getTreeObjects(tree.id);
+            @if (treeObjects.length > 0) {
+              <mat-expansion-panel [expanded]="hasSelectedTile(treeObjects)">
+                <mat-expansion-panel-header>
+                  <mat-panel-title> {{ tree.name }} </mat-panel-title>
+                </mat-expansion-panel-header>
+                <smc-tiles-list
+                  [withBlackout]="false"
+                  [scrolling]="false"
+                  [backgroundIcon]="null"
+                  [tiles]="treeObjects"
+                  [useCheckbox]="true"
+                  [useCheckboxMulti]="multiple()"
+                  (selectedEvent)="handleSelectTile($event)"
+                ></smc-tiles-list>
+              </mat-expansion-panel>
+            }
+          }
+        </mat-accordion>
+      </div>
+    </div>
+    @if (accordionPanels().length === 0) {
+      <div class="empty-message">Нет данных</div>
+    }
+  </div>
+</s-slide-panel-container>

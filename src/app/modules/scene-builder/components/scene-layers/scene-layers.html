@@ -1,0 +1,44 @@
+<section class="section-container flex-auto">
+  <div class="section-head">
+    <h4 class="section-title">Слои сцены</h4>
+    <button matIconButton color="primary" [matMenuTriggerFor]="createMenu">
+      <mat-icon>add</mat-icon>
+    </button>
+
+    <mat-menu #createMenu>
+      <button mat-menu-item (click)="handleAddLayer(layerTypeEnum.Sprites)">Добавить слой спрайтов</button>
+      <button mat-menu-item (click)="handleAddLayer(layerTypeEnum.Grounds)">Добавить слой земли</button>
+      <button mat-menu-item (click)="handleAddLayer(layerTypeEnum.Events)">Добавить слой событий</button>
+      <button mat-menu-item [disabled]="gridList().length === 9" [matMenuTriggerFor]="gridsMenu">
+        Добавить слой сетку
+      </button>
+    </mat-menu>
+    <mat-menu #gridsMenu="matMenu">
+      @for (item of gridList(); track item.id) {
+        <button mat-menu-item (click)="handleAddGridLayer(item.id, item.name)">{{ item.name }}</button>
+      }
+    </mat-menu>
+  </div>
+  <div class="flex-col flex-auto">
+    @let layers = editSceneStore.layers();
+    @if (layers.length === 0) {
+      <div class="empty-message">Нет данных</div>
+    } @else {
+      <div class="scroll-container">
+        <div class="scroll">
+          <div
+            class="flex-col user-select-none"
+            cdkDropList
+            [cdkDropListData]="editSceneStore.layers()"
+            (cdkDropListDropped)="handleDropLayer($event)"
+          >
+            @for (layer of layers; track layer.guid) {
+              <sb-layer-item cdkDrag [layer]="layer" [layerObject]="layer.objects" />
+            }
+          </div>
+        </div>
+      </div>
+    }
+    <sb-object-params />
+  </div>
+</section>

@@ -1,0 +1,50 @@
+:host {
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+}
+
+.main-container {
+  display: flex;
+  flex: auto;
+
+  padding: 10px 16px;
+  gap: 16px;
+}
+
+.section-head {
+  padding: 0;
+}
+
+.status-bar {
+  display: flex;
+  align-items: center;
+
+  box-sizing: border-box;
+  height: 26px;
+  padding: 5px 10px;
+
+  font-size: 14px;
+}
+
+span {
+  display: inline-block;
+
+  padding: 5px 0;
+}
+
+.cell-coords {
+  width: 180px;
+}
+
+.cell-overlay {
+  width: 216px;
+}
+
+.cell-grid {
+  width: 140px;
+}
+
+.cell-bg {
+  width: 166px;
+}

@@ -1,0 +1,110 @@
+@if (is404Page() && !projectStore.loadingState()) {
+  <page-not-found />
+} @else {
+  <smc-header
+    [visibleBreadcrumbs]="!projectStore.loadingState() && true"
+    [visibleModulesMenu]="!projectStore.loadingState() && true"
+  />
+  <main class="main-container">
+    @if (projectStore.loadingState()) {
+      <div class="loading-container">
+        <mat-spinner diameter="40"></mat-spinner>
+        <div class="loading-container__message">Загрузка проекта...</div>
+      </div>
+    } @else {
+      <section class="section-container">
+        <div class="section-head">
+          <h4 class="section-title">Параметры генерации</h4>
+          <button matIconButton [disabled]="true">&nbsp;</button>
+        </div>
+        <div class="section-body" [formGroup]="formGroup">
+          <div class="flex-row s-mat-without-bottom">
+            <s-input-number
+              class="w-number"
+              buttonsPosition="right"
+              formControlName="width"
+              label="Ширина мира"
+              [min]="10"
+              [max]="1024"
+              [showClearButton]="false"
+            />
+            <s-input-number
+              class="w-number ml-10"
+              buttonsPosition="right"
+              formControlName="height"
+              label="Высота мира"
+              [min]="10"
+              [max]="1024"
+              [showClearButton]="false"
+            />
+          </div>
+          <div>
+            <s-input-number
+              class="w-number"
+              buttonsPosition="right"
+              formControlName="elevationSid"
+              label="Сид карты высот"
+              [min]="1"
+              [showClearButton]="false"
+            >
+              <button sSuffix matIconButton color="primary" (click)="handleShuffleSidControl('elevationSid')">
+                <mat-icon>shuffle</mat-icon>
+              </button>
+            </s-input-number>
+          </div>
+          <div>
+            <s-input-number
+              class="w-number"
+              buttonsPosition="right"
+              label="Сид карты влажности"
+              formControlName="humiditySid"
+              [min]="1"
+              [showClearButton]="false"
+            >
+              <button sSuffix matIconButton color="primary" (click)="handleShuffleSidControl('humiditySid')">
+                <mat-icon>shuffle</mat-icon>
+              </button>
+            </s-input-number>
+          </div>
+          <div class="flex-row s-mat-without-bottom">
+            <s-input-number
+              class="w-number"
+              buttonsPosition="right"
+              label="Exp для высот"
+              formControlName="elevationExp"
+              [min]="1"
+              [showClearButton]="false"
+            />
+            <s-input-number
+              class="w-number ml-10"
+              buttonsPosition="right"
+              label="Exp для влажности"
+              formControlName="humidityExp"
+              [min]="1"
+              [showClearButton]="false"
+            />
+          </div>
+          <div class="flex-col mt-10">
+            <button matButton="outlined" color="primary" [disabled]="formGroup.disabled" (click)="handleGenerate()">
+              Сгенерировать
+            </button>
+          </div>
+        </div>
+      </section>
+      <section class="section-container flex-auto">
+        <div class="section-head">
+          <smc-scale-buttons class="flex-auto" buttonColor="primary" (zoomEvent)="handleZoom($event)" />
+        </div>
+        <div class="container">
+          <div #appPixi class="pixi-container" [class.hidden]="generatingState()"></div>
+          @if (generatingState()) {
+            <div class="loading-container">
+              <mat-spinner diameter="40"></mat-spinner>
+              <div class="loading-container__message">Генерация ландшафта...</div>
+            </div>
+          }
+        </div>
+      </section>
+    }
+  </main>
+}

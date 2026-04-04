@@ -1,0 +1,81 @@
+@if (moveButton()) {
+  <button
+    matIconButton
+    matTooltip="Смещение вьюпорта"
+    color="primary"
+    [class.selected-state]="currentState() === appPixiState.Move"
+    (click)="handleSetState(appPixiState.Move)"
+  >
+    <mat-icon>pan_tool</mat-icon>
+  </button>
+}
+@if (infoButton()) {
+  <button
+    matIconButton
+    matTooltip="Информация об объекте"
+    color="primary"
+    [class.selected-state]="currentState() === appPixiState.Info"
+    (click)="handleSetState(appPixiState.Info)"
+  >
+    <mat-icon>info</mat-icon>
+  </button>
+}
+@if (dragObjectButton()) {
+  <button
+    matIconButton
+    matTooltip="Перетаскивание объекта"
+    color="primary"
+    [class.selected-state]="currentState() === appPixiState.DragObject"
+    (click)="handleSetState(appPixiState.DragObject)"
+  >
+    <mat-icon>open_with</mat-icon>
+  </button>
+}
+@if (removeObjectButton()) {
+  <button
+    matIconButton
+    matTooltip="Удаление объектов"
+    color="primary"
+    [class.selected-state]="currentState() === appPixiState.RemoveObject"
+    (click)="handleSetState(appPixiState.RemoveObject)"
+  >
+    <mat-icon>delete</mat-icon>
+  </button>
+}
+@if (drawRectButton()) {
+  <button
+    matIconButton
+    matTooltip="Нарисовать квадрат"
+    color="primary"
+    [class.selected-state]="currentState() === appPixiState.DrawRect"
+    (click)="handleSetState(appPixiState.DrawRect)"
+  >
+    <mat-icon>crop_free</mat-icon>
+  </button>
+}
+@if (drawObjectButton()) {
+  <button
+    matIconButton
+    matTooltip="Добавить объект"
+    color="primary"
+    [class.selected-state]="currentState() === appPixiState.DrawObject"
+    (click)="handleSetState(appPixiState.DrawObject)"
+  >
+    <mat-icon>app_registration</mat-icon>
+  </button>
+}
+@if (scaleButtons()) {
+  <mat-divider style="height: 30px; margin-left: 10px" [vertical]="true"></mat-divider>
+  <smc-scale-buttons
+    class="ml-10"
+    buttonColor="primary"
+    [disabledButtons]="disabledScaleButtons()"
+    (zoomEvent)="handleZoom($event)"
+  />
+}
+@if (content?.childNodes?.length) {
+  <mat-divider style="height: 30px; margin-left: 10px" [vertical]="true"></mat-divider>
+}
+<div #content class="flex-row-align-center flex-auto">
+  <ng-content></ng-content>
+</div>

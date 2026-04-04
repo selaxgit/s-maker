@@ -1,0 +1,31 @@
+<section class="section-container flex-auto">
+  <div class="content-section-body">
+    @if (framesStore.tiles().length === 0) {
+      <div class="empty-message">Нет данных</div>
+    } @else {
+      <smc-tiles-list
+        class="flex-auto"
+        [tiles]="framesStore.tiles()"
+        [visibleUsed]="true"
+        [visibleDownload]="true"
+        [visibleRemove]="true"
+        [isDraggable]="true"
+        [dragType]="dragType.Tile"
+        (removeEvent)="handleRemoveTile($event)"
+        (downloadEvent)="handleDownloadTile($event)"
+        (clickEvent)="handleShowTile($event)"
+      />
+    }
+  </div>
+  <div class="content-section-statusbar">
+    <div>
+      Всего: <strong>{{ framesStore.tiles().length }}</strong>
+    </div>
+    <div>
+      Неиспользуемых: <strong>{{ framesStore.noUsedTiles() }}</strong>
+    </div>
+    <div>
+      Используются: <strong>{{ framesStore.usedTiles() }}</strong>
+    </div>
+  </div>
+</section>

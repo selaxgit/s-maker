@@ -1,0 +1,44 @@
+<section class="section-container flex-auto">
+  <div class="section-head">
+    <h4 class="section-title">{{ listTitle() }}</h4>
+    <button matButton="outlined" (click)="handleAddButtonClick()">
+      <mat-icon>add</mat-icon>
+      {{ addButtonTitle() }}
+    </button>
+    <div class="ml-10">
+      <ng-content></ng-content>
+    </div>
+  </div>
+  @if (loadingState()) {
+    <div class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  } @else {
+    @if (items().length === 0) {
+      <div class="empty-list">{{ noDataMessage() }}</div>
+    } @else {
+      <div class="scroll-container">
+        <div class="scroll">
+          <div class="list-item-contaner">
+            @for (item of items(); track item.id) {
+              <div class="list-item" (dblclick)="handleEditButtonClick(item)">
+                <div class="item-title">{{ item.name }}</div>
+                @if (visibleDownloadButton()) {
+                  <button matIconButton color="primary" (click)="handleDownloadButtonClick(item)">
+                    <mat-icon>download</mat-icon>
+                  </button>
+                }
+                <button matIconButton color="primary" (click)="handleEditButtonClick(item)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button matIconButton color="accent" (click)="handleRemoveButtonClick(item)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  }
+</section>

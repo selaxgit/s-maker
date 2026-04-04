@@ -1,0 +1,77 @@
+<div class="s-modal-container">
+  @if (isProcessingState()) {
+    <div class="loading-container">
+      <mat-spinner></mat-spinner>
+    </div>
+  }
+  <div class="container" [formGroup]="formGroup">
+    <div class="text-center text-bold mt-10">Размер тайлов</div>
+    <div class="flex-row mt-10">
+      <div class="wh-width">
+        <s-input-number
+          buttonsPosition="right"
+          label="Ширина"
+          formControlName="tileWidth"
+          [min]="10"
+          [max]="3000"
+          [showClearButton]="false"
+        />
+      </div>
+      <div class="wh-width ml-10">
+        <s-input-number
+          buttonsPosition="right"
+          label="Высота"
+          formControlName="tileHeight"
+          [min]="10"
+          [max]="3000"
+          [showClearButton]="false"
+        />
+      </div>
+    </div>
+    <div>
+      <s-input
+        label="Файл для нарезки"
+        [readonlyState]="true"
+        [disabledState]="isProcessingState()"
+        [value]="bgFilename"
+      >
+        @if (!isProcessingState()) {
+          <ng-container sSuffix>
+            <button
+              matIconButton
+              color="accent"
+              matTooltip="Удалить файл для нарезки"
+              [disabled]="!hasBgFile()"
+              (click)="onClearBgFile()"
+            >
+              <mat-icon>highlight_off</mat-icon>
+            </button>
+            <button
+              class="ml-10"
+              matIconButton
+              color="primary"
+              matTooltip="Выбрать файл для нарезки"
+              (click)="onChoiceBgFile()"
+            >
+              <mat-icon>more_horiz</mat-icon>
+            </button>
+          </ng-container>
+        }
+      </s-input>
+    </div>
+    <div class="mt-10">
+      <s-input label="Имя фрейма" formControlName="frameName" [showClearButton]="false">
+        <ng-container sSuffix>-$x-$y</ng-container>
+      </s-input>
+    </div>
+    <div>
+      <s-checkbox label="Убрать дубликаты фреймов" formControlName="checkDuplicates" />
+    </div>
+  </div>
+  <div class="s-modal-footer-buttons">
+    <button matButton="elevated" color="primary" [disabled]="isProcessingState()" (click)="onApply()">
+      Нарезать фреймы
+    </button>
+    <button matButton="elevated" color="accent" [disabled]="isProcessingState()" (click)="onClose()">Закрыть</button>
+  </div>
+</div>

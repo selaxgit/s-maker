@@ -1,0 +1,53 @@
+@use "colors";
+
+:host {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  width: 350px;
+}
+
+.tree-nodes {
+  --mat-tree-node-min-height: 36px;
+  --mat-icon-button-state-layer-size: 22px;
+  --mat-icon-button-icon-size: 18px;
+  --mat-tree-node-text-size: 14px;
+  --mat-icon-button-touch-target-size: 22px;
+}
+
+.mat-tree-node {
+  box-sizing: border-box;
+  padding: 0 10px;
+
+  cursor: pointer;
+
+  border-top: 2px dotted transparent;
+  border-bottom: 2px dotted transparent;
+  &:hover {
+    background-color: colors.$color-hover;
+  }
+  &.selected {
+    color: #ffffff;
+    background-color: colors.$color-selected;
+    .mat-icon {
+      color: #ffffff;
+    }
+  }
+  &.drop-above {
+    border-top-color: colors.$color-success;
+  }
+  &.drop-below {
+    border-bottom-color: colors.$color-success;
+  }
+  &.drop-center {
+    background-color: rgba(52, 157, 23, 0.5) !important;
+  }
+  .mat-icon {
+    width: 18px;
+    height: 18px;
+
+    font-size: 18px;
+  }
+}

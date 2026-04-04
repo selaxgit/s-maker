@@ -1,0 +1,33 @@
+@use "colors";
+
+:host {
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+}
+
+.main-container {
+  display: flex;
+  flex: auto;
+
+  padding: 10px 16px;
+  gap: 16px;
+}
+
+.content-section-body {
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+
+  padding: 16px;
+}
+
+.content-section-statusbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  padding: 6px 16px;
+
+  border-top: 1px solid colors.$color-border;
+}

@@ -1,0 +1,45 @@
+@if (is404Page() && !projectStore.loadingState()) {
+  <page-not-found />
+} @else {
+  <smc-header
+    [visibleBreadcrumbs]="!projectStore.loadingState() && true"
+    [visibleModulesMenu]="!projectStore.loadingState() && true"
+  >
+    @if (!projectStore.loadingState()) {
+      <button matButton="outlined" [disabled]="!editSceneStore.hasChanged()" (click)="handleSaveScene()">
+        <mat-icon>save</mat-icon>
+        Сохранить сцену
+      </button>
+      <button class="mat-button-with-icons" matButton="outlined" [matMenuTriggerFor]="menuActions">
+        <div>
+          <mat-icon>crop</mat-icon>
+          <span>Действия</span>
+          <mat-icon>arrow_drop_down</mat-icon>
+        </div>
+      </button>
+      <mat-menu #menuActions="matMenu">
+        <button mat-menu-item (click)="handleShowParamsScene()">Параметры сцены</button>
+        <button mat-menu-item [matMenuTriggerFor]="scenesExport">Экспорт сцены</button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="handleRemoveScene()">
+          <span class="text-danger">Удалить сцену</span>
+        </button>
+      </mat-menu>
+      <mat-menu #scenesExport="matMenu">
+        <button mat-menu-item (click)="handleExportScene(exportTypeEnum.Simple)">Экспортировать просто сцену</button>
+        <button mat-menu-item (click)="handleExportScene(exportTypeEnum.Full)">Экспортировать весь набор сцены</button>
+      </mat-menu>
+    }
+  </smc-header>
+  <main class="main-container">
+    @if (projectStore.loadingState()) {
+      <div class="loading-container">
+        <mat-spinner diameter="40"></mat-spinner>
+        <div class="loading-container__message">Загрузка проекта...</div>
+      </div>
+    } @else {
+      <sb-scene-layers />
+      <sb-draw-container class="flex-auto" />
+    }
+  </main>
+}

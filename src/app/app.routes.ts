@@ -1,57 +1,22 @@
-/* eslint-disable @typescript-eslint/typedef */
 import { Routes } from '@angular/router';
 
-import { SMCPageNotFoundComponent } from './common/components';
-import { SMModeCodesEnum } from './common/interfaces';
-import { ProjectPageComponent } from './core/pages/project-page';
-import { ProjectsListPageComponent } from './core/pages/projects-list-page';
+import { FRAMES_COLLECTION_ROUTES } from './modules/frames-collection/frames-collection.routes';
+import { LANDSCAPE_GENERATOR_ROUTES } from './modules/landscape-generator/landscape-generator.routes';
+import { PROJECTS_ROUTES } from './modules/projects/projects.routes';
+import { SCENE_BUILDER_ROUTES } from './modules/scene-builder/scene-builder.routes';
+import { SPRITES_COLLECTION_ROUTES } from './modules/sprites-collection/sprites-collection.routes';
+import { TILES_GRID_EDITOR_ROUTES } from './modules/tiles-grid-editor/tiles-grid-editor.routes';
+import { PageNotFound } from './pages/page-not-found';
 
 export const routes: Routes = [
-  {
-    path: '',
-    component: ProjectsListPageComponent,
-  },
-  {
-    path: ':pid',
-    component: ProjectPageComponent,
-  },
-  {
-    path: `:pid/${SMModeCodesEnum.framesCollection}`,
-    loadComponent: () => import('./modules/frames-collection/home/home.component').then((mod) => mod.FCHomeComponent),
-  },
-  {
-    path: `:pid/${SMModeCodesEnum.spriteCollection}`,
-    loadComponent: () => import('./modules/sprites-collection/home/home.component').then((mod) => mod.SCHomeComponent),
-  },
-
-  {
-    path: `:pid/${SMModeCodesEnum.spriteCollection}/:id`,
-    loadComponent: () =>
-      import('./modules/sprites-collection/sprite-edit/sprite-edit.component').then((mod) => mod.SCSpriteEditComponent),
-  },
-  {
-    path: `:pid/${SMModeCodesEnum.tilesGridEditor}`,
-    loadComponent: () => import('./modules/tiles-grid-editor/home/home.component').then((mod) => mod.TGEHomeComponent),
-  },
-  {
-    path: `:pid/${SMModeCodesEnum.tilesGridEditor}/:id`,
-    loadComponent: () => import('./modules/tiles-grid-editor/edit/edit.component').then((mod) => mod.TGEEditComponent),
-  },
-  {
-    path: `:pid/${SMModeCodesEnum.sceneBuilder}`,
-    loadComponent: () => import('./modules/scene-builder/home/home.component').then((mod) => mod.SBHomeComponent),
-  },
-  {
-    path: `:pid/${SMModeCodesEnum.sceneBuilder}/:id`,
-    loadComponent: () => import('./modules/scene-builder/edit/edit.component').then((mod) => mod.SBEditComponent),
-  },
-  {
-    path: `:pid/${SMModeCodesEnum.landscapeGenerator}`,
-    loadComponent: () =>
-      import('./modules/landscape-generator/generator/generator.component').then((mod) => mod.LGGeneratorComponent),
-  },
+  ...PROJECTS_ROUTES,
+  ...FRAMES_COLLECTION_ROUTES,
+  ...SPRITES_COLLECTION_ROUTES,
+  ...LANDSCAPE_GENERATOR_ROUTES,
+  ...TILES_GRID_EDITOR_ROUTES,
+  ...SCENE_BUILDER_ROUTES,
   {
     path: '**',
-    component: SMCPageNotFoundComponent,
+    component: PageNotFound,
   },
 ];

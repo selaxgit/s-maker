@@ -1,0 +1,34 @@
+@if (is404Page() && !projectStore.loadingState()) {
+  <page-not-found />
+} @else {
+  <smc-header
+    [visibleBreadcrumbs]="!projectStore.loadingState() && true"
+    [visibleModulesMenu]="!projectStore.loadingState() && true"
+  >
+    @if (!projectStore.loadingState()) {
+      <button matButton="outlined" (click)="openSprite('new')">
+        <mat-icon>add</mat-icon>
+        Создать спрайт
+      </button>
+      <button matButton="outlined" (click)="handleMultiCreateSprites()">
+        <mat-icon>library_add</mat-icon>
+        Мультисоздание простых спрайтов
+      </button>
+      <button matButton="outlined" (click)="handleImportSprite()">
+        <mat-icon>upload</mat-icon>
+        Импорт спрайта
+      </button>
+    }
+  </smc-header>
+  <main class="main-container">
+    @if (projectStore.loadingState()) {
+      <div class="loading-container">
+        <mat-spinner diameter="40"></mat-spinner>
+        <div class="loading-container__message">Загрузка проекта...</div>
+      </div>
+    } @else {
+      <sc-sprites-tree />
+      <sc-sprites-list class="flex-auto" />
+    }
+  </main>
+}

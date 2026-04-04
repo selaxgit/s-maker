@@ -1,0 +1,24 @@
+@use "colors";
+
+:host {
+  --mat-expansion-container-background-color: none;
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+
+  width: 60vw;
+}
+
+:host ::ng-deep .mat-expansion-panel {
+  margin-bottom: 6px;
+
+  border: 1px solid colors.$color-border;
+}
+
+.container {
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+
+  padding: 10px;
+}

@@ -1,0 +1,84 @@
+<section class="section-container flex-auto">
+  <div class="section-head">
+    <smc-scale-buttons class="flex-auto" buttonColor="primary" (zoomEvent)="handleZoom($event)" />
+    <mat-button-toggle-group
+      class="mr-10"
+      [value]="editSpriteStore.adjustmentMode()"
+      (valueChange)="editSpriteStore.setAdjustmentMode($event)"
+    >
+      <mat-button-toggle [value]="adjustmentModeEnum.Sprite">Режим спрайта</mat-button-toggle>
+      <mat-button-toggle [value]="adjustmentModeEnum.Animation" [disabled]="!editSpriteStore.animations()?.length">
+        Режим анимации
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+  <div class="container">
+    <div #appPixi class="pixi-container" [class.hidden]="isInitializing()"></div>
+    @if (isInitializing()) {
+      <div class="loading-container">
+        <mat-spinner></mat-spinner>
+      </div>
+    } @else {
+      @if (editSpriteStore.adjustmentMode() === adjustmentModeEnum.Animation && editSpriteStore.previewAnimation()) {
+        <div class="animation-layers-container">
+          <div class="flex-row-align-center mb-10">
+            <div class="flex-auto text-bold">Фреймы</div>
+            @if (!spritePlayingState()) {
+              <button matIconButton color="primary" (click)="handlePlaySprite(true)">
+                <mat-icon>play_circle</mat-icon>
+              </button>
+            } @else {
+              <button matIconButton color="primary" (click)="handlePlaySprite(false)">
+                <mat-icon>stop</mat-icon>
+              </button>
+            }
+          </div>
+          <div class="animation-layers-grid">
+            @for (info of framesAnimationInfo(); track info.layerGuid) {
+              <div class="text-right">{{ info.layerName }}:</div>
+              <div>{{ info.currentFrame }} из {{ info.totalFrames }}</div>
+              <div class="flex-row-align-center">
+                <button
+                  class="small-mat-icon-buttons"
+                  matIconButton
+                  color="primary"
+                  [disabled]="spritePlayingState() || info.currentFrame <= 1"
+                  (click)="handleSetCurrentFrame(info.layerGuid, 1)"
+                >
+                  <mat-icon>first_page</mat-icon>
+                </button>
+                <button
+                  class="small-mat-icon-buttons"
+                  matIconButton
+                  color="primary"
+                  [disabled]="spritePlayingState() || info.currentFrame <= 1"
+                  (click)="handleSetCurrentFrame(info.layerGuid, info.currentFrame - 1)"
+                >
+                  <mat-icon>chevron_left</mat-icon>
+                </button>
+                <button
+                  class="small-mat-icon-buttons"
+                  matIconButton
+                  color="primary"
+                  [disabled]="spritePlayingState() || info.currentFrame >= info.totalFrames"
+                  (click)="handleSetCurrentFrame(info.layerGuid, info.currentFrame + 1)"
+                >
+                  <mat-icon>chevron_right</mat-icon>
+                </button>
+                <button
+                  class="small-mat-icon-buttons"
+                  matIconButton
+                  color="primary"
+                  [disabled]="spritePlayingState() || info.currentFrame >= info.totalFrames"
+                  (click)="handleSetCurrentFrame(info.layerGuid, info.totalFrames)"
+                >
+                  <mat-icon>last_page</mat-icon>
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    }
+  </div>
+</section>

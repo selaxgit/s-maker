@@ -1,0 +1,47 @@
+<div class="scroll-container">
+  <div class="scroll" [class.no-scroll]="!scrolling()">
+    <div class="tiles-list">
+      @for (tile of tiles(); track tile.id; let idx = $index) {
+        <div
+          class="tile-item with-bg"
+          tabindex="0"
+          role="button"
+          [smcDrag]="{ type: dragType(), value: tile }"
+          [smcDragDisabled]="!isDraggable"
+          [matTooltip]="tile.tooltip"
+          (click)="handleClick(tile)"
+        >
+          <div class="img-preview" [style.background-image]="tile.objectURL | objectToBgUrl"></div>
+          @if (withBlackout()) {
+            <div class="blackout"></div>
+          }
+          @if (visibleUsed() && tile.used) {
+            <div class="tile-used" matTooltip="Фрейм используется">
+              <mat-icon>grade</mat-icon>
+            </div>
+          }
+          @if (visibleDownload()) {
+            <div class="tile-download" [class.to-right]="tile.used">
+              <mat-icon (click)="handleDownload($event, tile)">file_download</mat-icon>
+            </div>
+          }
+          @if (visibleRemove()) {
+            @if (!visibleUsed() || (visibleUsed() && !tile.used)) {
+              <div class="tile-remove">
+                <mat-icon (click)="handleRemove($event, tile)">highlight_off</mat-icon>
+              </div>
+            }
+          }
+          @if (backgroundIcon()) {
+            <div class="tile-zoom">
+              <mat-icon>{{ backgroundIcon() }}</mat-icon>
+            </div>
+          }
+          @if (useCheckbox() && tile.selected) {
+            <mat-icon class="checkbox">task_alt</mat-icon>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

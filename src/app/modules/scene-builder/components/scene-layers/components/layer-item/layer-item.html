@@ -1,0 +1,42 @@
+<div
+  class="items-edit-list-row"
+  [class.selected]="!editSceneStore.currentObject() && editSceneStore.currentLayer()?.guid === layer().guid"
+>
+  @if (layer().objects.length > 0) {
+    <button matIconButton (click)="handleToggleAccordionObjects()">
+      <mat-icon>
+        {{ visibleAccordionObjects() ? 'expand_more' : 'chevron_right' }}
+      </mat-icon>
+    </button>
+  } @else {
+    <button matIconButton disabled>&nbsp;</button>
+  }
+  <div class="items-edit-list-title" role="button" tabindex="0" (click)="handleSelectLayer()">
+    <small>«{{ layer().type | layerTypeToStr }}»</small>&nbsp;
+    {{ layer().name }}
+  </div>
+  <button matIconButton color="primary" (click)="handleAddObject()">
+    <mat-icon>add</mat-icon>
+  </button>
+  <button matIconButton color="primary" (click)="handleEditLayer()">
+    <mat-icon>edit</mat-icon>
+  </button>
+  <button matIconButton color="accent" (click)="handleRemoveLayer()">
+    <mat-icon>highlight_off</mat-icon>
+  </button>
+  <button matIconButton [color]="layer().visible ? 'success' : 'primary'" (click)="handleToggleVisibleLayer()">
+    <mat-icon>{{ layer().visible ? 'visibility' : 'visibility_off' }}</mat-icon>
+  </button>
+</div>
+@if (layer().objects.length > 0 && visibleAccordionObjects()) {
+  <div
+    class="flex-col"
+    cdkDropList
+    [cdkDropListData]="layer().objects"
+    (cdkDropListDropped)="handleDropObjects($event)"
+  >
+    @for (object of layer().objects; track object.guid) {
+      <sb-object-item cdkDrag [object]="object" [layer]="layer()" />
+    }
+  </div>
+}

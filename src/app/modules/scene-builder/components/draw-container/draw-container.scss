@@ -1,0 +1,19 @@
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+.section-head {
+  padding: 0;
+}
+
+.status-bar {
+  display: flex;
+  align-items: center;
+
+  box-sizing: border-box;
+  height: 26px;
+  padding: 5px 10px;
+
+  font-size: 14px;
+}

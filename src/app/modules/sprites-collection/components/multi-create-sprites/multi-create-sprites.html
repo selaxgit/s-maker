@@ -1,0 +1,61 @@
+@if (isProcessingState()) {
+  <div class="loading-container">
+    <mat-spinner></mat-spinner>
+    <div class="mt-10">{{ processingMessage() }}</div>
+  </div>
+} @else {
+  <div class="s-modal-container flex-col padding-10">
+    <div class="mt-10">
+      <s-input
+        label="Выберите или укажите новую ветку дерева коллекции фреймов"
+        hint="Если не указать ветку, то будет использован корень дерева"
+        [(value)]="framesTreeName"
+        (keydownEvent)="onTreeNameKeyUp($event)"
+      >
+        <ng-container sSuffix>
+          <button matIconButton color="primary" [matMenuTriggerFor]="treeMenu.childMenu">
+            <mat-icon>more_horiz</mat-icon>
+          </button>
+        </ng-container>
+      </s-input>
+
+      <s-tree-menu
+        #treeMenu
+        [useRouterLink]="false"
+        [items]="treeMenuList()"
+        (itemClickEvent)="onItemMenuClick($event)"
+      ></s-tree-menu>
+    </div>
+    <div
+      class="file-drop"
+      smcFileDrop
+      [smcFileDropClickChoice]="'click'"
+      [smcFileDropMultiFile]="true"
+      (smcFileDropEvent)="onFileDrop($event)"
+    >
+      Перетащите или нажмите для выбора файлов
+    </div>
+    <div class="flex-col flex-auto mt-10">
+      <div class="scroll-container">
+        <div class="scroll">
+          <div class="filelist">
+            @for (file of fileList(); track idx; let idx = $index) {
+              <div class="filelist-item">
+                <button matIconButton color="accent" (click)="onRemoveFile(idx)">
+                  <mat-icon>close</mat-icon>
+                </button>
+                <div class="filelist-item-name">{{ file.name }}</div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="s-modal-footer-buttons">
+    <button matButton="elevated" color="primary" [disabled]="fileList().length === 0" (click)="onGenerate()">
+      Генерация спрайтов ({{ fileList().length }})
+    </button>
+    <button matButton="elevated" color="accent" (click)="onClose()">Закрыть</button>
+  </div>
+}

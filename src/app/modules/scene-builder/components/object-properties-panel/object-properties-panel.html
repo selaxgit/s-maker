@@ -1,0 +1,17 @@
+<s-slide-panel-container
+  class="flex-auto"
+  cancelButtonTitle="Закрыть"
+  [panelTitle]="panelTitle()"
+  (closeEvent)="handleClose()"
+  (applyEvent)="handleApply()"
+>
+  <div class="container">
+    <s-input label="Наименование" [(ngModel)]="objectName" />
+    <smc-properties-container
+      class="flex-auto mt-10"
+      [visibleReplaceType]="false"
+      [properties]="properties()"
+      (propertiesChangeEvent)="handlePropertiesChangeEvent($event)"
+    />
+  </div>
+</s-slide-panel-container>

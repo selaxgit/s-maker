@@ -13,7 +13,6 @@
 - Angular material
 - Pixi.js
 - jszip
-- @ngrx/component-store
 
 ### Установка и запуск
 

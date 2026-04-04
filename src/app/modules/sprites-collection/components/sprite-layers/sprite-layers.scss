@@ -1,0 +1,10 @@
+@use "colors";
+
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+.section-head {
+  padding-right: 1px;
+}

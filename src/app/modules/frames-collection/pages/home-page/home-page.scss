@@ -1,0 +1,21 @@
+@use "colors";
+
+:host {
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+}
+
+.main-container {
+  position: relative;
+
+  display: flex;
+  flex: auto;
+
+  padding: 10px 16px;
+  gap: 16px;
+}
+
+.current-sort {
+  color: colors.$color-primary;
+}

@@ -1,0 +1,13 @@
+:host {
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+
+  width: 90vw;
+}
+
+.view-container {
+  position: relative;
+
+  flex: auto;
+}

@@ -1,0 +1,42 @@
+<div
+  class="items-edit-list-row"
+  [class.selected]="!this.editSpriteStore.currentFrame() && editSpriteStore.currentLayer()?.guid === layer().guid"
+>
+  @if (layer().frames.length > 0) {
+    <button matIconButton (click)="handleToggleAccordionFrames()">
+      <mat-icon>
+        {{ visibleAccordionFrames() ? 'expand_more' : 'chevron_right' }}
+      </mat-icon>
+    </button>
+  } @else {
+    <button matIconButton disabled>&nbsp;</button>
+  }
+  <div class="items-edit-list-title" role="button" tabindex="0" (click)="handleSelectLayer()">
+    {{ layer().name }}
+  </div>
+  <button matIconButton color="primary" [matMenuTriggerFor]="addFramesMenu">
+    <mat-icon>add</mat-icon>
+  </button>
+  <button matIconButton color="primary" (click)="handleEditLayer()">
+    <mat-icon>edit</mat-icon>
+  </button>
+  <button matIconButton color="accent" (click)="handleRemoveLayer()">
+    <mat-icon>highlight_off</mat-icon>
+  </button>
+  <button matIconButton [color]="layer().visible ? 'success' : 'primary'" (click)="handleToggleVisibleLayer()">
+    <mat-icon>{{ layer().visible ? 'visibility' : 'visibility_off' }}</mat-icon>
+  </button>
+</div>
+
+<mat-menu #addFramesMenu>
+  <button mat-menu-item (click)="handleAddFrames('file')">Добавить фрейм из файла</button>
+  <button mat-menu-item (click)="handleAddFrames('collection')">Добавить фрейм из коллекции</button>
+</mat-menu>
+
+@if (layer().frames.length > 0 && visibleAccordionFrames()) {
+  <div class="flex-col" cdkDropList [cdkDropListData]="layer().frames" (cdkDropListDropped)="handleDropFrame($event)">
+    @for (frame of layer().frames; track frame.guid) {
+      <sc-sprite-frame-item cdkDrag [frame]="frame" [layer]="layer()" />
+    }
+  </div>
+}

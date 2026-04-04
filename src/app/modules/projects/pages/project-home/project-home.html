@@ -1,0 +1,59 @@
+@if (is404Page()) {
+  <page-not-found />
+} @else {
+  <smc-header />
+  <main class="main-container">
+    @if (loadingState()) {
+      <mat-spinner diameter="40"></mat-spinner>
+      <div class="loading-container__message">Загрузка проекта...</div>
+    } @else {
+      <div class="project-container">
+        <h1>{{ this.projectStore.projectName() }}</h1>
+        <button matButton="outlined" (click)="handleExportProject()">
+          <mat-icon>download</mat-icon>
+          <span>Экспорт</span>
+        </button>
+        <button class="ml-10" matButton="outlined" (click)="handleEditProject()">
+          <mat-icon>edit</mat-icon>
+          <span>Изменить</span>
+        </button>
+      </div>
+      <div class="modules-list">
+        @for (module of modulesList; track module.code; let i = $index) {
+          <div class="module-item" [tabindex]="i" (keydown)="openModule(module)" (click)="openModule(module)">
+            <div class="module-name">{{ module.name }}</div>
+            <div class="module-description">{{ module.description }}</div>
+          </div>
+        }
+      </div>
+      <div class="items-container">
+        @if (tgeModule) {
+          <smc-list-items-container
+            class="items-list"
+            listTitle="Редактор сетки тайлов"
+            addButtonTitle="Новая сетка"
+            [items]="gridList()"
+            [visibleDownloadButton]="true"
+            (addItemEvent)="openModule(tgeModule, 'new')"
+            (editItemEvent)="openModule(tgeModule, $event.id)"
+            (removeItemEvent)="handleRemoveGrid($event)"
+            (downloadItemEvent)="handleExportGrid($event)"
+          />
+        }
+        @if (sbModule) {
+          <smc-list-items-container
+            class="items-list"
+            listTitle="Сборщик для сцены"
+            addButtonTitle="Новая сцена"
+            [items]="scenesList()"
+            [visibleDownloadButton]="true"
+            (addItemEvent)="openModule(sbModule, 'new')"
+            (editItemEvent)="openModule(sbModule, $event.id)"
+            (removeItemEvent)="handleRemoveScene($event)"
+            (downloadItemEvent)="handleExportScene($event)"
+          />
+        }
+      </div>
+    }
+  </main>
+}

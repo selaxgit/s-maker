@@ -1,0 +1,13 @@
+:host {
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+}
+
+.main-container {
+  display: flex;
+  flex: auto;
+
+  padding: 10px 16px;
+  gap: 16px;
+}

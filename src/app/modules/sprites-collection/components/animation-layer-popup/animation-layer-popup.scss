@@ -1,0 +1,23 @@
+:host {
+  display: flex;
+  flex-direction: column;
+
+  width: 680px;
+  height: 400px;
+}
+
+.container {
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+
+  padding: 10px;
+}
+
+.w-number {
+  width: 180px;
+}
+
+.buttons-empty {
+  width: 77px;
+}

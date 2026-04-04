@@ -1,0 +1,28 @@
+<button
+  matIconButton
+  matTooltip="Уменьшить"
+  [color]="buttonColor()"
+  [disabled]="disabledButtons()"
+  (click)="handleZoom(zoomEnum.Out)"
+>
+  <mat-icon>zoom_out</mat-icon>
+</button>
+<button
+  matIconButton
+  matTooltip="Реальный размер"
+  [color]="buttonColor()"
+  [disabled]="disabledButtons()"
+  (click)="handleZoom(zoomEnum.Default)"
+>
+  <mat-icon>zoom_in_map</mat-icon>
+</button>
+<button
+  matIconButton
+  matTooltip="Увеличить"
+  [color]="buttonColor()"
+  [disabled]="disabledButtons()"
+  (click)="handleZoom(zoomEnum.In)"
+>
+  <mat-icon>zoom_in</mat-icon>
+</button>
+<ng-content></ng-content>

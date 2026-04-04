@@ -1,0 +1,64 @@
+@if (is404Page() && !projectStore.loadingState()) {
+  <page-not-found />
+} @else {
+  <smc-header
+    [visibleBreadcrumbs]="!projectStore.loadingState() && true"
+    [visibleModulesMenu]="!projectStore.loadingState() && true"
+  >
+    @if (!projectStore.loadingState()) {
+      <button matButton="outlined" (click)="handlenAddFromFile()">
+        <mat-icon>add</mat-icon>
+        Добавить фрейм из файла
+      </button>
+      <button class="mat-button-with-icons" matButton="outlined" [matMenuTriggerFor]="menuActions">
+        <div>
+          <mat-icon>crop</mat-icon>
+          <span>Вырезать фрейм</span>
+          <mat-icon>arrow_drop_down</mat-icon>
+        </div>
+      </button>
+      <button class="mat-button-with-icons" matButton="outlined" [matMenuTriggerFor]="menuSettings">
+        <div>
+          <mat-icon>settings</mat-icon>
+          <span>Действия</span>
+          <mat-icon>arrow_drop_down</mat-icon>
+        </div>
+      </button>
+
+      <mat-menu #menuActions="matMenu">
+        <button mat-menu-item (click)="handleCutFramesFromFile()">Нарезать фреймы из файла</button>
+        <button mat-menu-item (click)="handleCutSingleFrameFromFile()">Вырезать один фрейм из файла</button>
+      </mat-menu>
+      <mat-menu #menuSettings="matMenu">
+        <button mat-menu-item (click)="setSortBy(framesSortBy.Used)">
+          <span [class.current-sort]="framesStore.sortBy() === framesSortBy.Used">
+            Показывать сперва используемые фреймы
+          </span>
+        </button>
+        <button mat-menu-item (click)="setSortBy(framesSortBy.NotUsed)">
+          <span [class.current-sort]="framesStore.sortBy() === framesSortBy.NotUsed">
+            Показывать сперва неиспользуемые фреймы
+          </span>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item [disabled]="framesStore.noUsedTiles() === 0" (click)="handleRemoveNotUsed()">
+          <span class="text-danger">Удалить неиспользуемые фреймы</span>
+        </button>
+        <button mat-menu-item [disabled]="framesStore.tiles().length === 0" (click)="handleRemoveDuplicates()">
+          <span class="text-danger">Удалить дубли фреймов</span>
+        </button>
+      </mat-menu>
+    }
+  </smc-header>
+  <main class="main-container">
+    @if (projectStore.loadingState()) {
+      <div class="loading-container">
+        <mat-spinner diameter="40"></mat-spinner>
+        <div class="loading-container__message">Загрузка проекта...</div>
+      </div>
+    } @else {
+      <fc-frames-tree />
+      <fc-frames-list class="flex-auto" />
+    }
+  </main>
+}

@@ -1,0 +1,31 @@
+:host {
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+}
+
+.main-container {
+  display: flex;
+  flex: auto;
+
+  padding: 10px 16px;
+  gap: 16px;
+}
+
+.section-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  padding: 16px;
+}
+
+.container {
+  position: relative;
+
+  flex: auto;
+}
+
+.hidden {
+  visibility: hidden;
+}

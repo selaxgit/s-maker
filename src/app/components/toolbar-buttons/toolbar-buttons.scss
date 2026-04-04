@@ -1,0 +1,10 @@
+:host {
+  display: flex;
+  align-items: center;
+
+  box-sizing: border-box;
+}
+
+.selected-state {
+  --mat-icon-button-icon-color: #5ac06d !important;
+}

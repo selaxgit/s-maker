@@ -1,0 +1,9 @@
+<div class="s-modal-container">
+  <div class="input-container">
+    <s-input #inputElement [label]="label()" [formControl]="controlValue" (enterEvent)="onApply()"></s-input>
+  </div>
+  <div class="s-modal-footer-buttons">
+    <button matButton="elevated" color="primary" (click)="onApply()">{{ applyTitle() }}</button>
+    <button matButton="elevated" color="accent" (click)="onClose()">Закрыть</button>
+  </div>
+</div>

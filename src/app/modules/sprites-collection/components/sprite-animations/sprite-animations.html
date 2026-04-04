@@ -1,0 +1,56 @@
+<section class="section-container flex-auto">
+  <div class="section-head">
+    <h4 class="section-title">
+      {{ sectionTitle() }}
+    </h4>
+    @if (editSpriteStore.adjustmentMode() === adjustmentModeEnum.Sprite) {
+      <button matIconButton color="primary" (click)="handleAddAnimation()">
+        <mat-icon>add</mat-icon>
+      </button>
+    } @else {
+      <button matIconButton [disabled]="true">&nbsp;</button>
+    }
+  </div>
+  @let animations = editSpriteStore.animations() ?? [];
+  @if (animations.length === 0) {
+    <div class="empty-message">Нет данных</div>
+  } @else {
+    <div class="scroll-container">
+      <div class="scroll">
+        <div class="flex-col user-select-none">
+          @for (animation of animations; track animation.guid) {
+            @let selectedClass =
+              editSpriteStore.adjustmentMode() === adjustmentModeEnum.Animation &&
+              editSpriteStore.previewAnimation()?.guid === animation.guid;
+            <div class="items-edit-list-row" [class.selected]="selectedClass">
+              <div
+                class="items-edit-list-title"
+                role="button"
+                tabindex="0"
+                (dblclick)="
+                  editSpriteStore.adjustmentMode() === adjustmentModeEnum.Sprite && handleEditAnimation(animation)
+                "
+                (click)="
+                  editSpriteStore.adjustmentMode() === adjustmentModeEnum.Animation &&
+                    editSpriteStore.setPreviewAnimation(animation)
+                "
+              >
+                {{ animation.name }}
+              </div>
+              @if (editSpriteStore.adjustmentMode() === adjustmentModeEnum.Sprite) {
+                <button matIconButton color="primary" (click)="handleEditAnimation(animation)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button matIconButton color="accent" (click)="handleRemoveAnimation(animation)">
+                  <mat-icon>highlight_off</mat-icon>
+                </button>
+              } @else {
+                <button matIconButton [disabled]="true">&nbsp;</button>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</section>

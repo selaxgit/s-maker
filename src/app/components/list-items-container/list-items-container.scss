@@ -1,0 +1,47 @@
+@use "colors";
+
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+.section-head {
+  padding: 6px 12px 6px 16px;
+}
+
+.list-item-contaner {
+  display: flex;
+  flex-direction: column;
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+
+  padding: 2px 6px 2px 16px;
+  &:hover {
+    background-color: colors.$color-hover;
+  }
+}
+
+.item-title {
+  flex: auto;
+
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.empty-list {
+  display: flex;
+  align-items: center;
+  flex: auto;
+  flex-direction: column;
+  justify-content: center;
+
+  letter-spacing: 0.18px;
+
+  color: colors.$color-label-placeholder;
+
+  font-size: 24px;
+  font-weight: 400;
+}

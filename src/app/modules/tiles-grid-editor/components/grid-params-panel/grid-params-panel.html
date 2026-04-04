@@ -1,0 +1,82 @@
+<s-slide-panel-container
+  class="flex-auto"
+  cancelButtonTitle="Закрыть"
+  panelTitle="Параметры сетки тайлов"
+  (closeEvent)="handleClose()"
+  (applyEvent)="handleApply()"
+>
+  <div class="container s-mat-without-bottom" [formGroup]="formGroup">
+    <s-input #gridName label="Наименование" formControlName="name" [showClearButton]="false" />
+    <fieldset class="mt-10">
+      <legend>Размер сетки (в тайлах)</legend>
+      <div class="flex-row mt-10">
+        <s-input-number label="Ширина" formControlName="mapWidth" [showClearButton]="false" [min]="1" [max]="1000" />
+        <s-input-number
+          class="ml-10"
+          label="Высота"
+          formControlName="mapHeight"
+          [showClearButton]="false"
+          [min]="1"
+          [max]="1000"
+        />
+      </div>
+    </fieldset>
+    <fieldset class="mt-10">
+      <legend>Размер тайлов</legend>
+      <div class="flex-row mt-10">
+        <s-input-number label="Ширина" formControlName="tileWidth" [showClearButton]="false" [min]="10" [max]="1000" />
+        <s-input-number
+          class="ml-10"
+          label="Высота"
+          formControlName="tileHeight"
+          [showClearButton]="false"
+          [min]="10"
+          [max]="1000"
+        />
+      </div>
+    </fieldset>
+    <fieldset class="mt-10">
+      <legend>Подложка</legend>
+      <div class="flex-col mt-10">
+        <s-input
+          label="Файл подложки под сетку"
+          [value]="bgFilename()"
+          [showClearButton]="false"
+          [readonlyState]="true"
+        >
+          <ng-container sSuffix>
+            <button
+              matIconButton
+              color="accent"
+              matTooltip="Удалить файл подложки"
+              [disabled]="!bgFile()"
+              (click)="bgFile.set(null)"
+            >
+              <mat-icon>highlight_off</mat-icon>
+            </button>
+            <button
+              matIconButton
+              color="primary"
+              matTooltip="Скачать файл подложки"
+              [disabled]="!bgFile()"
+              (click)="handleDownloadBgFile()"
+            >
+              <mat-icon>file_download</mat-icon>
+            </button>
+            <button matIconButton color="primary" matTooltip="Выбрать файл подложки" (click)="handleChoiceBgFile()">
+              <mat-icon>more_horiz</mat-icon>
+            </button>
+          </ng-container>
+        </s-input>
+        <div class="flex-col mt-10">
+          <div class="text-center text-bold">Прозрачность подложки</div>
+          <div class="flex-row" style="padding: 0 10px">
+            <mat-slider class="flex-auto" min="0.1" max="1" step="0.1">
+              <input matSliderThumb formControlName="bgOpacity" />
+            </mat-slider>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+</s-slide-panel-container>

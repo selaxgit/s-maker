@@ -1,0 +1,30 @@
+<smc-header></smc-header>
+<main class="main-container">
+  <div class="flex-col">
+    <div class="s-maker">
+      <div class="s-maker-title">
+        <h1>S-Maker</h1>
+        <span>&nbsp;v{{ version }}</span>
+      </div>
+      <div class="s-maker-description">Мой помощник для разработки игр на Pixi.js ;)</div>
+    </div>
+    <smc-list-items-container
+      class="projects-list"
+      listTitle="Список проектов"
+      noDataMessage="Нет проектов"
+      addButtonTitle="Добавить проект"
+      [loadingState]="loadingState()"
+      [visibleDownloadButton]="true"
+      [items]="projectsList()"
+      (addItemEvent)="handleAddProject()"
+      (editItemEvent)="handleEditProject($event)"
+      (removeItemEvent)="handleRemoveProject($event)"
+      (downloadItemEvent)="handleExportProject($event)"
+    >
+      <button matButton="outlined" (click)="handleImportProject()">
+        <mat-icon>upload</mat-icon>
+        Импорт проекта
+      </button>
+    </smc-list-items-container>
+  </div>
+</main>
