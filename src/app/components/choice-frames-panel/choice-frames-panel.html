@@ -34,7 +34,7 @@
                 [useCheckbox]="true"
                 [useCheckboxMulti]="multiple()"
                 (selectedEvent)="handleSelectTile($event)"
-              ></smc-tiles-list>
+              />
             </mat-expansion-panel>
           }
           @for (tree of framesTreeStore.flatTree(); track tree.id) {
@@ -52,7 +52,7 @@
                   [useCheckbox]="true"
                   [useCheckboxMulti]="multiple()"
                   (selectedEvent)="handleSelectTile($event)"
-                ></smc-tiles-list>
+                />
               </mat-expansion-panel>
             }
           }

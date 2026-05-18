@@ -113,6 +113,10 @@ export class ScenePixiApp extends PixiApp {
           if (layerInfo.referenceGridId) {
             await layerContainer.drawObjects({ referenceGridId: layerInfo.referenceGridId });
           }
+          await (layerContainer as LayerGridContainer).drawGridLines(
+            layerInfo.referenceGridId,
+            layerInfo.visibleGridLines,
+          );
           break;
         default:
           await layerContainer.drawObjects(layerInfo.objects);

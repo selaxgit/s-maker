@@ -32,6 +32,7 @@ export interface ISceneLayer {
   zIndex: number;
   visible: boolean;
   referenceGridId?: number;
+  visibleGridLines?: boolean;
   properties: PropertiesType | null;
   objects: SceneObjectType[];
 }

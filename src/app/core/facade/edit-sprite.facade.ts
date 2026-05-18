@@ -70,11 +70,16 @@ export class EditSpriteFacade {
   }
 
   saveSprite(): Observable<ISprite> {
+    const isNewSprite = this.editSpriteStore.sprite()!.id < 0;
     return this.spritesRepository.saveSprite(this.editSpriteStore.sprite()!).pipe(
-      tap((sprite: ISprite) => {
+      tap(async (sprite: ISprite) => {
         this.framesFacade.updateUsedFrames();
         this.editSpriteStore.setSprite(sprite);
         this.spritesRepository.updateSpritePreview(sprite);
+        if (isNewSprite) {
+          const tile = await this.spritesRepository.spriteToTile(sprite, []);
+          this.spritesStore.addTile(tile);
+        }
       }),
     );
   }

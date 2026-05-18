@@ -54,6 +54,16 @@ export class SpriteAdjustmentLayerContainer extends Container {
       this.layerRectFillColor = layer.bgColor ? SUColorHelper.hex2hexadecimal(layer.bgColor) : null;
       this.drawLayerRect();
     }
+    // Инициализация новых фреймов
+    const noInitFrames: ISpriteFrame[] = [];
+    for (const frame of layer.frames) {
+      if (!this.layersFrames.has(frame.guid)) {
+        noInitFrames.push(frame);
+      }
+    }
+    if (noInitFrames.length > 0) {
+      await this.initializeFrames(noInitFrames);
+    }
     if (this.flipHorizontal !== layer.flipHorizontal || this.flipVertical !== layer.flipVertical) {
       this.flipHorizontal = layer.flipHorizontal;
       this.flipVertical = layer.flipVertical;

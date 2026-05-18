@@ -84,10 +84,11 @@ export class TreeHelper {
     if (!items || !items.length) {
       return [];
     }
-    return items.reduce((totalItems: IDBTreeItem[], item: ITreeItem) => {
+    const cloneItems = SUJsonHelper.clone(items);
+    return cloneItems.reduce((totalItems: IDBTreeItem[], item: ITreeItem) => {
       const children = item.children;
-      (item as Partial<ITreeItem>).children = undefined;
-      totalItems.push(item);
+      const { children: _, ...flatItem } = item;
+      totalItems.push(flatItem);
       return totalItems.concat(TreeHelper.treeToFlat(children));
     }, []);
   }

@@ -322,9 +322,7 @@ export class EditSpriteStore {
 
   setCurrentLayer(layer: ISpriteLayer | null): void {
     this._currentLayer.set(layer);
-    if (layer === null) {
-      this._currentFrame.set(null);
-    }
+    this._currentFrame.set(null);
   }
 
   setCurrentFrame(frame: ISpriteFrame | null): void {

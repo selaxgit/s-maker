@@ -23,6 +23,8 @@ export class EditGridStore {
 
   private readonly _visibleBackground = signal<boolean>(true);
 
+  private readonly _topBackground = signal<boolean>(false);
+
   private readonly _currentCell = signal<ISUCoords | null>(null);
 
   private readonly _contextMenuOpened = signal<boolean>(false);
@@ -46,6 +48,8 @@ export class EditGridStore {
   readonly visibleGrid = this._visibleGrid.asReadonly();
 
   readonly visibleBackground = this._visibleBackground.asReadonly();
+
+  readonly topBackground = this._topBackground.asReadonly();
 
   readonly currentCell = this._currentCell.asReadonly();
 
@@ -94,6 +98,10 @@ export class EditGridStore {
 
   setVisibleBackground(visibleBackground: boolean): void {
     this._visibleBackground.set(visibleBackground);
+  }
+
+  setTopBackground(topBackground: boolean): void {
+    this._topBackground.set(topBackground);
   }
 
   setCurrentCell(coords: ISUCoords | null): void {

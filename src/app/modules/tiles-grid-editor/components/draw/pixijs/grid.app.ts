@@ -72,6 +72,14 @@ export class GridApp extends PixiApp {
     this.gridContainer.visibleBackground = visible;
   }
 
+  get topBackground(): boolean {
+    return this.gridContainer.topBackground;
+  }
+
+  set topBackground(top: boolean) {
+    this.gridContainer.topBackground = top;
+  }
+
   get visibleGrid(): boolean {
     return this.gridContainer.visibleGrid;
   }

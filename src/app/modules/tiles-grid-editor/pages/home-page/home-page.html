@@ -73,6 +73,15 @@
             >
               <mat-icon>visibility</mat-icon>
             </button>
+            <button
+              matIconButton
+              matTooltip="Вывести подложку на передний план"
+              color="primary"
+              (mousedown)="editGridStore.setTopBackground(true)"
+              (mouseup)="editGridStore.setTopBackground(false)"
+            >
+              <mat-icon>vertical_align_top</mat-icon>
+            </button>
           </smc-toolbar-buttons>
           @if (toolbarState() === appPixiState.DrawObject) {
             <button matButton color="primary" (click)="showChoiceTilesPanel()">Выбрать фрейм для отрисовки</button>

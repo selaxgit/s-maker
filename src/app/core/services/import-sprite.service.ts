@@ -1,9 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { SUCanvasHelper, SUVersionHelper } from '@selax/utils';
 import JSZip from 'jszip';
-import { lastValueFrom } from 'rxjs';
+import { forkJoin, lastValueFrom } from 'rxjs';
 
 import { DBFrames, DBFramesTree, DBSprites } from '~core/db';
+import { FramesFacade } from '~core/facade';
 import { IFramesDefinition, ISMVersion, ISprite, ISpriteFrame } from '~core/interfaces';
 import { ZipHelper } from '~helpers/zip.helper';
 
@@ -16,6 +17,8 @@ export class ImportSpriteService {
   private readonly dbFrames = inject(DBFrames);
 
   private readonly dbSprites = inject(DBSprites);
+
+  private readonly framesFacade = inject(FramesFacade);
 
   private errorsLog: string[] = [];
 
@@ -30,7 +33,14 @@ export class ImportSpriteService {
     const versionJson = await ZipHelper.getJSONFromZip<ISMVersion>(zipData, 'version.json');
     if (versionJson?.smVersion) {
       if (SUVersionHelper.satisfies(versionJson.smVersion, '^5.0.0')) {
-        return this.importCurrentVersion(projectId, treeId, zipData);
+        await this.importCurrentVersion(projectId, treeId, zipData);
+        await lastValueFrom(
+          forkJoin({
+            framesTree: this.framesFacade.fetchTree(projectId),
+            frames: this.framesFacade.fetchFrames(projectId),
+          }),
+        );
+        return;
       }
     }
     throw new Error('Несовместимая версия файла импорта');

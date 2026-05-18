@@ -73,6 +73,9 @@ export class TGEDraw implements AfterViewInit, OnDestroy {
       this.gridApp.visibleBackground = this.editGridStore.visibleBackground();
       this.gridApp.visibleGrid = this.editGridStore.visibleGrid();
     });
+    effect(() => {
+      this.gridApp.topBackground = this.editGridStore.topBackground();
+    });
   }
 
   private async drawGrid(params: ITilesGridParams | null): Promise<void> {

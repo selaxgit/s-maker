@@ -168,9 +168,13 @@ export class TGEHomePage extends BaseProjectPageDirective implements OnInit, OnD
   hanlePropertiesPanel(): void {
     this.setHoldEvents(true);
     this.slidePanelService
-      .showPanel$<ITGEPropertiesPanelResult | null>(TGEPropertiesPanel, {
-        panelTitle: 'Установить свойства для всех фреймов',
-      })
+      .showPanel$<ITGEPropertiesPanelResult | null>(
+        TGEPropertiesPanel,
+        {
+          panelTitle: 'Установить свойства для всех фреймов',
+        },
+        { disabledClose: true },
+      )
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((result: ITGEPropertiesPanelResult | null) => {
         this.setHoldEvents(false);
@@ -192,10 +196,14 @@ export class TGEHomePage extends BaseProjectPageDirective implements OnInit, OnD
   hanleShowParamsPanel(): void {
     this.setHoldEvents(true);
     this.slidePanelService
-      .showPanel$<ITGEGridParamsPanelResult | null>(TGEGridParamsPanel, {
-        gridName: this.editGridStore.gridName(),
-        gridParams: this.editGridStore.gridParams(),
-      })
+      .showPanel$<ITGEGridParamsPanelResult | null>(
+        TGEGridParamsPanel,
+        {
+          gridName: this.editGridStore.gridName(),
+          gridParams: this.editGridStore.gridParams(),
+        },
+        { disabledClose: true },
+      )
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((result: ITGEGridParamsPanelResult | null) => {
         this.setHoldEvents(false);
@@ -314,11 +322,15 @@ export class TGEHomePage extends BaseProjectPageDirective implements OnInit, OnD
     this.setHoldEvents(true);
     const panelTitle = `Свойства тайла #${tile.frameId} (ячейка${tile.x}x${tile.y})`;
     this.slidePanelService
-      .showPanel$<ITGEPropertiesPanelResult | null>(TGEPropertiesPanel, {
-        panelTitle,
-        tile,
-        properties: tile.properties,
-      })
+      .showPanel$<ITGEPropertiesPanelResult | null>(
+        TGEPropertiesPanel,
+        {
+          panelTitle,
+          tile,
+          properties: tile.properties,
+        },
+        { disabledClose: true },
+      )
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((result: ITGEPropertiesPanelResult | null) => {
         this.setHoldEvents(false);

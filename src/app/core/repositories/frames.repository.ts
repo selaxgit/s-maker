@@ -148,6 +148,8 @@ export class FramesRepository {
       objectURL: frame.file ? URL.createObjectURL(frame.file) : '',
       used: usedFrameIds.includes(frame.id),
       selected: false,
+      fileWidth: frame.width,
+      fileHeight: frame.height,
     })) as IViewTile[];
     this.framesStore.setTiles(tiles);
   }

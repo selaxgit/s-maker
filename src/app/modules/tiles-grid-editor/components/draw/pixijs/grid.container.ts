@@ -110,6 +110,16 @@ export class GridContainer extends Container {
     }
   }
 
+  get topBackground(): boolean {
+    return (this.backgroundSprite?.zIndex ?? 0) > 0;
+  }
+
+  set topBackground(top: boolean) {
+    if (this.backgroundSprite) {
+      this.backgroundSprite.zIndex = top ? 100 : 0;
+    }
+  }
+
   get visibleGrid(): boolean {
     return this._visibleGrid;
   }

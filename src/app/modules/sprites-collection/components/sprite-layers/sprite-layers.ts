@@ -1,5 +1,5 @@
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -23,11 +23,36 @@ import { SCSpriteLayerItem } from './components/sprite-layer-item';
 export class SCSpriteLayers {
   readonly visibleAll = signal<boolean>(true);
 
+  readonly dimesionFrames = signal<string>('-');
+
   readonly editSpriteStore = inject(EditSpriteStore);
 
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly dialogService = inject(SDialogService);
+
+  constructor() {
+    effect(() => {
+      const layers = this.editSpriteStore.layers();
+      if (layers.length === 0) {
+        this.dimesionFrames.set('-');
+      } else {
+        let width = 0;
+        let height = 0;
+        for (const layer of layers) {
+          for (const frame of layer.frames) {
+            if (frame.width > width) {
+              width = frame.width;
+            }
+            if (frame.height > height) {
+              height = frame.height;
+            }
+          }
+        }
+        this.dimesionFrames.set(`${width}x${height}`);
+      }
+    });
+  }
 
   handleDropLayer(event: CdkDragDrop<ISpriteLayer[]>): void {
     if (event.isPointerOverContainer && event.previousContainer === event.container) {

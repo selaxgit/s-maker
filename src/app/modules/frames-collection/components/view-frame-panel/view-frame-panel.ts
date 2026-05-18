@@ -91,7 +91,7 @@ export class FCViewFramePanel extends SSlidePanelExtendClass implements OnInit, 
       .showModal<string>('Наименование фрейма', SMCInputTextModal, {
         label: 'Наименование фрейма',
         applyTitle: 'Изменить',
-        value: this.panelResult.name ?? this.frame?.name ?? null,
+        value: this.panelResult.name ?? this.frame().name,
       })
       .pipe(takeUntilDestroyed(this.destroyRef))
 

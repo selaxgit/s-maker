@@ -32,6 +32,8 @@ export class SBLayerItem {
 
   readonly layerObject = input.required<SceneObjectType[]>();
 
+  readonly sceneLayerTypeEnum = SceneLayerTypeEnum;
+
   readonly visibleAccordionObjects = signal<boolean>(false);
 
   readonly editSceneStore = inject(EditSceneStore);
@@ -65,6 +67,11 @@ export class SBLayerItem {
 
   handleToggleVisibleLayer(): void {
     this.editSceneStore.updateLayer(this.layer().guid, { visible: !this.layer().visible });
+  }
+
+  handleToggleVisibleGridLines(): void {
+    const visibleGridLines = this.layer().visibleGridLines ?? false;
+    this.editSceneStore.updateLayer(this.layer().guid, { visibleGridLines: !visibleGridLines });
   }
 
   handleRemoveLayer(): void {

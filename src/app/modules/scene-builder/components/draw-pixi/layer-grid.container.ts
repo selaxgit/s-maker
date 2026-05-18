@@ -1,7 +1,7 @@
-import { Container, DestroyOptions, Sprite, Texture } from 'pixi.js';
+import { Container, DestroyOptions, Graphics, Sprite, Texture } from 'pixi.js';
 
 import { SceneLayerTypeEnum } from '~core/constants';
-import { ITilesGridItem } from '~core/interfaces';
+import { ITilesGrid, ITilesGridItem } from '~core/interfaces';
 
 import { SBDrawSceneService } from '../../services';
 import { ILayerGrid, IPixiSceneLayer } from './interfaces';
@@ -13,8 +13,14 @@ export class LayerGridContainer extends Container implements IPixiSceneLayer {
 
   private gridSprite: Sprite | null = null;
 
+  private gridLines = new Graphics();
+
+  private hasGridLines = false;
+
   constructor(private readonly drawSceneService: SBDrawSceneService) {
     super();
+    this.gridLines.zIndex = 10;
+    this.addChild(this.gridLines);
   }
 
   override destroy(options?: DestroyOptions): void {
@@ -22,6 +28,18 @@ export class LayerGridContainer extends Container implements IPixiSceneLayer {
       this.gridSprite.destroy();
     }
     super.destroy(options);
+  }
+
+  async drawGridLines(referenceGridId?: number, visibleGridLines?: boolean): Promise<void> {
+    if (referenceGridId && !this.hasGridLines) {
+      const gridInfo = await this.drawSceneService.fetchGridById(referenceGridId);
+      if (!gridInfo) {
+        console.error(`Сетка не найдена по id: ${referenceGridId}`);
+      } else {
+        await this.initGridLines(gridInfo);
+      }
+    }
+    this.gridLines.visible = visibleGridLines ?? false;
   }
 
   async drawObjects(objectsInfo: ILayerGrid): Promise<void> {
@@ -33,6 +51,7 @@ export class LayerGridContainer extends Container implements IPixiSceneLayer {
       console.error(`Сетка не найдена по id: ${objectsInfo.referenceGridId}`);
       return;
     }
+    await this.initGridLines(gridInfo);
     const gridCanvas = document.createElement('canvas');
     gridCanvas.width = gridInfo.mapInfo.width * gridInfo.tileInfo.width;
     gridCanvas.height = gridInfo.mapInfo.height * gridInfo.tileInfo.height;
@@ -97,5 +116,18 @@ export class LayerGridContainer extends Container implements IPixiSceneLayer {
     }
     this.gridSprite = new Sprite(Texture.from(gridCanvas));
     this.addChild(this.gridSprite);
+  }
+
+  private async initGridLines(gridInfo: ITilesGrid): Promise<void> {
+    this.gridLines.clear();
+    const width = gridInfo.mapInfo.width * gridInfo.tileInfo.width;
+    const height = gridInfo.mapInfo.height * gridInfo.tileInfo.height;
+    for (let x = 0; x <= width; x += gridInfo.tileInfo.width) {
+      this.gridLines.moveTo(x, 0).lineTo(x, height).stroke({ width: 1, color: 0xc6c6c6 });
+    }
+    for (let y = 0; y <= height; y += gridInfo.tileInfo.height) {
+      this.gridLines.moveTo(0, y).lineTo(width, y).stroke({ width: 1, color: 0xc6c6c6 });
+    }
+    this.hasGridLines = true;
   }
 }
