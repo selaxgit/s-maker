@@ -67,9 +67,9 @@ export class SpriteAdjustmentLayerContainer extends Container {
     if (this.flipHorizontal !== layer.flipHorizontal || this.flipVertical !== layer.flipVertical) {
       this.flipHorizontal = layer.flipHorizontal;
       this.flipVertical = layer.flipVertical;
-      for (const adjFrame of this.layersFrames.values()) {
-        await adjFrame.updateFrame(this.flipHorizontal, this.flipVertical);
-      }
+    }
+    for (const frame of layer.frames) {
+      await this.layersFrames.get(frame.guid)?.updateFrame(this.flipHorizontal, this.flipVertical, frame);
     }
   }
 

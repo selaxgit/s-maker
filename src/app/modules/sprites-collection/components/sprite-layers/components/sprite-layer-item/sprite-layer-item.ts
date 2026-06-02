@@ -1,5 +1,5 @@
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -30,6 +30,8 @@ import { SCSpriteFrameItem } from '../sprite-frame-item';
 export class SCSpriteLayerItem {
   readonly layer = input.required<ISpriteLayer>();
 
+  readonly expandedLayer = input<boolean>(false);
+
   readonly editSpriteStore = inject(EditSpriteStore);
 
   readonly visibleAccordionFrames = signal<boolean>(false);
@@ -41,6 +43,12 @@ export class SCSpriteLayerItem {
   private readonly slidePanelService = inject(SSlidePanelService);
 
   private readonly editSpriteFacade = inject(EditSpriteFacade);
+
+  constructor() {
+    effect(() => {
+      this.visibleAccordionFrames.set(this.expandedLayer());
+    });
+  }
 
   handleDropFrame(event: CdkDragDrop<ISpriteFrame[]>): void {
     if (event.isPointerOverContainer && event.previousContainer === event.container) {

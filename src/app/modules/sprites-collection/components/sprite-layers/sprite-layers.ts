@@ -25,6 +25,8 @@ export class SCSpriteLayers {
 
   readonly dimesionFrames = signal<string>('-');
 
+  readonly expandedLayers = signal<boolean>(false);
+
   readonly editSpriteStore = inject(EditSpriteStore);
 
   private readonly destroyRef = inject(DestroyRef);
@@ -52,6 +54,10 @@ export class SCSpriteLayers {
         this.dimesionFrames.set(`${width}x${height}`);
       }
     });
+  }
+
+  handleToggleExpandedLayers(): void {
+    this.expandedLayers.set(!this.expandedLayers());
   }
 
   handleDropLayer(event: CdkDragDrop<ISpriteLayer[]>): void {
