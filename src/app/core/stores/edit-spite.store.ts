@@ -356,8 +356,11 @@ export class EditSpriteStore {
     this._sprite.set(null);
     this._layers.set([]);
     this._params.set(null);
+    this._groundPoint.set(null);
     this._currentLayer.set(null);
     this._currentFrame.set(null);
+    this._adjustmentMode.set(AdjustmentModeEnum.Sprite);
+    this._previewAnimation.set(null);
     this._hasChanged.set(false);
   }
 }
