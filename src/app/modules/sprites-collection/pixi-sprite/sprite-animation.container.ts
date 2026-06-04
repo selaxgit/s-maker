@@ -109,7 +109,7 @@ export class SpriteAnimationContainer extends Container {
         adjLayer.destroy();
       }
     }
-    // обновление видимости слоев и фреймов и добавление новых слоев
+    // обновление или добавление новых слоев
     for (const layer of layers) {
       const adjLayer = this.spriteLayers.get(layer.guid);
       if (adjLayer) {
