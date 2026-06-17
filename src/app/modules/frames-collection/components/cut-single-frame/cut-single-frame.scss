@@ -1,0 +1,55 @@
+@use "colors";
+
+:host {
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+
+  width: 90vw;
+}
+
+.view-container {
+  position: relative;
+
+  flex: auto;
+}
+
+.choice-file-container {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+
+  background-color: #ffffff;
+}
+
+.choice-file {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+
+  width: 60%;
+  height: 60%;
+
+  border: 1px dashed colors.$color-border;
+  border-radius: 6px;
+}
+
+.coords {
+  font-size: 14px;
+}
+
+.pixi-container {
+  top: 10px;
+  right: 10px;
+  bottom: 10px;
+  left: 10px;
+}

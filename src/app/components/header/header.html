@@ -1,0 +1,103 @@
+<header class="header">
+  <div class="logo" routerLink="/">
+    <img src="assets/logo.png" alt="Logo" />
+  </div>
+  @if (visibleModulesMenu()) {
+    <button matIconButton color="primary" [matMenuTriggerFor]="menuModules">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <mat-menu #menuModules="matMenu">
+      <button mat-menu-item [routerLink]="['/', breadcrumbsStore.projectId(), framesCollectionModule.moduleRouter]">
+        {{ framesCollectionModule.name }}
+      </button>
+      <button mat-menu-item [routerLink]="['/', breadcrumbsStore.projectId(), spritesCollectionModule.moduleRouter]">
+        {{ spritesCollectionModule.name }}
+      </button>
+      <button mat-menu-item [routerLink]="['/', breadcrumbsStore.projectId(), landscapeGeneratorModule.moduleRouter]">
+        {{ landscapeGeneratorModule.name }}
+      </button>
+      <button mat-menu-item [matMenuTriggerFor]="gridSubmenu">
+        {{ tilesGridEditorModule.name }}
+      </button>
+      <button mat-menu-item [matMenuTriggerFor]="sceneSubmenu">
+        {{ sceneBuilderModule.name }}
+      </button>
+    </mat-menu>
+
+    <mat-menu #gridSubmenu="matMenu">
+      <button
+        mat-menu-item
+        [routerLink]="['/', breadcrumbsStore.projectId(), tilesGridEditorModule.moduleRouter, 'new']"
+      >
+        Новая сетка
+      </button>
+      @if (gridList().length > 0) {
+        <mat-divider></mat-divider>
+        @for (item of gridList(); track item.id) {
+          <button
+            mat-menu-item
+            [routerLink]="['/', breadcrumbsStore.projectId(), tilesGridEditorModule.moduleRouter, item.id]"
+          >
+            {{ item.name }}
+          </button>
+        }
+      }
+    </mat-menu>
+
+    <mat-menu #sceneSubmenu="matMenu">
+      <button mat-menu-item [routerLink]="['/', breadcrumbsStore.projectId(), sceneBuilderModule.moduleRouter, 'new']">
+        Новая сцена
+      </button>
+      @if (scenesList().length > 0) {
+        <mat-divider></mat-divider>
+        @for (item of scenesList(); track item.id) {
+          <button
+            mat-menu-item
+            [routerLink]="['/', breadcrumbsStore.projectId(), sceneBuilderModule.moduleRouter, item.id]"
+          >
+            {{ item.name }}
+          </button>
+        }
+      }
+    </mat-menu>
+  }
+  @if (visibleBreadcrumbs()) {
+    <div class="breadcrumbs">
+      <div class="breadcrumb-item text-ellipsis" [matTooltip]="breadcrumbsStore.projectName()">
+        <span
+          class="breadcrumb-link"
+          [routerLink]="['/', breadcrumbsStore.projectId()]"
+          [class.disabled]="!breadcrumbsStore.moduleName()"
+        >
+          {{ breadcrumbsStore.projectName() }}
+        </span>
+      </div>
+      @if (breadcrumbsStore.moduleName()) {
+        <div class="breadcrumb-item">
+          <span
+            class="breadcrumb-link"
+            [routerLink]="['/', breadcrumbsStore.projectId(), breadcrumbsStore.moduleRouter()]"
+            [class.disabled]="!breadcrumbsStore.moduleRouter()"
+          >
+            {{ breadcrumbsStore.moduleName() }}
+          </span>
+        </div>
+      }
+      @if (breadcrumbsStore.pageName()) {
+        <div class="breadcrumb-item text-ellipsis" [matTooltip]="breadcrumbsStore.pageName()">
+          <span class="breadcrumb-link disabled">
+            {{ breadcrumbsStore.pageName() }}
+          </span>
+        </div>
+      }
+    </div>
+  }
+  <div class="inside-content">
+    <ng-content />
+  </div>
+  <div>
+    <button matIconButton color="primary" (click)="handleAbout()">
+      <mat-icon>help_outline</mat-icon>
+    </button>
+  </div>
+</header>

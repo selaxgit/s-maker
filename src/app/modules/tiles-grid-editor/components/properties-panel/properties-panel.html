@@ -1,0 +1,42 @@
+<s-slide-panel-container
+  class="flex-auto"
+  cancelButtonTitle="Закрыть"
+  [panelTitle]="panelTitle()"
+  (closeEvent)="handleClose()"
+  (applyEvent)="handleApply()"
+>
+  <div class="container">
+    @if (frameInfo()) {
+      <fieldset>
+        <div class="flex-row-align-center">
+          <div class="preview">
+            <div class="preview-image" [style.background-image]="frameInfo()?.objectURL ?? null | objectToBgUrl"></div>
+          </div>
+          <div class="flex-col flex-auto ml-10">
+            <div class="ml-10">
+              <strong>{{ frameInfo()?.name }}</strong>
+              ({{ frameInfo()?.dimension }})
+            </div>
+
+            <div class="ml-10 mt-10">
+              <strong>Отображение по вертикали/горизонтали:</strong>
+              {{ vertHorValues() }}
+            </div>
+            <div>
+              <button matButton color="primary" (click)="handleDownloadFrame()">Скачать фрейм</button>
+            </div>
+          </div>
+          <button matButton="outlined" color="primary" (click)="handleChangeFrame()">Изменить фрейм</button>
+        </div>
+      </fieldset>
+    }
+    <smc-properties-container
+      class="flex-auto"
+      [class.mt-10]="frameInfo() !== null"
+      [visibleReplaceType]="visibleReplaceType()"
+      [properties]="properties()"
+      [(replaceType)]="replaceType"
+      (propertiesChangeEvent)="handlePropertiesChangeEvent($event)"
+    />
+  </div>
+</s-slide-panel-container>

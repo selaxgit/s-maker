@@ -1,0 +1,123 @@
+@if (is404Page() && !projectStore.loadingState()) {
+  <page-not-found />
+} @else {
+  <smc-header
+    [visibleBreadcrumbs]="!projectStore.loadingState() && true"
+    [visibleModulesMenu]="!projectStore.loadingState() && true"
+  >
+    @if (!projectStore.loadingState()) {
+      <button matButton="outlined" [disabled]="!editGridStore.hasChanged()" (click)="handleSaveGrid()">
+        <mat-icon>save</mat-icon>
+        Сохранить сетку
+      </button>
+      <button class="mat-button-with-icons" matButton="outlined" [matMenuTriggerFor]="menuActions">
+        <div>
+          <mat-icon>crop</mat-icon>
+          <span>Действия</span>
+          <mat-icon>arrow_drop_down</mat-icon>
+        </div>
+      </button>
+      <mat-menu #menuActions="matMenu">
+        <button mat-menu-item (click)="hanleShowParamsPanel()">Параметры сетки</button>
+        <button mat-menu-item (click)="hanlePropertiesPanel()">Установить свойства для всех фреймов</button>
+        <button mat-menu-item (click)="hanleExportGrid()">Экспорт сетки</button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item [disabled]="editGridStore.isNewGrid()" (click)="handleRemoveGrid()">
+          <span class="text-danger">Удалить сетку</span>
+        </button>
+      </mat-menu>
+    }
+  </smc-header>
+  <main class="main-container">
+    @if (projectStore.loadingState()) {
+      <div class="loading-container">
+        <mat-spinner diameter="40"></mat-spinner>
+        <div class="loading-container__message">Загрузка проекта...</div>
+      </div>
+    } @else {
+      <section class="section-container flex-auto">
+        <div class="section-head">
+          <smc-toolbar-buttons
+            class="flex-auto"
+            [state]="toolbarState()"
+            [dragObjectButton]="false"
+            [drawRectButton]="false"
+            (zoomEvent)="editGridStore.zoomEvent($event)"
+            (toolbarStateEvent)="handleToolbarState($event)"
+          >
+            <button
+              class="ml-10"
+              matIconButton
+              matTooltip="Несколько фреймов в ячейке"
+              color="primary"
+              [class.unselected-button]="!editGridStore.drawOverlay()"
+              (click)="editGridStore.setDrawOverlay(!editGridStore.drawOverlay())"
+            >
+              <mat-icon>layers</mat-icon>
+            </button>
+            <button
+              matIconButton
+              matTooltip="Скрыть/показать сетку"
+              color="primary"
+              [class.unselected-button]="!editGridStore.visibleGrid()"
+              (click)="editGridStore.setVisibleGrid(!editGridStore.visibleGrid())"
+            >
+              <mat-icon>grid_on</mat-icon>
+            </button>
+            <button
+              matIconButton
+              matTooltip="Скрыть/показать подложку"
+              color="primary"
+              [class.unselected-button]="!editGridStore.visibleBackground()"
+              (click)="editGridStore.setVisibleBackground(!editGridStore.visibleBackground())"
+            >
+              <mat-icon>visibility</mat-icon>
+            </button>
+            <button
+              matIconButton
+              matTooltip="Вывести подложку на передний план"
+              color="primary"
+              (mousedown)="editGridStore.setTopBackground(true)"
+              (mouseup)="editGridStore.setTopBackground(false)"
+            >
+              <mat-icon>vertical_align_top</mat-icon>
+            </button>
+          </smc-toolbar-buttons>
+          @if (toolbarState() === appPixiState.DrawObject) {
+            <button matButton color="primary" (click)="showChoiceTilesPanel()">Выбрать фрейм для отрисовки</button>
+          }
+        </div>
+        <tge-draw
+          class="flex-auto"
+          [toolbarState]="toolbarState()"
+          [isHoldDrawEvent]="isHoldDrawEvent()"
+          [cdkContextMenuTriggerFor]="contextMenu.menu()"
+          [cdkContextMenuDisabled]="true"
+          (cdkContextMenuOpened)="editGridStore.setContextMenuOpened(true)"
+          (cdkContextMenuClosed)="editGridStore.setContextMenuOpened(false)"
+          (contextMenuEvent)="handleContextMenu($event)"
+          (currentCellEvent)="handleCurrentCellEvent($event)"
+        />
+        <tge-context-menu #contextMenu [menuGridItems]="menuGridItems()" />
+        <div class="status-bar border-top">
+          <span class="cell-coords border-right">
+            Текущая ячейка:
+            {{ editGridStore.currentCellHint() }}
+          </span>
+          <span class="cell-overlay border-right ml-10">
+            Несколько фреймов в ячейке:
+            {{ editGridStore.drawOverlay() ? 'Да' : 'Нет' }}
+          </span>
+          <span class="cell-grid border-right ml-10">
+            Видимость сетки:
+            {{ editGridStore.visibleGrid() ? 'Да' : 'Нет' }}
+          </span>
+          <span class="cell-bg border-right ml-10">
+            Видимость подложки:
+            {{ editGridStore.visibleBackground() ? 'Да' : 'Нет' }}
+          </span>
+        </div>
+      </section>
+    }
+  </main>
+}

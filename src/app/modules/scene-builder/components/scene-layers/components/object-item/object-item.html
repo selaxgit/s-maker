@@ -1,0 +1,14 @@
+<div class="items-edit-list-row" [class.selected]="this.editSceneStore.currentObject()?.guid === object().guid">
+  <div class="items-edit-list-title" role="button" tabindex="0" (click)="handleSelectObject()">
+    {{ object().name }}
+  </div>
+  <button matIconButton color="primary" (click)="handleEditObject()">
+    <mat-icon>edit</mat-icon>
+  </button>
+  <button matIconButton color="accent" (click)="handleRemoveObject()">
+    <mat-icon>highlight_off</mat-icon>
+  </button>
+  <button matIconButton color="primary" (click)="handleToggleVisibleObject()">
+    <mat-icon>{{ object().visible ? 'visibility' : 'visibility_off' }}</mat-icon>
+  </button>
+</div>

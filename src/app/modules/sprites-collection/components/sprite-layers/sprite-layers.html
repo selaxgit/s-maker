@@ -1,0 +1,37 @@
+@let layers = editSpriteStore.layers();
+<section class="section-container flex-auto">
+  <div class="section-head">
+    <h4 class="section-title">Слои</h4>
+    <button matIconButton color="primary" (click)="handleAddLayer()">
+      <mat-icon>add</mat-icon>
+    </button>
+    <button
+      matIconButton
+      color="primary"
+      matTooltip="Переключить видимость всех слоев"
+      [disabled]="layers.length === 0"
+      (click)="toggleLayersVisibility()"
+    >
+      <mat-icon>{{ visibleAll() ? 'visibility' : 'visibility_off' }}</mat-icon>
+    </button>
+  </div>
+  @if (layers.length === 0) {
+    <div class="empty-message">Нет данных</div>
+  } @else {
+    <div class="scroll-container">
+      <div class="scroll">
+        <div
+          class="flex-col user-select-none"
+          cdkDropList
+          [cdkDropListData]="editSpriteStore.layers()"
+          (cdkDropListDropped)="handleDropLayer($event)"
+        >
+          @for (layer of layers; track layer.guid) {
+            <sc-sprite-layer-item cdkDrag [layer]="layer" />
+          }
+        </div>
+      </div>
+    </div>
+    <div class="text-center border-top layers-footer">макс. ширина/высота фреймов: {{ dimesionFrames() }}</div>
+  }
+</section>

@@ -1,0 +1,32 @@
+<fieldset class="flex-col flex-auto no-padding">
+  <div class="frameset-head">
+    @if (visibleReplaceType()) {
+      <div class="flex-auto">
+        <mat-radio-group [(ngModel)]="replaceType">
+          <mat-radio-button [value]="replaceTypeEnum.MERGE">Добавить к текущим</mat-radio-button>
+          <mat-radio-button class="ml-10" [value]="replaceTypeEnum.REPLACE">Заменить текущие</mat-radio-button>
+        </mat-radio-group>
+      </div>
+    }
+    <div class="flex-row flex-auto flex-end">
+      <button matButton color="primary" (click)="handleAddProperty()">Добавить свойство</button>
+    </div>
+  </div>
+  @if (propertyList().length === 0) {
+    <div class="empty-message">Нет данных</div>
+  } @else {
+    <div class="scroll-container">
+      <div class="scroll">
+        @for (property of propertyList(); let idx = $index; track $index) {
+          <smc-property-line
+            [propertyKey]="property.key"
+            [propertyType]="property.type"
+            [propertyValue]="property.value"
+            (changeLineEvent)="handleChangeLine(idx, $event)"
+            (removeLineEvent)="handleRemoveLine(idx)"
+          />
+        }
+      </div>
+    </div>
+  }
+</fieldset>

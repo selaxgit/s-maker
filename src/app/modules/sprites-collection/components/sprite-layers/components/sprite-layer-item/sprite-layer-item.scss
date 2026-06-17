@@ -1,0 +1,12 @@
+:host {
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
+  &.selected {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+}
+
+.items-edit-list-row {
+  padding: 0 3px 0 0;
+}

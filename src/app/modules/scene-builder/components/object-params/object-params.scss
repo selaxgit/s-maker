@@ -1,0 +1,32 @@
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+:host ::ng-deep {
+  .s-suffix {
+    padding-right: 6px !important;
+  }
+}
+
+.maxheight-div {
+  overflow: hidden;
+
+  max-height: 0;
+
+  transition: max-height 0.3s ease;
+}
+
+.maxheight-div.expanded {
+  max-height: 500px;
+}
+
+.container {
+  --mat-form-field-container-height: 36px;
+  --mat-form-field-container-vertical-padding: 6px;
+  --mat-checkbox-state-layer-size: 26px;
+  display: flex;
+  flex-direction: column;
+
+  padding: 5px 16px 16px;
+}

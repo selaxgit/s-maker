@@ -1,0 +1,65 @@
+@use "colors";
+
+:host {
+  --mat-form-field-container-height: 36px;
+  --mat-form-field-container-vertical-padding: 6px;
+  --mat-checkbox-state-layer-size: 26px;
+  --mat-button-toggle-height: 34px;
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+
+  width: 70vw;
+}
+
+.container {
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+
+  padding: 10px;
+}
+
+.preview-container {
+  position: relative;
+
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.scroll {
+  --mat-icon-button-state-layer-size: 24px;
+  --mat-icon-button-icon-size: 18px;
+  --mat-icon-button-touch-target-display: none;
+  --mat-table-row-item-container-height: 36px;
+  display: flex;
+  flex-direction: column;
+  .mat-icon {
+    width: 18px;
+    height: 18px;
+
+    font-size: 20px;
+  }
+}
+
+.hover-row {
+  &:hover {
+    background-color: colors.$color-hover;
+  }
+}
+
+.col-thin {
+  width: 50px;
+
+  text-align: center;
+}
+
+.col-buttons {
+  width: 70px;
+  padding: 5px;
+}

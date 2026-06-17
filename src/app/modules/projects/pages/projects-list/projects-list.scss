@@ -1,0 +1,50 @@
+:host {
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+}
+
+.main-container {
+  display: flex;
+  align-items: center;
+  flex: auto;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.s-maker {
+  margin-bottom: 22px;
+}
+
+.s-maker-title {
+  display: flex;
+  align-items: baseline;
+  h1 {
+    flex: auto;
+
+    margin: 0;
+
+    font-size: 48px;
+    font-weight: 500;
+  }
+  span {
+    display: inline-flex;
+
+    padding: 6px 12px;
+
+    color: #0b4f78;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.7);
+
+    font-size: 28px;
+  }
+}
+
+.s-maker-description {
+  font-size: 22px;
+}
+
+.projects-list {
+  width: 720px;
+  height: 480px;
+}

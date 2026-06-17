@@ -1,0 +1,53 @@
+@if (is404Page() && !loadingState()) {
+  <page-not-found />
+} @else {
+  <smc-header
+    [visibleBreadcrumbs]="!loadingState() && true"
+    [visibleModulesMenu]="!projectStore.loadingState() && true"
+  >
+    @if (!loadingState()) {
+      <button matButton="outlined" [disabled]="!editSpriteStore.hasChanged()" (click)="handleSaveSprite()">
+        <mat-icon>save</mat-icon>
+        Сохранить спрайт
+      </button>
+      <button class="mat-button-with-icons" matButton="outlined" [matMenuTriggerFor]="menuActions">
+        <div>
+          <mat-icon>settings</mat-icon>
+          <span>Действия</span>
+          <mat-icon>arrow_drop_down</mat-icon>
+        </div>
+      </button>
+      <mat-menu #menuActions="matMenu">
+        <button mat-menu-item (click)="handleChangeNameSprite()">Изменить наименование спрайта</button>
+        <button mat-menu-item (click)="handleCloneSprite()">Создать копию спрайта</button>
+        <button mat-menu-item [matMenuTriggerFor]="menuExport">Экспорт спрайта</button>
+        <button mat-menu-item [disabled]="editSpriteStore.isNewSprite()" (click)="handleRemoveSprite()">
+          <span class="text-danger">Удалить спрайт</span>
+        </button>
+      </mat-menu>
+      <mat-menu #menuExport="matMenu">
+        <button mat-menu-item (click)="handleExportSprite(exportSpriteType.Default)">Обычный экспорт спрайта</button>
+        <button
+          mat-menu-item
+          matTooltip="Нельзя будет использовать для импорта в S-Maker!!!"
+          (click)="handleExportSprite(exportSpriteType.ForGame)"
+        >
+          Экспорт спрайта для игры
+        </button>
+      </mat-menu>
+    }
+  </smc-header>
+  <main class="main-container">
+    @if (loadingState()) {
+      <div class="loading-container">
+        <mat-spinner diameter="40"></mat-spinner>
+        <div class="loading-container__message">Загрузка проекта...</div>
+      </div>
+    } @else {
+      <sc-sprite-layers class="layers-container" />
+      <sc-sprite-params class="params-container" />
+      <sc-sprite-adjustment class="flex-auto" />
+      <sc-sprite-animations class="animations-container" />
+    }
+  </main>
+}

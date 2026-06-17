@@ -1,0 +1,152 @@
+<s-slide-panel-container
+  class="flex-auto panel-content-relative"
+  applyButtonTitle="Сохранить анимацию"
+  [panelTitle]="panelTitle()"
+  (closeEvent)="handleClose()"
+  (applyEvent)="handleApply()"
+>
+  <div class="container s-mat-without-bottom" [formGroup]="formGroup">
+    <div class="flex-row-align-center">
+      <div>
+        <s-input label="Код анимации" formControlName="code" [showClearButton]="false" />
+      </div>
+      <div class="flex-auto ml-10">
+        <s-input label="Наименование анимации" formControlName="name" [showClearButton]="false" />
+      </div>
+      <div class="ml-10">
+        <s-checkbox label="Анимация по умолчанию" formControlName="default" />
+      </div>
+    </div>
+    <fieldset class="border-warning mt-10">
+      <div class="flex-row-align-center">
+        <mat-icon class="text-warning">warning</mat-icon>
+        <div class="ml-10">
+          Код анимации должен быть уникальным в пределах спрайта - по нему будет идентифицироваться анимация
+        </div>
+      </div>
+    </fieldset>
+    <fieldset class="mt-10">
+      <legend>Точка соприкосновения с землей</legend>
+      <div class="flex-row-align-center">
+        <div class="w-number">
+          <s-input-number label="X" formControlName="groundPointX" [showClearButton]="false" />
+        </div>
+        <div class="w-number ml-10">
+          <s-input-number label="Y" formControlName="groundPointY" [showClearButton]="false" />
+        </div>
+        <div class="ml-10">
+          <s-checkbox
+            label=""
+            controlType="button-toggle"
+            formControlName="visibleGroundPoint"
+            [onText]="'Показать точку'"
+            [offText]="'Скрыть точку'"
+          />
+        </div>
+        <div class="flex-auto ml-10">
+          <small> (Если не заданы коордианты, то они возьмутся из координат спрайта)</small>
+        </div>
+        <button matButton color="accent" (click)="handleClearGroundPoint()">Очистить</button>
+      </div>
+    </fieldset>
+    <fieldset class="mt-10">
+      <legend>Рамка коллизий</legend>
+      <div class="flex-row-align-center">
+        <div class="w-number">
+          <s-input-number label="X" formControlName="collisionFrameX" [showClearButton]="false" />
+        </div>
+        <div class="w-number ml-10">
+          <s-input-number label="Y" formControlName="collisionFrameY" [showClearButton]="false" />
+        </div>
+        <div class="w-number ml-10">
+          <s-input-number label="Ширина" formControlName="collisionFrameWidth" [showClearButton]="false" />
+        </div>
+        <div class="w-number ml-10">
+          <s-input-number label="Высота" formControlName="collisionFrameHeight" [showClearButton]="false" />
+        </div>
+        <div class="flex-auto ml-10">
+          <s-checkbox
+            label=""
+            controlType="button-toggle"
+            formControlName="visibleCollisionFrame"
+            [onText]="'Показать рамку'"
+            [offText]="'Скрыть рамку'"
+          />
+        </div>
+        <button matButton color="accent" (click)="handleClearCollisionFrame()">Очистить</button>
+      </div>
+    </fieldset>
+    <div class="flex-row flex-auto mt-10">
+      <section class="section-container flex-auto">
+        <div class="section-head">
+          <h4 class="section-title">Слои</h4>
+          <button matIconButton color="primary" (click)="handleAddLayer()">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+        <div class="scroll-container">
+          <div class="scroll">
+            <table mat-table [dataSource]="layersDataSource()">
+              <ng-container matColumnDef="layer-name">
+                <th *matHeaderCellDef mat-header-cell>Слой</th>
+                <td *matCellDef="let element" mat-cell>{{ element.layerName }}</td>
+              </ng-container>
+              <ng-container matColumnDef="loop">
+                <th *matHeaderCellDef class="col-thin" mat-header-cell>Цикличность</th>
+                <td *matCellDef="let element" class="col-thin" mat-cell>{{ element.loop ? 'Да' : 'Нет' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="speed">
+                <th *matHeaderCellDef class="col-thin" mat-header-cell>Скорость</th>
+                <td *matCellDef="let element" class="col-thin" mat-cell>{{ element.speed }}</td>
+              </ng-container>
+              <ng-container matColumnDef="buttons">
+                <th *matHeaderCellDef class="col-buttons" mat-header-cell>&nbsp;</th>
+                <td *matCellDef="let element; let idx = index" class="col-buttons" mat-cell>
+                  <div class="flex-row flex-end">
+                    <button matIconButton color="primary" (click)="handleLayerEdit(element)">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button matIconButton color="accent" (click)="handleRemoveLayer(idx)">
+                      <mat-icon>highlight_off</mat-icon>
+                    </button>
+                  </div>
+                </td>
+              </ng-container>
+              <tr *matHeaderRowDef="displayedColumns; sticky: true" mat-header-row></tr>
+              <tr
+                *matRowDef="let row; columns: displayedColumns"
+                class="hover-row user-select-none"
+                mat-row
+                (dblclick)="handleLayerEdit(row)"
+              ></tr>
+            </table>
+            @if (layersDataSource().length === 0) {
+              <div class="empty-message">Нет данных</div>
+            }
+          </div>
+        </div>
+      </section>
+      <section class="section-container flex-auto ml-10">
+        <div class="section-head">
+          <h4 class="section-title">Просмотр</h4>
+          <smc-scale-buttons buttonColor="primary" (zoomEvent)="handleZoomEvent($event)"></smc-scale-buttons>
+          <mat-divider style="height: 36px; margin: 0 10px" [vertical]="true"></mat-divider>
+          <button matIconButton color="primary" [disabled]="playingState()" (click)="handlePlaySprite()">
+            <mat-icon>play_circle</mat-icon>
+          </button>
+          <button matIconButton color="primary" [disabled]="!playingState()" (click)="handleStopSprite()">
+            <mat-icon>stop</mat-icon>
+          </button>
+        </div>
+        <div class="preview-container">
+          <div #appPixi class="pixi-container" [class.hidden]="isPreviewInitializing()"></div>
+          @if (isPreviewInitializing()) {
+            <div class="loading-container">
+              <mat-spinner></mat-spinner>
+            </div>
+          }
+        </div>
+      </section>
+    </div>
+  </div>
+</s-slide-panel-container>

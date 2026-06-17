@@ -1,21 +1,30 @@
-@use "colors";
-@use "../node_modules/@jst/ui/styles";
-@use "./styles/materail";
+@use "roboto-fontface/css/roboto/sass/roboto-fontface" with (
+  $roboto-font-path: "roboto-fontface/fonts"
+);
+@use "material-icons/iconfont/material-icons.scss" with (
+  $material-icons-font-path: "material-icons/iconfont/"
+);
+@use "@selax/ui/styles";
+@use "./styles/override";
 @use "./styles/elements";
 @use "./styles/helpers";
 
-html,
-body {
+html {
   height: 100%;
+
+  background:
+    radial-gradient(circle at top left, rgba(255, 210, 168, 0.9), transparent 30%),
+    radial-gradient(circle at top right, rgba(166, 222, 255, 0.85), transparent 28%),
+    linear-gradient(180deg, #fff9ef 0%, #f4fbff 52%, #f6fff8 100%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
   display: flex;
   flex-direction: column;
+
   height: auto;
   min-height: 100%;
-  background-color: colors.$white;
-  color: colors.$black;
+  margin: 0;
 }

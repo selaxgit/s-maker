@@ -1,0 +1,187 @@
+<section class="section-container flex-auto">
+  <div class="title border-bottom" role="button" tabindex="0" (click)="handleToggleExpandParams()">
+    <div class="flex-auto">Параметры спрайта</div>
+    <mat-icon>{{ expandParams() ? 'arrow_drop_up' : 'arrow_drop_down' }}</mat-icon>
+  </div>
+  @if (expandParams()) {
+    <div class="container">
+      @let params = editSpriteStore.params();
+      <div class="flex-row s-mat-without-bottom">
+        <s-input-number
+          class="w-number"
+          buttonsPosition="right"
+          label="Ширина"
+          [min]="1"
+          [max]="5000"
+          [showClearButton]="false"
+          [value]="params?.width ?? 128"
+          (valueChange)="handleChangeParams('width', $event)"
+        ></s-input-number>
+        <s-input-number
+          class="w-number ml-10"
+          buttonsPosition="right"
+          label="Высота"
+          [min]="1"
+          [max]="5000"
+          [showClearButton]="false"
+          [value]="params?.height ?? 128"
+          (valueChange)="handleChangeParams('height', $event)"
+        ></s-input-number>
+      </div>
+      <div class="mt-10">
+        <s-color-picker
+          label="Подсветка спрайта"
+          [value]="params?.bgColor ?? null"
+          (valueChange)="handleChangeParams('bgColor', $event)"
+        ></s-color-picker>
+      </div>
+    </div>
+  }
+  <div class="title border-bottom border-top" role="button" tabindex="0" (click)="handleToggleExpandGroundPoint()">
+    <div class="flex-auto">Точка соприкосновения с землей</div>
+    <mat-icon>{{ expandGroundPoint() ? 'arrow_drop_up' : 'arrow_drop_down' }}</mat-icon>
+  </div>
+  @if (expandGroundPoint()) {
+    <div class="container">
+      @let groundPoint = editSpriteStore.groundPoint();
+      <div class="flex-row s-mat-without-bottom">
+        <s-input-number
+          class="w-number"
+          buttonsPosition="right"
+          label="X"
+          [max]="50000"
+          [showClearButton]="false"
+          [value]="groundPoint?.groundPointX ?? null"
+          (valueChange)="handleChangeGroundPoint('groundPointX', $event)"
+        ></s-input-number>
+        <s-input-number
+          class="w-number ml-10"
+          buttonsPosition="right"
+          label="Y"
+          [max]="50000"
+          [showClearButton]="false"
+          [value]="groundPoint?.groundPointY ?? null"
+          (valueChange)="handleChangeGroundPoint('groundPointY', $event)"
+        ></s-input-number>
+      </div>
+      <s-checkbox
+        class="checkbox-offset"
+        label="Скрыть/показать точку"
+        [value]="groundPoint?.visibleGroundPoint ?? false"
+        (valueChange)="handleChangeGroundPoint('visibleGroundPoint', $event)"
+      ></s-checkbox>
+    </div>
+  }
+  @if (editSpriteStore.currentLayer()) {
+    <div class="title border-bottom border-top" role="button" tabindex="0" (click)="handleToggleExpandLayerParams()">
+      <div class="flex-auto">Параметры слоя</div>
+      <mat-icon>{{ expandLayerParams() ? 'arrow_drop_up' : 'arrow_drop_down' }}</mat-icon>
+    </div>
+    @if (expandLayerParams()) {
+      <div class="container">
+        @let currentLayer = editSpriteStore.currentLayer();
+        <div class="flex-row s-mat-without-bottom">
+          <s-input-number
+            class="w-number"
+            buttonsPosition="right"
+            label="X"
+            [min]="0"
+            [max]="5000"
+            [showClearButton]="false"
+            [value]="currentLayer?.x ?? 0"
+            (valueChange)="handleChangeLayerParams('x', $event)"
+          ></s-input-number>
+          <s-input-number
+            class="w-number ml-10"
+            buttonsPosition="right"
+            label="Y"
+            [min]="0"
+            [max]="5000"
+            [showClearButton]="false"
+            [value]="currentLayer?.y ?? 0"
+            (valueChange)="handleChangeLayerParams('y', $event)"
+          ></s-input-number>
+        </div>
+        <div class="flex-row mt-10 s-mat-without-bottom">
+          <s-input-number
+            class="w-number"
+            buttonsPosition="right"
+            label="Z-индекс"
+            [min]="0"
+            [max]="5000"
+            [showClearButton]="false"
+            [value]="currentLayer?.zIndex ?? 0"
+            (valueChange)="handleChangeLayerParams('zIndex', $event)"
+          ></s-input-number>
+          <s-color-picker
+            class="w-number ml-10"
+            label="Подсветка"
+            placeholder="Нет"
+            [value]="currentLayer?.bgColor ?? null"
+            (valueChange)="handleChangeLayerParams('bgColor', $event)"
+          ></s-color-picker>
+        </div>
+
+        <s-checkbox
+          class="checkbox-offset"
+          label="Видимость слоя"
+          [value]="currentLayer?.visible ?? true"
+          (valueChange)="handleChangeLayerParams('visible', $event)"
+        ></s-checkbox>
+        <s-checkbox
+          class="checkbox-offset"
+          label="Отразить по горизонтали"
+          [value]="currentLayer?.flipHorizontal ?? false"
+          (valueChange)="handleChangeLayerParams('flipHorizontal', $event)"
+        ></s-checkbox>
+        <s-checkbox
+          class="checkbox-offset"
+          label="Отразить по вертикали"
+          [value]="currentLayer?.flipVertical ?? false"
+          (valueChange)="handleChangeLayerParams('flipVertical', $event)"
+        ></s-checkbox>
+      </div>
+    }
+  }
+  @if (editSpriteStore.currentFrame()) {
+    @let currentFrame = editSpriteStore.currentFrame();
+    <div class="title border-bottom border-top" role="button" tabindex="0" (click)="handleToggleExpandFrameParams()">
+      <div class="flex-auto">
+        Параметры фрейма ({{ currentFrame?.width ?? '???' }}x{{ currentFrame?.height ?? '???' }})
+      </div>
+      <mat-icon>{{ expandFrameParams() ? 'arrow_drop_up' : 'arrow_drop_down' }}</mat-icon>
+    </div>
+    @if (expandFrameParams()) {
+      <div class="container">
+        <div class="flex-row s-mat-without-bottom">
+          <s-input-number
+            class="w-number"
+            buttonsPosition="right"
+            label="X"
+            [min]="0"
+            [max]="5000"
+            [showClearButton]="false"
+            [value]="currentFrame?.x ?? 0"
+            (valueChange)="handleChangeFrameParams('x', $event)"
+          ></s-input-number>
+          <s-input-number
+            class="w-number ml-10"
+            buttonsPosition="right"
+            label="Y"
+            [min]="0"
+            [max]="5000"
+            [showClearButton]="false"
+            [value]="currentFrame?.y ?? 0"
+            (valueChange)="handleChangeFrameParams('y', $event)"
+          ></s-input-number>
+        </div>
+        <s-checkbox
+          class="checkbox-offset"
+          label="Видимость фрейма"
+          [value]="currentFrame?.visible ?? true"
+          (valueChange)="handleChangeFrameParams('visible', $event)"
+        ></s-checkbox>
+      </div>
+    }
+  }
+</section>

@@ -1,0 +1,55 @@
+:host {
+  --mat-form-field-container-height: 36px;
+  --mat-form-field-container-vertical-padding: 6px;
+  --mat-checkbox-state-layer-size: 26px;
+  display: flex;
+  flex-direction: column;
+}
+
+:host ::ng-deep {
+  .s-suffix {
+    padding-right: 6px !important;
+  }
+  .s-color-picker__swatch {
+    position: relative;
+    top: -2px;
+
+    width: 16px !important;
+    height: 16px !important;
+  }
+}
+
+.title {
+  --mat-icon-button-state-layer-size: 22px;
+  --mat-icon-button-icon-size: 22px;
+  display: flex;
+  align-items: center;
+
+  height: 37px;
+  margin-bottom: 10px;
+  padding: 0 10px;
+
+  cursor: pointer;
+  user-select: none;
+
+  font-weight: bold;
+  line-height: 36px;
+  .mat-icon {
+    width: 22px;
+    height: 22px;
+
+    font-size: 20px;
+  }
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+
+  padding: 0 10px;
+}
+
+.checkbox-offset {
+  margin-top: 5px;
+  margin-left: -2px;
+}

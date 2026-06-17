@@ -1,0 +1,18 @@
+<section class="section-container flex-auto">
+  <div class="section-head">
+    <smc-toolbar-buttons
+      class="flex-auto"
+      [state]="editSceneStore.toolbarState()"
+      [dragObjectButton]="true"
+      [removeObjectButton]="false"
+      [drawRectButton]="false"
+      [drawObjectButton]="false"
+      (zoomEvent)="editSceneStore.zoomEvent($event)"
+      (toolbarStateEvent)="editSceneStore.setToolbarState($event)"
+    />
+  </div>
+  <div class="flex-col flex-auto">
+    <sb-draw-pixi class="flex-auto" />
+  </div>
+  <div class="status-bar border-top" [innerHTML]="editSceneStore.statusbarText()"></div>
+</section>

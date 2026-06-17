@@ -1,0 +1,45 @@
+<s-slide-panel-container
+  class="flex-auto panel-content-relative"
+  cancelButtonTitle="Закрыть"
+  panelTitle="Вырезать фрейм из файла"
+  [disabledApplyButton]="disabledApplyButton()"
+  (closeEvent)="onClose()"
+  (applyEvent)="onApply()"
+>
+  @if (!filename()) {
+    <div class="choice-file-container">
+      <div
+        class="choice-file"
+        smcFileDrop
+        [smcFileDropClickChoice]="'click'"
+        [smcFileDropAccept]="'image/*'"
+        (smcFileDropEvent)="onDropFile($event)"
+      >
+        Нажмите для выбора файла или перетащите файл сюда
+      </div>
+    </div>
+  } @else {
+    <smc-toolbar-buttons
+      class="border-bottom"
+      [infoButton]="false"
+      [dragObjectButton]="false"
+      [drawObjectButton]="false"
+      [removeObjectButton]="false"
+      (zoomEvent)="handleZoom($event)"
+      (toolbarStateEvent)="onState($event)"
+    >
+      <div class="ml-10 coords">координаты: {{ coordsInfo() }}</div>
+    </smc-toolbar-buttons>
+  }
+  <div class="view-container">
+    <div #appPixi class="pixi-container"></div>
+  </div>
+  <ng-container sPrefix>
+    @if (filename()) {
+      <div class="flex-row-align-center">
+        <button matButton="elevated" color="primary" (click)="onChangeFile()">Выбрать другой файл</button>
+        <span class="ml-10">Файл: {{ filename() }}</span>
+      </div>
+    }
+  </ng-container>
+</s-slide-panel-container>

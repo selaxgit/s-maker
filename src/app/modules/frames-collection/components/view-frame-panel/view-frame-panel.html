@@ -1,0 +1,23 @@
+<s-slide-panel-container
+  class="flex-auto"
+  cancelButtonTitle="Закрыть"
+  [panelTitle]="title()"
+  [disabledApplyButton]="isDisabledApplyButton()"
+  (closeEvent)="handleClose()"
+  (applyEvent)="handleApply()"
+>
+  <div class="flex-row-align-center border-bottom">
+    <smc-scale-buttons buttonColor="primary" (zoomEvent)="handleZoom($event)"></smc-scale-buttons>
+  </div>
+  <div class="view-container">
+    <div #appPixi class="pixi-container"></div>
+  </div>
+  <ng-container sPrefix>
+    <div class="flex-row">
+      <button matButton="outlined" color="primary" (click)="handleChangeFile()">Изменить файл</button>
+      <button class="ml-10" matButton="outlined" color="primary" [disabled]="!hasFrame" (click)="handleChangeName()">
+        Изменить наименование
+      </button>
+    </div>
+  </ng-container>
+</s-slide-panel-container>

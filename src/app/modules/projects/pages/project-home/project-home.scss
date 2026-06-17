@@ -1,0 +1,82 @@
+@use "colors";
+
+:host {
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+}
+
+.main-container {
+  display: flex;
+  align-items: center;
+  flex: auto;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.project-container {
+  display: flex;
+  align-items: center;
+
+  width: 942px;
+  padding: 16px;
+
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0px 0px 10px 3px rgba(34, 60, 80, 0.2);
+
+  h1 {
+    flex: auto;
+
+    margin: 0;
+
+    font-size: 32px;
+    font-weight: 600;
+  }
+}
+
+.modules-list {
+  display: flex;
+  gap: 16px;
+
+  margin-top: 16px;
+}
+
+.module-item {
+  display: flex;
+  flex-direction: column;
+
+  width: 280px;
+  height: 64px;
+  padding: 16px;
+
+  cursor: pointer;
+
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0px 0px 10px 3px rgba(34, 60, 80, 0.2);
+  &:hover {
+    background-color: colors.$color-hover;
+  }
+}
+
+.module-name {
+  font-size: 26px;
+  font-weight: 500;
+}
+
+.module-description {
+  font-size: 16px;
+}
+
+.items-container {
+  display: flex;
+  gap: 16px;
+
+  margin-top: 16px;
+}
+
+.items-list {
+  width: 480px;
+  height: 380px;
+}

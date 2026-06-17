@@ -1,0 +1,96 @@
+<div class="maxheight-div" [class.expanded]="expanded()">
+  <div class="flex-row-align-center border-bottom">
+    <div class="flex-auto ml-10 text-bold">{{ title() }}</div>
+    <s-checkbox
+      label="Видимость"
+      labelPosition="left"
+      style="width: 115px"
+      [value]="modelVisible()"
+      (valueChange)="handleChangeParams('visible', $event)"
+    />
+    <button
+      matIconButton
+      color="primary"
+      matTooltip="Перейти к редактированию объекта"
+      [disabled]="!editRoute()"
+      [routerLink]="editRoute()"
+    >
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button matIconButton color="accent" matTooltip="Очистить выделенный слой/объект" (click)="handleClearSelection()">
+      <mat-icon>cancel</mat-icon>
+    </button>
+  </div>
+  <div class="container s-mat-without-bottom">
+    <div class="flex-row mt-10">
+      <s-input-number
+        class="flex-auto"
+        label="X"
+        [min]="0"
+        [showClearButton]="false"
+        [value]="modelX()"
+        (valueChange)="handleChangeParams('x', $event, 0)"
+      />
+      <s-input-number
+        class="flex-auto ml-10"
+        label="Y"
+        [min]="0"
+        [showClearButton]="false"
+        [value]="modelY()"
+        (valueChange)="handleChangeParams('y', $event, 0)"
+      />
+    </div>
+    @if (visibleWidthHeight()) {
+      <div class="flex-row mt-10">
+        <s-input-number
+          class="flex-auto"
+          label="Ширина"
+          [min]="0"
+          [showClearButton]="false"
+          [value]="modelWidth()"
+          (valueChange)="handleChangeParams('width', $event, 0)"
+        />
+        <s-input-number
+          class="flex-auto ml-10"
+          label="Высота"
+          [min]="0"
+          [showClearButton]="false"
+          [value]="modelHeight()"
+          (valueChange)="handleChangeParams('height', $event, 0)"
+        />
+      </div>
+    }
+    @if (visibleZIndex()) {
+      <div class="flex-row mt-10">
+        <s-input-number
+          class="flex-auto"
+          label="Z-индекс"
+          [min]="0"
+          [showClearButton]="false"
+          [value]="modelZIndex()"
+          (valueChange)="handleChangeParams('zIndex', $event, 0)"
+        />
+      </div>
+    }
+    @if (visibleAnimation()) {
+      <div class="flex-row mt-10">
+        <s-select
+          class="flex-auto"
+          label="Анимация"
+          [options]="animationsList()"
+          [showClearButton]="false"
+          [value]="modelAnimationGuid()"
+          (valueChange)="handleChangeParams('animationGuid', $event)"
+        />
+        <button
+          matIconButton
+          color="primary"
+          [disabled]="!hasAnimation()"
+          (click)="handleChangeParams('playing', !animationPlaying())"
+        >
+          <mat-icon>{{ animationPlaying() ? 'stop_circle' : 'play_circle' }}</mat-icon>
+        </button>
+      </div>
+    }
+  </div>
+</div>

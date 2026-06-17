@@ -1,0 +1,27 @@
+@use "colors";
+
+:host {
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+}
+
+.main-container {
+  display: flex;
+  flex: auto;
+
+  padding: 10px 16px;
+  gap: 16px;
+}
+
+.layers-container {
+  width: 350px;
+}
+
+.params-container {
+  width: 370px;
+}
+
+.animations-container {
+  width: 350px;
+}

@@ -1,0 +1,89 @@
+<ng-template #menu>
+  <div class="context-menu" cdkMenu>
+    @let items = menuGridItems();
+    @if (items.length === 0) {
+      <div class="text-center text-danger">Нет данных</div>
+    } @else {
+      <div class="text-center text-bold">Ячейка: {{ items[0].x }}x{{ items[0].y }}</div>
+      @for (item of items; track item.frameId) {
+        <div
+          class="context-menu-item"
+          cdkMenuItem
+          [cdkMenuTriggerFor]="menuFrame"
+          [cdkMenuTriggerData]="{ tile: item }"
+        >
+          Frame #{{ item.frameId }}
+          <mat-icon class="arrow">arrow_right</mat-icon>
+        </div>
+      }
+      <div class="context-menu-item text-danger" cdkMenuItem tabindex="0" role="button" (click)="handleRemoveAll()">
+        Удалить все фреймы из ячейки
+      </div>
+    }
+  </div>
+</ng-template>
+
+<ng-template #menuFrame let-tile="tile">
+  <div class="context-menu" cdkMenu>
+    <div
+      class="context-menu-item"
+      cdkMenuItem
+      tabindex="0"
+      role="button"
+      (click)="handleAction(actionEnum.SwitchFlipVertical, tile)"
+    >
+      <mat-icon class="icon">{{ tile.flipVertical ? 'check_box' : 'check_box_outline_blank' }}</mat-icon>
+      Отобразить по вертикали
+    </div>
+    <div
+      class="context-menu-item"
+      cdkMenuItem
+      tabindex="0"
+      role="button"
+      (click)="handleAction(actionEnum.SwitchFlipHorizontal, tile)"
+    >
+      <mat-icon class="icon">{{ tile.flipHorizontal ? 'check_box' : 'check_box_outline_blank' }}</mat-icon>
+      Отобразить по горизонтали
+    </div>
+    <div
+      class="context-menu-item"
+      cdkMenuItem
+      tabindex="0"
+      role="button"
+      (click)="handleAction(actionEnum.SwitchStretch, tile)"
+    >
+      <mat-icon class="icon">{{ tile.stretch ? 'check_box' : 'check_box_outline_blank' }}</mat-icon>
+      По размерам ячейки
+    </div>
+    <div
+      class="context-menu-item"
+      cdkMenuItem
+      tabindex="0"
+      role="button"
+      (click)="handleAction(actionEnum.ShowPropeties, tile)"
+    >
+      <mat-icon class="icon">settings</mat-icon>
+      Свойства тайла
+    </div>
+    <div
+      class="context-menu-item"
+      cdkMenuItem
+      tabindex="0"
+      role="button"
+      (click)="handleAction(actionEnum.TopZIndex, tile)"
+    >
+      <mat-icon class="icon">upload</mat-icon>
+      Поднять наверх
+    </div>
+    <div
+      class="context-menu-item text-danger"
+      cdkMenuItem
+      tabindex="0"
+      role="button"
+      (click)="handleAction(actionEnum.Remove, tile)"
+    >
+      <mat-icon class="icon">delete</mat-icon>
+      Удалить этот фрейм
+    </div>
+  </div>
+</ng-template>

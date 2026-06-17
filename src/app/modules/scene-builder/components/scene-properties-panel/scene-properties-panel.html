@@ -1,0 +1,48 @@
+<s-slide-panel-container
+  class="flex-auto"
+  cancelButtonTitle="Закрыть"
+  panelTitle="Параметры сцены"
+  (closeEvent)="handleClose()"
+  (applyEvent)="handleApply()"
+>
+  <div class="container">
+    <s-input label="Наименование сцены" [(ngModel)]="sceneName" />
+    <fieldset class="mt-10">
+      <legend>Параметры сцены</legend>
+      <div class="flex-row s-mat-without-bottom">
+        <s-input-number
+          class="w-number"
+          buttonsPosition="right"
+          label="X"
+          [min]="0"
+          [showClearButton]="false"
+          [(ngModel)]="offsetX"
+        />
+        <s-input-number
+          class="w-number ml-10"
+          buttonsPosition="right"
+          label="Y"
+          [min]="0"
+          [showClearButton]="false"
+          [(ngModel)]="offsetY"
+        />
+        <s-input-number
+          class="w-number ml-10"
+          buttonsPosition="right"
+          label="Ширина"
+          [min]="10"
+          [showClearButton]="false"
+          [(ngModel)]="sceneWidth"
+        />
+        <s-input-number
+          class="w-number ml-10"
+          buttonsPosition="right"
+          label="Высота"
+          [min]="10"
+          [showClearButton]="false"
+          [(ngModel)]="sceneHeight"
+        />
+      </div>
+    </fieldset>
+  </div>
+</s-slide-panel-container>

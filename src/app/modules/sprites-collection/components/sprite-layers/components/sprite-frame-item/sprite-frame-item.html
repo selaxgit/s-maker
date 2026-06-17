@@ -1,0 +1,14 @@
+<div class="items-edit-list-row" [class.selected]="this.editSpriteStore.currentFrame()?.guid === frame().guid">
+  <div class="items-edit-list-title" role="button" tabindex="0" (click)="handleSelectFrame()">
+    {{ frame().name }}
+  </div>
+  <button matIconButton color="primary" (click)="handleEditFrame()">
+    <mat-icon>edit</mat-icon>
+  </button>
+  <button matIconButton color="accent" (click)="handleRemoveFrame()">
+    <mat-icon>highlight_off</mat-icon>
+  </button>
+  <button matIconButton color="primary" (click)="handleToggleVisibleFrame()">
+    <mat-icon>{{ frame().visible ? 'visibility' : 'visibility_off' }}</mat-icon>
+  </button>
+</div>

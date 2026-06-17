@@ -1,0 +1,73 @@
+<div class="s-modal-container">
+  <div class="container s-mat-without-bottom">
+    <div class="flex-row-align-center mt-10" [formGroup]="formGroup">
+      <div class="flex-auto">
+        <s-select
+          label="Слой для анимации"
+          formControlName="layerGuid"
+          [options]="options()"
+          [showClearButton]="false"
+        />
+      </div>
+      <div class="ml-10">
+        <s-checkbox label="Цикличность" formControlName="loop" />
+      </div>
+      <div class="w-number ml-10">
+        <s-input-number
+          label="Скорость"
+          formControlName="speed"
+          [step]="0.01"
+          [decimal]="true"
+          [decimalPlaces]="3"
+          [showClearButton]="false"
+        />
+      </div>
+      <div class="ml-10">
+        <button
+          matIconButton
+          color="primary"
+          matTooltip="Установить скорость всем фреймам"
+          (click)="handleSetSpeedAllFrames()"
+        >
+          <mat-icon>keyboard_double_arrow_down</mat-icon>
+        </button>
+        <button
+          matIconButton
+          color="accent"
+          matTooltip="Очистить скорость фреймов"
+          (click)="handleSetSpeedAllFrames(true)"
+        >
+          <mat-icon>block</mat-icon>
+        </button>
+      </div>
+    </div>
+    @if (frames().length > 0) {
+      <div class="scroll-container">
+        <div class="scroll">
+          <div class="flex-col">
+            @for (frame of frames(); track frame.guid) {
+              <div class="flex-row-align-center mt-10">
+                <div class="flex-row flex-end flex-auto">{{ frame.name }}</div>
+                <div class="w-number ml-10">
+                  <s-input-number
+                    label="Скорость"
+                    [step]="0.01"
+                    [decimal]="true"
+                    [decimalPlaces]="3"
+                    [showClearButton]="false"
+                    [(value)]="frame.value"
+                  />
+                </div>
+                <div class="buttons-empty"></div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+  <div class="s-modal-footer-buttons">
+    <button matButton="elevated" color="primary" (click)="handleApply()">Сохранить</button>
+    <button matButton="elevated" color="accent" (click)="handleClose()">Закрыть</button>
+  </div>
+</div>

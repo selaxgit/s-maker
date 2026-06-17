@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { app, BrowserWindow, Menu } = require('electron');
 const path = require('path');
@@ -23,7 +22,7 @@ const createWindow = () => {
   const win = new BrowserWindow({
     width: 1680,
     height: 900,
-    title: 'S-Maker',
+    title: 's-maker',
     autoHideMenuBar: true,
     icon: path.join(__dirname, '/favicon.ico'),
   });

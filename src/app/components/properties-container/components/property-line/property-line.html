@@ -1,0 +1,25 @@
+<div class="s-mat-without-bottom">
+  <s-input label="Наименование" [showClearButton]="false" [(ngModel)]="propertyKey" />
+</div>
+<div class="s-mat-without-bottom">
+  <s-select label="Тип свойства" [options]="typesList" [showClearButton]="false" [(ngModel)]="propertyType" />
+</div>
+<div class="s-mat-without-bottom" style="width: 235px">
+  @switch (propertyType()) {
+    @case ('string') {
+      <s-input label="Значение" [showClearButton]="true" [(ngModel)]="propertyValue" />
+    }
+    @case ('number') {
+      <s-input-number label="Значение" [showClearButton]="true" [(ngModel)]="propertyValue" />
+    }
+    @case ('boolean') {
+      <mat-radio-group [(ngModel)]="propertyValue">
+        <mat-radio-button [value]="true">Да</mat-radio-button>
+        <mat-radio-button [value]="false">Нет</mat-radio-button>
+      </mat-radio-group>
+    }
+  }
+</div>
+<button matIconButton color="accent" (click)="handleRemoveLine()">
+  <mat-icon>cancel</mat-icon>
+</button>
