@@ -1,6 +1,11 @@
 @let layers = editSpriteStore.layers();
 <section class="section-container flex-auto">
   <div class="section-head">
+    <button matIconButton color="primary" (click)="handleToggleExpandedLayers()">
+      <mat-icon>
+        {{ expandedLayers() ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}
+      </mat-icon>
+    </button>
     <h4 class="section-title">Слои</h4>
     <button matIconButton color="primary" (click)="handleAddLayer()">
       <mat-icon>add</mat-icon>
@@ -27,7 +32,7 @@
           (cdkDropListDropped)="handleDropLayer($event)"
         >
           @for (layer of layers; track layer.guid) {
-            <sc-sprite-layer-item cdkDrag [layer]="layer" />
+            <sc-sprite-layer-item cdkDrag [layer]="layer" [expandedLayer]="expandedLayers()" />
           }
         </div>
       </div>

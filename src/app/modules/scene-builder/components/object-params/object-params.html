@@ -92,5 +92,19 @@
         </button>
       </div>
     }
+    @if (visibleFlip()) {
+      <div class="mt-10">
+        <s-checkbox
+          label="Отразить по горизонтали"
+          [value]="modelFlipHorizontal()"
+          (valueChange)="handleChangeParams('flipHorizontal', $event)"
+        />
+        <s-checkbox
+          label="Отразить по вертикали"
+          [value]="modelFlipVertical()"
+          (valueChange)="handleChangeParams('flipVertical', $event)"
+        />
+      </div>
+    }
   </div>
 </div>

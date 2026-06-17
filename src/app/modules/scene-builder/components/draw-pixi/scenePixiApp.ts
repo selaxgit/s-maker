@@ -18,6 +18,7 @@ import {
 } from './interfaces';
 import { LayerEventsGroundContainer } from './layer-events-ground.container';
 import { LayerGridContainer } from './layer-grid.container';
+import { LayerFramesContainer } from './layers-frames.container';
 import { LayerSpritesContainer } from './layers-sprites.container';
 
 interface IObjectAtCursor {
@@ -93,6 +94,9 @@ export class ScenePixiApp extends PixiApp {
               this.sceneSpritePlayChanged$.next({ guidLayer, guidObject, playing });
             };
             break;
+          case SceneLayerTypeEnum.Frames:
+            layerContainer = new LayerFramesContainer(this.drawSceneService);
+            break;
           default:
             console.error(`Не известный тип слоя: ${layerInfo.type}`);
             continue;
@@ -151,6 +155,7 @@ export class ScenePixiApp extends PixiApp {
           );
           break;
         case SceneLayerTypeEnum.Sprites:
+        case SceneLayerTypeEnum.Frames:
           this.dragSpriteObject(this.objectAtCursor.object, e);
           break;
       }
