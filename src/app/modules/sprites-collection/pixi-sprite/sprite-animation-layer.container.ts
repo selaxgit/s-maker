@@ -8,7 +8,7 @@ export class SpriteAnimationLayerContainer extends Container {
 
   onAnimationFrameChange?: (layerGuid: string, currentFrame: number, totalFrames: number) => void;
 
-  private readonly layerFrames = new Map<string, { hash: string; visible: boolean; canvas: HTMLCanvasElement }>();
+  private readonly layerFrames = new Map<string, { hash: string; canvas: HTMLCanvasElement }>();
 
   private layerHash: string | null = null;
 
@@ -67,12 +67,10 @@ export class SpriteAnimationLayerContainer extends Container {
     const failAllFrameSpeed = Object.values(layer.frames).some((frame: number | null) => frame === null);
     const spriteFrames: AnimatedSpriteFrames = [];
     for (const [frameGuid, cache] of this.layerFrames.entries()) {
-      if (cache.visible) {
-        if (failAllFrameSpeed) {
-          (spriteFrames as Texture[]).push(Texture.from(cache.canvas));
-        } else if (layer.frames[frameGuid]) {
-          (spriteFrames as FrameObject[]).push({ texture: Texture.from(cache.canvas), time: layer.frames[frameGuid] });
-        }
+      if (failAllFrameSpeed) {
+        (spriteFrames as Texture[]).push(Texture.from(cache.canvas));
+      } else if (layer.frames[frameGuid]) {
+        (spriteFrames as FrameObject[]).push({ texture: Texture.from(cache.canvas), time: layer.frames[frameGuid] });
       }
     }
     if (spriteFrames.length > 0) {
@@ -108,7 +106,6 @@ export class SpriteAnimationLayerContainer extends Container {
   }
 
   async drawLayer(layer: ISpriteLayer, spriteWidth: number, spriteHeight: number): Promise<void> {
-    this.visible = layer.visible;
     const layerHash = JSON.stringify([
       spriteWidth,
       spriteHeight,
@@ -120,7 +117,6 @@ export class SpriteAnimationLayerContainer extends Container {
         guid: f.guid,
         x: f.x,
         y: f.y,
-        visible: f.visible,
       })),
     ]);
     if (this.layerHash !== layerHash) {
@@ -166,7 +162,6 @@ export class SpriteAnimationLayerContainer extends Container {
     const cacheFrame = this.layerFrames.get(frame.guid);
     if (cacheFrame) {
       if (cacheFrame.hash === frameHash) {
-        cacheFrame.visible = frame.visible;
         return;
       } else {
         this.layerFrames.delete(frame.guid);
@@ -196,6 +191,6 @@ export class SpriteAnimationLayerContainer extends Container {
     } else {
       ctx.drawImage(cacheCanvas.canvas, x, y);
     }
-    this.layerFrames.set(frame.guid, { hash: frameHash, visible: frame.visible, canvas });
+    this.layerFrames.set(frame.guid, { hash: frameHash, canvas });
   }
 }

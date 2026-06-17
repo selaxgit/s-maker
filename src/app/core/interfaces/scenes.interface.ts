@@ -17,12 +17,18 @@ export interface ISceneObjectSprite extends ISceneObject {
   playing: boolean;
 }
 
+export interface ISceneObjectFrame extends ISceneObject {
+  referenceId: number | null;
+  flipHorizontal: boolean;
+  flipVertical: boolean;
+}
+
 export interface ISceneObjectEventsGround extends ISceneObject {
   width: number;
   height: number;
 }
 
-export type SceneObjectType = ISceneObject | ISceneObjectSprite | ISceneObjectEventsGround;
+export type SceneObjectType = ISceneObject | ISceneObjectSprite | ISceneObjectFrame | ISceneObjectEventsGround;
 export interface ISceneLayer {
   guid: string;
   type: SceneLayerTypeEnum;

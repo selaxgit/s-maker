@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { SDialogService, SSlidePanelService } from '@selax/ui';
 import { SUStringHelper } from '@selax/utils';
 
+import { SMCChoiceFramesPanel } from '~components/choice-frames-panel';
 import { SMCChoiceSpritesPanel } from '~components/choice-sprites-panel';
 import { SceneLayerTypeEnum } from '~core/constants';
 import { ScenesFacade } from '~core/facade';
@@ -105,10 +106,15 @@ export class SBLayerItem {
   }
 
   handleAddObject(): void {
-    if (this.layer().type === SceneLayerTypeEnum.Sprites) {
-      this.addSpritesObject();
-    } else {
-      this.addObject();
+    switch (this.layer().type) {
+      case SceneLayerTypeEnum.Sprites:
+        this.addSpritesObject();
+        break;
+      case SceneLayerTypeEnum.Frames:
+        this.addFramesObject();
+        break;
+      default:
+        this.addObject();
     }
   }
 
@@ -138,6 +144,24 @@ export class SBLayerItem {
       });
   }
 
+  private addFramesObject(): void {
+    this.slidePanelService
+      .showPanel$<IViewTile[] | null>(
+        SMCChoiceFramesPanel,
+        {
+          panelTitle: 'Выберите фреймы для слоя',
+          multiple: true,
+        },
+        { disabledClose: false },
+      )
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((result: IViewTile[] | null) => {
+        if (Array.isArray(result)) {
+          this.addFramesObjectByIds(result.map((i: IViewTile) => i.id));
+        }
+      });
+  }
+
   private addObject(): void {
     const layer = this.layer();
     this.objectPropertiesPanelService
@@ -163,6 +187,12 @@ export class SBLayerItem {
   private async addSpritesObjectByIds(ids: number[]): Promise<void> {
     for (const id of ids) {
       this.scenesFacade.addObjectSpriteToLayer(this.layer().guid, id);
+    }
+  }
+
+  private async addFramesObjectByIds(ids: number[]): Promise<void> {
+    for (const id of ids) {
+      this.scenesFacade.addObjectFrameToLayer(this.layer().guid, id);
     }
   }
 }

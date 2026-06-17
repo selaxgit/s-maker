@@ -24,7 +24,7 @@ export class SCSpriteAnimations {
 
   readonly sectionTitle = computed(() => {
     const adjustmentMode = this.editSpriteStore.adjustmentMode();
-    return adjustmentMode === AdjustmentModeEnum.Animation ? 'Анимация для просмотра' : 'Анимация';
+    return adjustmentMode === AdjustmentModeEnum.Animation ? 'Анимации для просмотра' : 'Анимации';
   });
 
   private readonly destroyRef = inject(DestroyRef);

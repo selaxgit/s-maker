@@ -49,6 +49,8 @@
           class="w-number"
           buttonsPosition="right"
           label="X"
+          [decimal]="true"
+          [decimalPlaces]="2"
           [max]="50000"
           [showClearButton]="false"
           [value]="groundPoint?.groundPointX ?? null"
@@ -58,6 +60,8 @@
           class="w-number ml-10"
           buttonsPosition="right"
           label="Y"
+          [decimal]="true"
+          [decimalPlaces]="2"
           [max]="50000"
           [showClearButton]="false"
           [value]="groundPoint?.groundPointY ?? null"
@@ -85,6 +89,8 @@
             class="w-number"
             buttonsPosition="right"
             label="X"
+            [decimal]="true"
+            [decimalPlaces]="2"
             [min]="0"
             [max]="5000"
             [showClearButton]="false"
@@ -95,6 +101,8 @@
             class="w-number ml-10"
             buttonsPosition="right"
             label="Y"
+            [decimal]="true"
+            [decimalPlaces]="2"
             [min]="0"
             [max]="5000"
             [showClearButton]="false"
@@ -158,6 +166,8 @@
             class="w-number"
             buttonsPosition="right"
             label="X"
+            [decimal]="true"
+            [decimalPlaces]="2"
             [min]="0"
             [max]="5000"
             [showClearButton]="false"
@@ -168,6 +178,8 @@
             class="w-number ml-10"
             buttonsPosition="right"
             label="Y"
+            [decimal]="true"
+            [decimalPlaces]="2"
             [min]="0"
             [max]="5000"
             [showClearButton]="false"
@@ -181,6 +193,9 @@
           [value]="currentFrame?.visible ?? true"
           (valueChange)="handleChangeFrameParams('visible', $event)"
         ></s-checkbox>
+        <button class="mt-10" matButton="outlined" (click)="handleSetFrameToSpriteCenter()">
+          Установить фрейм по центру спрайта
+        </button>
       </div>
     }
   }

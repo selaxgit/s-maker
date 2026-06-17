@@ -17,6 +17,8 @@ export class LayerTypeToStrPipe implements PipeTransform {
         return 'слой земли';
       case SceneLayerTypeEnum.Sprites:
         return 'слой спрайтов';
+      case SceneLayerTypeEnum.Frames:
+        return 'слой фреймов';
       default:
         return 'unknown';
     }

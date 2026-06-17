@@ -43,6 +43,16 @@ export class SCSpriteParams implements OnInit {
     this.expandFrameParams.set(storedFrameParamsExpand !== null ? storedFrameParamsExpand : true);
   }
 
+  handleSetFrameToSpriteCenter(): void {
+    const params = this.editSpriteStore.params();
+    const frame = this.editSpriteStore.currentFrame();
+    if (params && frame) {
+      const x = (params.width - frame.width) / 2;
+      const y = (params.height - frame.height) / 2;
+      this.editSpriteStore.updateCurrentFrame({ x, y });
+    }
+  }
+
   handleChangeFrameParams(field: keyof ISpriteLayer, value: number | boolean | null): void {
     this.editSpriteStore.updateCurrentFrame({ [field]: value });
   }
