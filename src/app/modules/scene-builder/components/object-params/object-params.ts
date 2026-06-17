@@ -12,6 +12,7 @@ import { SpritesFacade } from '~core/facade';
 import {
   ISceneLayer,
   ISceneObjectEventsGround,
+  ISceneObjectFrame,
   ISceneObjectSprite,
   ISprite,
   ISpriteAnimation,
@@ -19,7 +20,17 @@ import {
 } from '~core/interfaces';
 import { EditSceneStore, ProjectStore } from '~core/stores';
 
-type ParamsKeyType = 'visible' | 'x' | 'y' | 'width' | 'height' | 'zIndex' | 'animationGuid' | 'playing';
+type ParamsKeyType =
+  | 'visible'
+  | 'x'
+  | 'y'
+  | 'width'
+  | 'height'
+  | 'zIndex'
+  | 'animationGuid'
+  | 'playing'
+  | 'flipHorizontal'
+  | 'flipVertical';
 
 @Component({
   selector: 'sb-object-params',
@@ -30,6 +41,7 @@ type ParamsKeyType = 'visible' | 'x' | 'y' | 'width' | 'height' | 'zIndex' | 'an
     SCheckboxComponent,
     SInputNumberComponent,
     SSelectComponent,
+    SCheckboxComponent,
     RouterLink,
   ],
   templateUrl: './object-params.html',
@@ -50,6 +62,8 @@ export class SBObjectParams {
 
   readonly visibleAnimation = signal<boolean>(false);
 
+  readonly visibleFlip = signal<boolean>(false);
+
   readonly animationPlaying = signal<boolean>(false);
 
   readonly animationsList = signal<ISelectOption[]>([]);
@@ -69,6 +83,10 @@ export class SBObjectParams {
   readonly modelHeight = signal<number>(0);
 
   readonly modelAnimationGuid = signal<string | null>(null);
+
+  readonly modelFlipHorizontal = signal<boolean>(false);
+
+  readonly modelFlipVertical = signal<boolean>(false);
 
   readonly hasAnimation = computed(() => !!this.modelAnimationGuid());
 
@@ -94,6 +112,7 @@ export class SBObjectParams {
         );
         this.visibleZIndex.set(true);
         this.visibleAnimation.set(!!currentObject && currentLayer.type === SceneLayerTypeEnum.Sprites);
+        this.visibleFlip.set(!!currentObject && currentLayer.type === SceneLayerTypeEnum.Frames);
         if (!currentObject) {
           this.setModelsByLayer(currentLayer);
         } else {
@@ -168,6 +187,10 @@ export class SBObjectParams {
     if (this.visibleWidthHeight()) {
       this.modelWidth.set((currentObject as ISceneObjectEventsGround).width);
       this.modelHeight.set((currentObject as ISceneObjectEventsGround).height);
+    }
+    if (this.visibleFlip()) {
+      this.modelFlipHorizontal.set((currentObject as ISceneObjectFrame).flipHorizontal);
+      this.modelFlipVertical.set((currentObject as ISceneObjectFrame).flipVertical);
     }
     if (layerType === SceneLayerTypeEnum.Sprites) {
       const spriteObject = currentObject as ISceneObjectSprite;

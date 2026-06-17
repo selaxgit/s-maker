@@ -6,6 +6,7 @@ import { IScene, ISpriteAnimation } from '~core/interfaces';
 import { ScenesRepository } from '~core/repositories';
 import { EditSceneStore, ProjectStore } from '~core/stores';
 
+import { FramesFacade } from './frames.facade';
 import { SpritesFacade } from './sprites.facade';
 
 @Injectable({
@@ -20,10 +21,12 @@ export class ScenesFacade {
 
   private readonly spritesFacade = inject(SpritesFacade);
 
+  private readonly framesFacade = inject(FramesFacade);
+
   async addObjectSpriteToLayer(layerGuid: string, spriteId: number): Promise<void> {
     const sprite = await lastValueFrom(this.spritesFacade.fetchSpriteById(spriteId));
     if (!sprite) {
-      throw new Error('Ненайден спрайт для добавления слоя');
+      throw new Error('Не найден спрайт для добавления в слой');
     }
     const animationGuid = sprite?.animations?.find((item: ISpriteAnimation) => item.default)?.guid ?? null;
     this.editSceneStore.addObjectToLayer(layerGuid, {
@@ -37,6 +40,25 @@ export class ScenesFacade {
       zIndex: 0,
       animationGuid,
       playing: false,
+    });
+  }
+
+  async addObjectFrameToLayer(layerGuid: string, frameId: number): Promise<void> {
+    const frame = await lastValueFrom(this.framesFacade.fetchFrameById(frameId));
+    if (!frame) {
+      throw new Error('Не найден фрейм для добавления в слой');
+    }
+    this.editSceneStore.addObjectToLayer(layerGuid, {
+      guid: SUStringHelper.uuidv4(),
+      name: frame.name,
+      referenceId: frameId,
+      x: 0,
+      y: 0,
+      visible: true,
+      properties: {},
+      zIndex: 0,
+      flipHorizontal: false,
+      flipVertical: false,
     });
   }
 

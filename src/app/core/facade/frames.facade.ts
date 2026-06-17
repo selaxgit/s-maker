@@ -45,6 +45,10 @@ export class FramesFacade extends BaseTreeFacade {
     return this.framesRepository.addFrameFromFile(file, this.treeStore.selectedNode()?.id ?? null);
   }
 
+  fetchFrameById(id: number): Observable<IFrame> {
+    return this.framesRepository.fetchFrameById(id);
+  }
+
   fetchFrames(projectId: number): Observable<void> {
     return this.framesRepository.fetchFrames(projectId);
   }
