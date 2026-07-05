@@ -37,23 +37,28 @@ export abstract class BaseTilesStore {
     return this.tiles().length - this.usedTiles();
   });
 
+  readonly maxWidthTiles = computed(() => {
+    if (this.tiles().length === 0) {
+      return 0;
+    }
+    const width = this.tiles().map((item: IViewTile) => item.fileWidth);
+    return Math.max(...width);
+  });
+
+  readonly maxHeightTiles = computed(() => {
+    if (this.tiles().length === 0) {
+      return 0;
+    }
+    const height = this.tiles().map((item: IViewTile) => item.fileHeight);
+    return Math.max(...height);
+  });
+
   updateUsedFrames(usedFrameIds: number[]): void {
     this._tiles.update((tiles: IViewTile[]) => {
       return tiles.map((tile: IViewTile) => {
         return {
           ...tile,
           used: usedFrameIds.includes(tile.id),
-        };
-      });
-    });
-  }
-
-  setSelectedByIds(ids: number[]): void {
-    this._tiles.update((tiles: IViewTile[]) => {
-      return tiles.map((tile: IViewTile) => {
-        return {
-          ...tile,
-          selected: ids.includes(tile.id),
         };
       });
     });

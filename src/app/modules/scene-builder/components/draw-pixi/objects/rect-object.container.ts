@@ -2,53 +2,38 @@
 import { ISUCoords, ISURect, ISUWidthHeight } from '@selax/utils';
 import { FederatedPointerEvent, Graphics } from 'pixi.js';
 
+import { SceneLayerTypeEnum } from '~core/constants';
 import { ISceneObjectEventsGround } from '~core/interfaces';
+import { IDragStart } from '~pixijs/pixi.app';
 
-import { ALPHA_RECT_VALUE, ResizeCursorType, SELECT_OBJECT_COLOR } from './constants';
-import { IObjectRectGraphicsData, ISceneDragObject } from './interfaces';
+import { BaseObjectContainer } from '../base-object.container';
+import { ALPHA_RECT_VALUE, ResizeCursorType, SELECT_OBJECT_COLOR } from '../constants';
 
-export interface IRectGraphicsEvent {
-  object: RectGraphics;
-  data: IObjectRectGraphicsData;
-}
-
-export class RectGraphics extends Graphics implements ISceneDragObject {
-  onObjectMouseMove: ((info: IRectGraphicsEvent) => void) | null = null;
-
-  onObjectMouseLeave: (() => void) | null = null;
-
+export class RectObjectContainer extends BaseObjectContainer {
   private currentRect: ISURect = { x: 0, y: 0, width: 0, height: 0 };
 
   private isSelected = false;
 
+  private rectGraphics = new Graphics();
+
   constructor(
-    readonly guidObject: string,
-    readonly bgColor: number,
+    override readonly typeLayer: SceneLayerTypeEnum,
+    override readonly guidLayer: string,
+    override readonly guidObject: string,
+    protected readonly bgColor: number,
   ) {
-    super();
+    super(typeLayer, guidLayer, guidObject);
+    this.addChild(this.rectGraphics);
     this.eventMode = 'static';
     this.cursor = 'default';
     this.on('pointermove', (e: FederatedPointerEvent) => {
-      if (typeof this.onObjectMouseMove === 'function') {
-        const cursor = this.getCursor(e);
-        if (cursor) {
-          this.onObjectMouseMove({
-            object: this,
-            data: {
-              cursor,
-              mode: cursor === 'move' ? 'drag' : 'resize',
-            },
-          });
-        }
-      }
-    }).on('pointerleave', () => {
-      if (typeof this.onObjectMouseLeave === 'function') {
-        this.onObjectMouseLeave();
+      if (!this.captureObject) {
+        this.objectCursor = this.getCursor(e);
       }
     });
   }
 
-  selectedObject(selected: boolean): void {
+  override selectObject(selected: boolean): void {
     if (selected) {
       this.drawCurrentRect(SELECT_OBJECT_COLOR);
     } else if (this.isSelected) {
@@ -57,38 +42,44 @@ export class RectGraphics extends Graphics implements ISceneDragObject {
     this.isSelected = selected;
   }
 
-  updateObject(object: ISceneObjectEventsGround): void {
-    this.visible = object.visible;
-    const rect = { x: object.x, y: object.y, width: object.width ?? 25, height: object.height ?? 25 };
+  override async drawObject(objectInfo: ISceneObjectEventsGround): Promise<void> {
+    const rect = { x: 0, y: 0, width: objectInfo.width ?? 25, height: objectInfo.height ?? 25 };
     if (JSON.stringify(rect) !== JSON.stringify(this.currentRect)) {
       this.currentRect = rect;
-      this.drawCurrentRect();
+      this.drawCurrentRect(this.isSelected ? SELECT_OBJECT_COLOR : null);
     }
   }
 
-  getX(): number {
-    return this.currentRect.x;
+  override getObjectAtCursor(e: FederatedPointerEvent): BaseObjectContainer | null {
+    const point = e.getLocalPosition(this);
+    const x = Math.floor(point.x);
+    const y = Math.floor(point.y);
+    if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
+      return this;
+    }
+    return null;
   }
 
-  getY(): number {
-    return this.currentRect.y;
+  override dragObject(dx: number, dy: number, dragStart: IDragStart): void {
+    if (this.objectCursor === 'move') {
+      this.x = dx + dragStart.objectX;
+      this.y = dy + dragStart.objectY;
+    } else {
+      this.objectResize(
+        { x: dragStart.objectX, y: dragStart.objectY },
+        { x: dx, y: dy },
+        { width: dragStart.objectWidth, height: dragStart.objectHeight },
+        this.objectCursor,
+      );
+    }
   }
 
-  getWidth(): number {
-    return this.currentRect.width;
-  }
-
-  getHeight(): number {
-    return this.currentRect.height;
-  }
-
-  objectSetXY(coords: ISUCoords): void {
-    this.currentRect.x = coords.x;
-    this.currentRect.y = coords.y;
-    this.drawCurrentRect();
-  }
-
-  objectResize(lastXY: ISUCoords, offsetXY: ISUCoords, oldWH: ISUWidthHeight, resizeAs: ResizeCursorType | null): void {
+  private objectResize(
+    lastXY: ISUCoords,
+    offsetXY: ISUCoords,
+    oldWH: ISUWidthHeight,
+    resizeAs: ResizeCursorType | null,
+  ): void {
     switch (resizeAs) {
       case 'e-resize': {
         let width = oldWH.width + offsetXY.x;
@@ -139,9 +130,9 @@ export class RectGraphics extends Graphics implements ISceneDragObject {
         }
         this.currentRect = {
           ...this.currentRect,
-          x,
           width,
         };
+        this.x = x;
         break;
       }
       case 'sw-resize': {
@@ -160,10 +151,10 @@ export class RectGraphics extends Graphics implements ISceneDragObject {
         }
         this.currentRect = {
           ...this.currentRect,
-          x,
           width,
           height,
         };
+        this.x = x;
         break;
       }
       case 'n-resize': {
@@ -177,9 +168,9 @@ export class RectGraphics extends Graphics implements ISceneDragObject {
         }
         this.currentRect = {
           ...this.currentRect,
-          y,
           height,
         };
+        this.y = y;
         break;
       }
       case 'nw-resize': {
@@ -200,11 +191,12 @@ export class RectGraphics extends Graphics implements ISceneDragObject {
           width = 5;
         }
         this.currentRect = {
-          x,
-          y,
+          ...this.currentRect,
           width,
           height,
         };
+        this.x = x;
+        this.y = y;
         break;
       }
       case 'ne-resize': {
@@ -222,10 +214,10 @@ export class RectGraphics extends Graphics implements ISceneDragObject {
         }
         this.currentRect = {
           ...this.currentRect,
-          y,
           height,
           width,
         };
+        this.y = y;
         break;
       }
     }
@@ -233,13 +225,13 @@ export class RectGraphics extends Graphics implements ISceneDragObject {
   }
 
   private drawCurrentRect(strokeColor: number | null = null): void {
-    this.clear();
-    this.rect(this.currentRect.x, this.currentRect.y, this.currentRect.width, this.currentRect.height).fill({
+    this.rectGraphics.clear();
+    this.rectGraphics.rect(0, 0, this.currentRect.width, this.currentRect.height).fill({
       color: this.bgColor,
       alpha: ALPHA_RECT_VALUE,
     });
     if (strokeColor) {
-      this.stroke({ width: 1, color: strokeColor });
+      this.rectGraphics.stroke({ width: 1, color: strokeColor });
     }
   }
 

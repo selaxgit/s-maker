@@ -1,18 +1,10 @@
 import { inject, Injectable } from '@angular/core';
-import {
-  ISUPackerNode,
-  ISURect,
-  SUCanvasHelper,
-  SUJsonHelper,
-  SUStringHelper,
-  SUTexturePacker,
-  TEXTURE_PACKER_HEIGHT,
-  TEXTURE_PACKER_WIDTH,
-} from '@selax/utils';
+import { SUCanvasHelper, SUJsonHelper, SUStringHelper } from '@selax/utils';
 import JSZip from 'jszip';
 import { lastValueFrom } from 'rxjs';
 
 import { DBFrames, DBGrid } from '~core/db';
+import { ExportHelper } from '~core/helpers';
 import { TransformHelper } from '~core/helpers/transform.helper';
 import { IExportFrameDef, IFrame, IFramesDefinition } from '~core/interfaces';
 
@@ -46,8 +38,13 @@ export class ExportGridService {
       framesIds.push(item.frameId);
       item.properties = TransformHelper.propertiesToFlat(item.properties ?? {});
     }
-    const framesDefinitionInfo = framesIds.length > 0 ? await this.getFramesDefinitionInfo(framesIds) : [];
+    let framesDefinitionInfo: IExportFrameDef[] = [];
     const definitionFrames: IFramesDefinition[] = [];
+    if (framesIds.length > 0) {
+      const framesList = await lastValueFrom(this.dbFrames.getListByFilter((i: IFrame) => framesIds.includes(i.id)));
+      framesDefinitionInfo = await ExportHelper.getFramesDefinitionInfo(framesList);
+    }
+
     let idx = 1;
     for (const defFrame of framesDefinitionInfo) {
       const textureName = framesDefinitionInfo.length > 1 ? `frames-pack-${idx}.png` : 'frames-pack.png';
@@ -70,88 +67,5 @@ export class ExportGridService {
     link.setAttribute('href', url);
     link.setAttribute('download', `${filename}.zip`);
     link.click();
-  }
-
-  private async getFramesDefinitionInfo(framesIds: number[]): Promise<IExportFrameDef[]> {
-    const framesList = await lastValueFrom(this.dbFrames.getListByFilter((i: IFrame) => framesIds.includes(i.id)));
-    const framesMap = new Map<number, IFrame>();
-    for (const item of framesList) {
-      framesMap.set(item.id, item);
-    }
-    let maxWidth = 0;
-    let maxHeight = 0;
-    for (const frame of framesMap.values()) {
-      if (frame.width > maxWidth) {
-        maxWidth = frame.width;
-      }
-      if (frame.height > maxHeight) {
-        maxHeight = frame.height;
-      }
-    }
-    const framesDef: IExportFrameDef[] = [];
-    while (framesMap.size > 0) {
-      const nodes: ISUPackerNode[] = [];
-      for (const frame of framesMap.values()) {
-        nodes.push({
-          w: frame.width,
-          h: frame.height,
-          id: frame.id,
-        });
-      }
-      if (maxWidth > maxHeight) {
-        nodes.sort((a: ISUPackerNode, b: ISUPackerNode) => a.w - b.w);
-      } else {
-        nodes.sort((a: ISUPackerNode, b: ISUPackerNode) => a.h - b.h);
-      }
-      const texturePacker = new SUTexturePacker(TEXTURE_PACKER_WIDTH, TEXTURE_PACKER_HEIGHT);
-      texturePacker.fit(nodes);
-      const definition: {
-        frameId: number;
-        rect: ISURect;
-      }[] = [];
-      const fids: number[] = [];
-      const canvas = document.createElement('canvas');
-      const wh = texturePacker.getDimesion();
-      canvas.width = wh.width;
-      canvas.height = wh.height;
-      for (const node of nodes) {
-        const fileInfo = framesMap.get(Number(node.id));
-        if (!fileInfo) {
-          this.errorsLog.push(`No Node FileInfo ${node.id}`);
-          continue;
-        }
-        if (!node.fit) {
-          fids.push(Number(node.id));
-          continue;
-        }
-        definition.push({
-          frameId: Number(node.id),
-          rect: {
-            x: Number(node.fit?.x),
-            y: Number(node.fit?.y),
-            width: node.w,
-            height: node.h,
-          },
-        });
-        await SUCanvasHelper.drawFileOnCanvas(
-          canvas,
-          Number(node.fit?.x),
-          Number(node.fit?.y),
-          node.w,
-          node.h,
-          fileInfo.file,
-        );
-      }
-      framesDef.push({
-        definition,
-        canvas,
-      });
-      for (const key of framesMap.keys()) {
-        if (!fids.includes(key)) {
-          framesMap.delete(key);
-        }
-      }
-    }
-    return framesDef;
   }
 }

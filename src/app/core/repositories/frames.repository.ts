@@ -83,7 +83,6 @@ export class FramesRepository {
           fileWidth: frame.width,
           fileHeight: frame.height,
           used: false,
-          selected: false,
         };
         this.framesStore.addTile(tile);
         return of(frame);

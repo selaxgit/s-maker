@@ -89,11 +89,8 @@ export class ScenesFacade {
       id: -1,
       projectId,
       name: 'Новая сцена',
-      width: null,
-      height: null,
-      offsetX: null,
-      offsetY: null,
       layers: [],
+      properties: null,
     });
     this.editSceneStore.setHasChanged(true);
   }

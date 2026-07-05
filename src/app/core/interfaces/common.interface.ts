@@ -5,7 +5,6 @@ export interface IViewTile {
   tooltip: string;
   objectURL: string;
   used: boolean;
-  selected: boolean;
   data?: unknown;
   fileWidth: number;
   fileHeight: number;

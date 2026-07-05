@@ -10,6 +10,7 @@ import {
   IFrame,
   IFramesDefinition,
   ISceneLayer,
+  ISceneObjectFrame,
   ISceneObjectSprite,
   ISpriteFrame,
   ISpriteLayer,
@@ -81,6 +82,7 @@ export class ExportSceneService {
         }
       }
     }
+    await this.exportLayersFrames(scene.layers, zip);
 
     const filename = scene.name.toLowerCase() + ' (scene-pack)';
     const base64 = await zip.generateAsync({ type: 'base64' });
@@ -92,6 +94,36 @@ export class ExportSceneService {
     link.setAttribute('href', url);
     link.setAttribute('download', `${filename}.zip`);
     link.click();
+  }
+
+  private async exportLayersFrames(layers: ISceneLayer[], zip: JSZip): Promise<void> {
+    const framesIds: number[] = [];
+    for (const layer of layers) {
+      if (layer.type === SceneLayerTypeEnum.Frames) {
+        for (const object of layer.objects) {
+          const frameObject = object as ISceneObjectFrame;
+          if (frameObject.referenceId && !framesIds.includes(frameObject.referenceId)) {
+            framesIds.push(frameObject.referenceId);
+          }
+        }
+      }
+    }
+    if (framesIds.length === 0) {
+      return;
+    }
+    const framesList = await lastValueFrom(this.dbFrames.getListByFilter((i: IFrame) => framesIds.includes(i.id)));
+    const framesDefinitionInfo = await ExportHelper.getFramesDefinitionInfo(framesList);
+    const definitionFrames: IFramesDefinition[] = [];
+    let idx = 1;
+    for (const defFrame of framesDefinitionInfo) {
+      const textureName = framesDefinitionInfo.length > 1 ? `scene-frames-pack-${idx}.png` : 'scene-frames-pack.png';
+      idx++;
+      definitionFrames.push({ textureName, frames: defFrame.definition });
+      const blob = await SUCanvasHelper.canvasToBlob(defFrame.canvas);
+      const pngFile = new File([blob], textureName);
+      zip.file(textureName, pngFile);
+    }
+    zip.file('scene-frames-def.json', JSON.stringify(definitionFrames, null, 2));
   }
 
   private async exportLayerSprite(spriteId: number | null, zip: JSZip): Promise<void> {

@@ -33,6 +33,7 @@
                 [tiles]="rootObjects"
                 [useCheckbox]="true"
                 [useCheckboxMulti]="multiple()"
+                [selectedTiles]="selectedTiles()"
                 (selectedEvent)="handleSelectTile($event)"
               />
             </mat-expansion-panel>
@@ -51,6 +52,7 @@
                   [tiles]="treeObjects"
                   [useCheckbox]="true"
                   [useCheckboxMulti]="multiple()"
+                  [selectedTiles]="selectedTiles()"
                   (selectedEvent)="handleSelectTile($event)"
                 />
               </mat-expansion-panel>

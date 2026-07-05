@@ -7,26 +7,14 @@ import { AppPixiStateEnum } from '~pixijs/interfaces';
 import { PixiApp } from '~pixijs/pixi.app';
 
 import { SBDrawSceneService } from '../../services';
+import { BaseLayerContainer } from './base-layer.container';
+import { BaseObjectContainer } from './base-object.container';
 import { LAYER_EVENTS_COLOR, LAYER_GROUND_COLOR } from './constants';
-import {
-  IObjectRectGraphicsData,
-  IPixiSceneLayer,
-  ISceneDragObject,
-  ISceneLayerMouseEvent,
-  ISceneObjectChange,
-  ISceneObjectSelected,
-} from './interfaces';
-import { LayerEventsGroundContainer } from './layer-events-ground.container';
-import { LayerGridContainer } from './layer-grid.container';
-import { LayerFramesContainer } from './layers-frames.container';
-import { LayerSpritesContainer } from './layers-sprites.container';
-
-interface IObjectAtCursor {
-  typeLayer: SceneLayerTypeEnum;
-  guidLayer: string;
-  object: ISceneDragObject;
-  data: unknown;
-}
+import { ISceneObjectChange, ISceneObjectSelected } from './interfaces';
+import { LayerEventsGroundContainer } from './layers/layer-events-ground.container';
+import { LayerFramesContainer } from './layers/layer-frames.container';
+import { LayerGridContainer } from './layers/layer-grid.container';
+import { LayerSpritesContainer } from './layers/layer-sprites.container';
 
 export interface ISceneSpritePlayChanged {
   guidLayer: string;
@@ -41,9 +29,13 @@ export class ScenePixiApp extends PixiApp {
 
   readonly sceneSpritePlayChanged$ = new Subject<ISceneSpritePlayChanged>();
 
-  private readonly layers = new Map<string, IPixiSceneLayer>();
+  readonly selectedWidthHeightText$ = new Subject<string | null>();
 
-  private objectAtCursor: IObjectAtCursor | null = null;
+  private readonly layers = new Map<string, BaseLayerContainer>();
+
+  private objectAtCursor: BaseObjectContainer | null = null;
+
+  private ordersLayersKeys: string[] = [];
 
   constructor(private readonly drawSceneService: SBDrawSceneService) {
     super();
@@ -58,210 +50,204 @@ export class ScenePixiApp extends PixiApp {
   }
 
   selectedObject(guidLayer: string | null, guidObject: string | null): void {
+    let selectedObjectText: string | null = null;
     for (const [guid, layer] of this.layers.entries()) {
-      if (typeof layer.selectedObject === 'function') {
-        layer.selectedObject(guid === guidLayer ? guidObject : null);
+      const object = layer.selectObject(guid === guidLayer ? guidObject : null);
+      if (guidObject) {
+        if (object && ![SceneLayerTypeEnum.Events, SceneLayerTypeEnum.Grounds].includes(layer.typeLayer)) {
+          selectedObjectText = `Ширина/высота объекта: ${object.getWidth()}x${object.getHeight()}`;
+        }
+      } else if (layer.guidLayer === guidLayer && layer.visible) {
+        selectedObjectText = `Ширина высота слоя: ${layer.width}x${layer.height}`;
       }
     }
+    this.selectedWidthHeightText$.next(selectedObjectText);
   }
 
   async drawLayers(layers: ISceneLayer[]): Promise<void> {
+    let changeOrdersLayers = this.layers.size === 0;
     // Удаление слоев, которых нет в новом списке
     const layersGuids = layers.map((l: ISceneLayer) => l.guid);
     for (const [guid, layer] of this.layers.entries()) {
       if (!layersGuids.includes(guid)) {
         this.layers.delete(guid);
         layer.destroy();
+        changeOrdersLayers = true;
       }
     }
-    // Добавляем новые слои и перерисовываем старые
     for (const layerInfo of layers) {
       let layerContainer = this.layers.get(layerInfo.guid);
       if (!layerContainer) {
+        changeOrdersLayers = true;
         switch (layerInfo.type) {
           case SceneLayerTypeEnum.Grids:
-            layerContainer = new LayerGridContainer(this.drawSceneService);
+            layerContainer = new LayerGridContainer(layerInfo.type, layerInfo.guid, this.drawSceneService);
             break;
           case SceneLayerTypeEnum.Events:
-            layerContainer = new LayerEventsGroundContainer(LAYER_EVENTS_COLOR);
+            layerContainer = new LayerEventsGroundContainer(layerInfo.type, layerInfo.guid, LAYER_EVENTS_COLOR);
             break;
           case SceneLayerTypeEnum.Grounds:
-            layerContainer = new LayerEventsGroundContainer(LAYER_GROUND_COLOR);
+            layerContainer = new LayerEventsGroundContainer(layerInfo.type, layerInfo.guid, LAYER_GROUND_COLOR);
             break;
           case SceneLayerTypeEnum.Sprites:
-            layerContainer = new LayerSpritesContainer(this.drawSceneService);
-            layerContainer.onSpritePlayChanged = (guidLayer: string, guidObject: string, playing: boolean) => {
+            layerContainer = new LayerSpritesContainer(layerInfo.type, layerInfo.guid, this.drawSceneService);
+            (layerContainer as LayerSpritesContainer).onSpritePlayChanged = (
+              guidLayer: string,
+              guidObject: string,
+              playing: boolean,
+            ) => {
               this.sceneSpritePlayChanged$.next({ guidLayer, guidObject, playing });
             };
             break;
           case SceneLayerTypeEnum.Frames:
-            layerContainer = new LayerFramesContainer(this.drawSceneService);
+            layerContainer = new LayerFramesContainer(layerInfo.type, layerInfo.guid, this.drawSceneService);
             break;
           default:
             console.error(`Не известный тип слоя: ${layerInfo.type}`);
             continue;
         }
-        layerContainer.typeLayer = layerInfo.type;
-        layerContainer.guidLayer = layerInfo.guid;
         this.layers.set(layerInfo.guid, layerContainer);
         this.viewport.addChild(layerContainer);
-        layerContainer.onObjectMouseMove = this.onObjectMouseMove;
-        layerContainer.onObjectMouseLeave = this.onObjectMouseLeave;
+      }
+      if (layerContainer.zIndex !== layerInfo.zIndex) {
+        changeOrdersLayers = true;
       }
       layerContainer.x = layerInfo.x;
       layerContainer.y = layerInfo.y;
       layerContainer.zIndex = layerInfo.zIndex;
       layerContainer.visible = layerInfo.visible;
-      switch (layerInfo.type) {
-        case SceneLayerTypeEnum.Grids:
-          if (layerInfo.referenceGridId) {
-            await layerContainer.drawObjects({ referenceGridId: layerInfo.referenceGridId });
-          }
-          await (layerContainer as LayerGridContainer).drawGridLines(
-            layerInfo.referenceGridId,
-            layerInfo.visibleGridLines,
-          );
-          break;
-        default:
-          await layerContainer.drawObjects(layerInfo.objects);
+      if (layerContainer.visible) {
+        await layerContainer.drawLayer(layerInfo);
       }
+    }
+    if (changeOrdersLayers) {
+      this.ordersLayersKeys = [...this.layers.values()]
+        .sort((a: BaseLayerContainer, b: BaseLayerContainer) => b.zIndex - a.zIndex)
+        .map((item: BaseLayerContainer) => item.guidLayer);
     }
   }
 
   protected override onPointerDown(e: FederatedPointerEvent): void {
     super.onPointerDown(e);
-    if (this.objectAtCursor && this._dragStart) {
-      this._dragStart = {
-        mouseX: e.clientX,
-        mouseY: e.clientY,
-        objectX: this.objectAtCursor.object.getX(),
-        objectY: this.objectAtCursor.object.getY(),
-        objectWidth: this.objectAtCursor.object.getWidth(),
-        objectHeight: this.objectAtCursor.object.getHeight(),
-      };
+    switch (this.state) {
+      case AppPixiStateEnum.DragObject:
+      case AppPixiStateEnum.Info:
+        this.objectAtCursor = this.getObjectAtCursor(e);
+        if (this.objectAtCursor) {
+          switch (this.state) {
+            case AppPixiStateEnum.DragObject: {
+              this.objectAtCursor.captureObject = true;
+              this.sendSceneObjectSelected(this.objectAtCursor);
+              const point = e.getLocalPosition(this.viewport);
+              this._dragStart = {
+                mouseX: point.x,
+                mouseY: point.y,
+                objectX: this.objectAtCursor.getX(),
+                objectY: this.objectAtCursor.getY(),
+                objectWidth: this.objectAtCursor.getWidth(),
+                objectHeight: this.objectAtCursor.getHeight(),
+              };
+              break;
+            }
+            case AppPixiStateEnum.Info:
+              this.sendSceneObjectSelected(this.objectAtCursor);
+              break;
+          }
+        }
+        break;
     }
   }
 
   protected override onPointerMove(e: FederatedPointerEvent): void {
     super.onPointerMove(e);
-    if (this.state === AppPixiStateEnum.DragObject && this.objectAtCursor && this._isDragging) {
-      switch (this.objectAtCursor.typeLayer) {
-        case SceneLayerTypeEnum.Events:
-        case SceneLayerTypeEnum.Grounds:
-          this.dragEventsGroundsObject(
-            this.objectAtCursor.object,
-            this.objectAtCursor.data as IObjectRectGraphicsData,
-            e,
-          );
-          break;
-        case SceneLayerTypeEnum.Sprites:
-        case SceneLayerTypeEnum.Frames:
-          this.dragSpriteObject(this.objectAtCursor.object, e);
-          break;
+    if (this.state === AppPixiStateEnum.DragObject) {
+      if (!this._isDragging) {
+        this.getObjectCursor(e);
+      }
+      if (this.objectAtCursor && this._isDragging) {
+        this.dragObject(e);
       }
     }
   }
 
   protected override onPointerUp(): void {
-    if (this._isDragging) {
-      this.setViewCursor();
-    }
     super.onPointerUp();
     if (this.objectAtCursor) {
-      switch (this._state) {
-        case AppPixiStateEnum.DragObject:
-          this.sendSceneObjectChange(this.objectAtCursor);
-          this.sendSceneObjectSelected(this.objectAtCursor);
-          break;
-        case AppPixiStateEnum.Info:
-          this.sendSceneObjectSelected(this.objectAtCursor);
-          break;
-      }
+      this.objectAtCursor.captureObject = false;
     }
-  }
-
-  private onObjectMouseMove = (info: ISceneLayerMouseEvent): void => {
-    if (this._dragStart) {
-      return;
-    }
-    this.objectAtCursor = {
-      typeLayer: info.typeLayer,
-      guidLayer: info.guidLayer,
-      object: info.object,
-      data: info.data,
-    };
-    if (
-      this._state === AppPixiStateEnum.DragObject &&
-      [SceneLayerTypeEnum.Events, SceneLayerTypeEnum.Grounds].includes(info.typeLayer)
-    ) {
-      const cursor = (info.data as IObjectRectGraphicsData).cursor;
-      if (cursor) {
-        this.canvas.style.cursor = cursor;
-      }
-    }
-  };
-
-  private onObjectMouseLeave = (): void => {
-    if (!this._isDragging) {
+    if (this.objectAtCursor && this._state === AppPixiStateEnum.DragObject) {
+      this.sendSceneObjectChange(this.objectAtCursor);
       this.objectAtCursor = null;
-      this.setViewCursor();
-    }
-  };
-
-  private dragSpriteObject(object: ISceneDragObject, e: FederatedPointerEvent): void {
-    if (this._dragStart) {
-      const dx = e.clientX - this._dragStart.mouseX;
-      const dy = e.clientY - this._dragStart.mouseY;
-      if (typeof object.objectSetXY === 'function') {
-        object.objectSetXY({ x: dx + this._dragStart.objectX!, y: dy + this._dragStart.objectY! });
-      }
     }
   }
 
-  private dragEventsGroundsObject(
-    object: ISceneDragObject,
-    data: IObjectRectGraphicsData,
-    e: FederatedPointerEvent,
-  ): void {
-    if (!this._dragStart) {
-      return;
+  protected override onPointerLeave(): void {
+    if (this.objectAtCursor) {
+      this.objectAtCursor.captureObject = false;
     }
-    const dx = e.clientX - this._dragStart.mouseX;
-    const dy = e.clientY - this._dragStart.mouseY;
-    if (data.mode === 'drag') {
-      if (typeof object.objectSetXY === 'function') {
-        object.objectSetXY({ x: dx + this._dragStart.objectX!, y: dy + this._dragStart.objectY! });
+    if (this._dragStart && this.objectAtCursor && this._state === AppPixiStateEnum.DragObject) {
+      this.objectAtCursor.setX(this._dragStart.objectX);
+      this.objectAtCursor.setY(this._dragStart.objectY);
+      this.objectAtCursor.setWidth(this._dragStart.objectWidth);
+      this.objectAtCursor.setHeight(this._dragStart.objectHeight);
+      this.sendSceneObjectChange(this.objectAtCursor);
+      this.objectAtCursor = null;
+    }
+    super.onPointerLeave();
+  }
+
+  private getObjectCursor(e: FederatedPointerEvent): void {
+    let cursor = 'alias';
+    for (const guid of this.ordersLayersKeys) {
+      const layer = this.layers.get(guid);
+      if (layer) {
+        const object = layer.getObjectAtCursor(e);
+        if (object) {
+          cursor = object.objectCursor ?? 'move';
+          break;
+        }
       }
-    } else if (data.mode === 'resize') {
-      if (typeof object.objectResize === 'function') {
-        object.objectResize(
-          { x: this._dragStart.objectX!, y: this._dragStart.objectY! },
-          { x: dx, y: dy },
-          { width: this._dragStart.objectWidth!, height: this._dragStart.objectHeight! },
-          data.cursor,
-        );
-      }
+    }
+    this.canvas.style.cursor = cursor;
+  }
+
+  private dragObject(e: FederatedPointerEvent): void {
+    if (this._dragStart && this.objectAtCursor) {
+      const point = e.getLocalPosition(this.viewport);
+      const dx = point.x - this._dragStart.mouseX;
+      const dy = point.y - this._dragStart.mouseY;
+      this.objectAtCursor.dragObject(dx, dy, this._dragStart);
     }
   }
 
-  private sendSceneObjectChange(params: IObjectAtCursor): void {
-    this.sceneObjectChange$.next({
-      typeLayer: params.typeLayer,
-      guidLayer: params.guidLayer,
-      guidObject: params.object.guidObject,
-      rect: {
-        x: params.object.getX(),
-        y: params.object.getY(),
-        width: params.object.getWidth(),
-        height: params.object.getHeight(),
-      },
+  private getObjectAtCursor(e: FederatedPointerEvent): BaseObjectContainer | null {
+    for (const guid of this.ordersLayersKeys) {
+      const object = this.layers.get(guid)?.getObjectAtCursor(e);
+      if (object) {
+        return object;
+      }
+    }
+    return null;
+  }
+
+  private sendSceneObjectSelected(object: BaseObjectContainer): void {
+    this.sceneObjectSelected$.next({
+      guidLayer: object.guidLayer,
+      guidObject: object.guidObject,
     });
   }
 
-  private sendSceneObjectSelected(params: IObjectAtCursor): void {
-    this.sceneObjectSelected$.next({
-      guidLayer: params.guidLayer,
-      guidObject: params.object.guidObject,
+  private sendSceneObjectChange(object: BaseObjectContainer): void {
+    this.sceneObjectChange$.next({
+      typeLayer: object.typeLayer,
+      guidLayer: object.guidLayer,
+      guidObject: object.guidObject,
+      rect: {
+        x: object.getX(),
+        y: object.getY(),
+        width: object.getWidth(),
+        height: object.getHeight(),
+      },
     });
   }
 }

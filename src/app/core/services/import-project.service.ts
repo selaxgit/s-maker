@@ -106,7 +106,7 @@ export class ImportProjectService {
     }
     const scenesJson = await ZipHelper.getJSONFromZip<IScene[]>(zipData, 'scenes.json');
     if (scenesJson) {
-      await this.importCVScenes(projectId, scenesJson, spritesMap, gridsdMap);
+      await this.importCVScenes(projectId, scenesJson, spritesMap, gridsdMap, framesMap);
     }
     return projectId;
   }
@@ -116,6 +116,7 @@ export class ImportProjectService {
     items: IScene[],
     spritesMap: Map<number, number>,
     gridsdMap: Map<number, number>,
+    framesMap: Map<number, number>,
   ): Promise<void> {
     if (Array.isArray(items)) {
       for (const item of items) {
@@ -123,26 +124,38 @@ export class ImportProjectService {
           this.dbScenes.insert({
             projectId,
             name: item.name,
-            width: item.width,
-            height: item.height,
-            offsetX: item.offsetX,
-            offsetY: item.offsetY,
+            properties: item.properties,
             layers: item.layers.map((layer: ISceneLayer) => {
               switch (layer.type) {
                 case SceneLayerTypeEnum.Grids:
                   layer.referenceGridId = layer.referenceGridId ? gridsdMap.get(layer.referenceGridId) : undefined;
                   return { ...layer };
                 case SceneLayerTypeEnum.Sprites:
-                  layer.objects.map((obj: SceneObjectType) => {
-                    const referenceId = (obj as ISceneObjectSprite).referenceId
-                      ? (spritesMap.get((obj as ISceneObjectSprite).referenceId!) ?? null)
-                      : null;
-                    if (!referenceId) {
-                      this.errorsLog.push(`Scene: ${item.name}, sprite: ${obj.name}`);
-                    }
-                    return { ...obj, referenceId };
-                  });
-                  return { ...layer };
+                  return {
+                    ...layer,
+                    objects: layer.objects.map((obj: SceneObjectType) => {
+                      const referenceId = (obj as ISceneObjectSprite).referenceId
+                        ? (spritesMap.get((obj as ISceneObjectSprite).referenceId!) ?? null)
+                        : null;
+                      if (!referenceId) {
+                        this.errorsLog.push(`Scene: ${item.name}, sprite: ${obj.name}`);
+                      }
+                      return { ...obj, referenceId };
+                    }),
+                  };
+                case SceneLayerTypeEnum.Frames:
+                  return {
+                    ...layer,
+                    objects: layer.objects.map((obj: SceneObjectType) => {
+                      const referenceId = (obj as ISceneObjectSprite).referenceId
+                        ? (framesMap.get((obj as ISceneObjectSprite).referenceId!) ?? null)
+                        : null;
+                      if (!referenceId) {
+                        this.errorsLog.push(`Scene: ${item.name}, frame: ${obj.name}`);
+                      }
+                      return { ...obj, referenceId };
+                    }),
+                  };
                 default:
                   return { ...layer };
               }
@@ -262,7 +275,6 @@ export class ImportProjectService {
             order: item.order,
           }),
         );
-        spritesTreeMap.set(item.id, tree.id);
         spritesTreeMap.set(item.id, tree.id);
         if (Array.isArray(item.children) && item.children.length > 0) {
           await this.importCVTreeSprites(projectId, item.children, spritesTreeMap, tree.id);

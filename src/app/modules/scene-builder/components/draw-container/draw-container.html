@@ -14,5 +14,8 @@
   <div class="flex-col flex-auto">
     <sb-draw-pixi class="flex-auto" />
   </div>
-  <div class="status-bar border-top" [innerHTML]="editSceneStore.statusbarText()"></div>
+  <div class="status-bar border-top">
+    <div class="flex-auto">{{ editSceneStore.statusbarCoords() }}</div>
+    <div>{{ editSceneStore.statusbarWidthHeight() }}</div>
+  </div>
 </section>

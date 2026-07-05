@@ -23,7 +23,9 @@ export class EditSceneStore {
 
   private readonly _toolbarState = signal<AppPixiStateEnum>(AppPixiStateEnum.Move);
 
-  private readonly _statusbarText = signal<string | null>(null);
+  private readonly _statusbarCoords = signal<string | null>(null);
+
+  private readonly _statusbarWidthHeight = signal<string | null>(null);
 
   private readonly zoomState = new Subject<ZoomEnum>();
 
@@ -39,14 +41,20 @@ export class EditSceneStore {
 
   readonly toolbarState = this._toolbarState.asReadonly();
 
-  readonly statusbarText = this._statusbarText.asReadonly();
+  readonly statusbarCoords = this._statusbarCoords.asReadonly();
+
+  readonly statusbarWidthHeight = this._statusbarWidthHeight.asReadonly();
 
   readonly zoomState$ = this.zoomState.asObservable();
 
   readonly sceneName = computed(() => this._scene()?.name ?? null);
 
-  setStatusbarText(value: string | null): void {
-    this._statusbarText.set(value);
+  setStatusbarWidthHeight(value: string | null): void {
+    this._statusbarWidthHeight.set(value);
+  }
+
+  setStatusbarCoords(value: string | null): void {
+    this._statusbarCoords.set(value);
   }
 
   setToolbarState(value: AppPixiStateEnum): void {
@@ -182,6 +190,7 @@ export class EditSceneStore {
     this._currentObject.set(null);
     this._hasChanged.set(false);
     this._toolbarState.set(AppPixiStateEnum.Move);
-    this._statusbarText.set(null);
+    this._statusbarCoords.set(null);
+    this._statusbarWidthHeight.set(null);
   }
 }

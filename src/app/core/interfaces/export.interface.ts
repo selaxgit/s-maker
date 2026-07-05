@@ -9,22 +9,15 @@ import { ITilesGrid, ITilesGridItem } from './tiles-grid.interface';
 
 export interface IExportScene {
   name: string;
-  params: IExportSceneParams;
-  layers: IExportSceneLayer[];
   events: IExportSceneEventsGround[];
   grounds: IExportSceneEventsGround[];
+  properties: FlatPropertiesType | null;
+  layers: IExportSceneLayer[];
 }
 
 export interface IExportSceneEventsGround {
   rect: ISURect;
   properties: FlatPropertiesType | null;
-}
-
-export interface IExportSceneParams {
-  width: number;
-  height: number;
-  offsetX: number;
-  offsetY: number;
 }
 
 export interface IExportSceneLayer extends Omit<ISceneLayer, 'properties' | 'name' | 'objects'> {

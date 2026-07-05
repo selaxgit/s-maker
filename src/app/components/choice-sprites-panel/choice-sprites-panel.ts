@@ -1,13 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  effect,
-  ElementRef,
-  inject,
-  input,
-  viewChild,
-  viewChildren,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, input, viewChild, viewChildren } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatAccordion, MatExpansionModule, MatExpansionPanel } from '@angular/material/expansion';
 import { SSlidePanelContainerComponent, SSlidePanelExtendClass } from '@selax/ui';
@@ -23,13 +14,13 @@ import { SpritesStore, SpritesTreeStore } from '~core/stores';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SMCChoiceSpritesPanel extends SSlidePanelExtendClass {
-  panelTitle = input('Выберите спрайт');
+  readonly panelTitle = input('Выберите спрайт');
 
-  multiple = input(false);
+  readonly multiple = input(false);
 
-  selectedSprites = input<number[]>([]);
+  readonly selectedSprites = input<number[]>([]);
 
-  scrollRef = viewChild.required<ElementRef<HTMLDivElement>>('scroll');
+  readonly scrollRef = viewChild.required<ElementRef<HTMLDivElement>>('scroll');
 
   readonly accordion = viewChild.required(MatAccordion);
 
@@ -40,15 +31,6 @@ export class SMCChoiceSpritesPanel extends SSlidePanelExtendClass {
   private currentTiles: IViewTile | IViewTile[] = [];
 
   readonly spritesStore = inject(SpritesStore);
-
-  constructor() {
-    super();
-
-    effect(() => {
-      const selectedSprites = this.selectedSprites();
-      this.spritesStore.setSelectedByIds(selectedSprites);
-    });
-  }
 
   getTreeObjects(treeId: number | null = null): IViewTile[] {
     return this.spritesStore.getFilteredTiles(treeId);
@@ -63,7 +45,7 @@ export class SMCChoiceSpritesPanel extends SSlidePanelExtendClass {
   }
 
   hasSelectedSprite(tree: IViewTile[]): boolean {
-    return tree.some((i: IViewTile) => i.selected);
+    return tree.some((i: IViewTile) => this.selectedSprites().includes(i.id));
   }
 
   handleApply(): void {

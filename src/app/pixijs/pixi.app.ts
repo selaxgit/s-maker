@@ -13,14 +13,14 @@ import { AppPixiStateEnum, VIEWPORT_MAX_SCALE, VIEWPORT_MIN_SCALE, ZoomEnum } fr
 export interface IDragStart {
   mouseX: number;
   mouseY: number;
-  objectX?: number;
-  objectY?: number;
-  objectWidth?: number;
-  objectHeight?: number;
+  objectX: number;
+  objectY: number;
+  objectWidth: number;
+  objectHeight: number;
 }
 
 export class PixiApp extends Application {
-  onMouseMove: ((coords: ISUCoords) => void) | null = null;
+  onMouseMove: ((coords: ISUCoords | null) => void) | null = null;
 
   protected _isInitialized = false;
 
@@ -37,6 +37,8 @@ export class PixiApp extends Application {
   protected _dragStart: IDragStart | null = null;
 
   protected _centeredAfterScale: boolean = false;
+
+  private _moveViewportStart: ISUCoords | null = null;
 
   get isInitialized(): boolean {
     return this._isInitialized;
@@ -125,9 +127,9 @@ export class PixiApp extends Application {
     });
     this.resizeObserver.observe(element);
     this.stage.addChild(this.viewport);
-    this.setViewCursor();
     this.setupInteractivity();
     this._isInitialized = true;
+    this.setViewCursor();
   }
 
   override destroy(rendererDestroyOptions: RendererDestroyOptions = false, options: DestroyOptions = false): void {
@@ -185,7 +187,7 @@ export class PixiApp extends Application {
 
   protected onPointerDown(e: FederatedPointerEvent): void {
     const pos = e.global;
-    this._dragStart = { mouseX: pos.x, mouseY: pos.y };
+    this._moveViewportStart = { x: pos.x, y: pos.y };
     this._isDragging = true;
   }
 
@@ -196,10 +198,10 @@ export class PixiApp extends Application {
     }
     switch (this._state) {
       case AppPixiStateEnum.Move:
-        if (this._isDragging && this._dragStart) {
+        if (this._isDragging && this._moveViewportStart) {
           const pos = e.global;
-          const dx = pos.x - this._dragStart.mouseX;
-          const dy = pos.y - this._dragStart.mouseY;
+          const dx = pos.x - this._moveViewportStart.x;
+          const dy = pos.y - this._moveViewportStart.y;
           let x = this.viewport.x + dx > 0 ? 0 : this.viewport.x + dx;
           let y = this.viewport.y + dy > 0 ? 0 : this.viewport.y + dy;
           if (x + this.viewport.width < this.screen.width) {
@@ -210,19 +212,27 @@ export class PixiApp extends Application {
           }
           this.viewport.x = x > 0 ? 0 : x;
           this.viewport.y = y > 0 ? 0 : y;
-          this._dragStart = { mouseX: pos.x, mouseY: pos.y };
+          this._moveViewportStart = { x: pos.x, y: pos.y };
         }
         break;
     }
   }
 
   protected onPointerUp(): void {
+    if (this._isDragging) {
+      this.setViewCursor();
+    }
     this._isDragging = false;
     this._dragStart = null;
+    this._moveViewportStart = null;
   }
 
   protected onPointerLeave(): void {
     this._isDragging = false;
     this._dragStart = null;
+    this._moveViewportStart = null;
+    if (typeof this.onMouseMove === 'function') {
+      this.onMouseMove(null);
+    }
   }
 }

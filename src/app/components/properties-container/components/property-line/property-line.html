@@ -10,7 +10,7 @@
       <s-input label="Значение" [showClearButton]="true" [(ngModel)]="propertyValue" />
     }
     @case ('number') {
-      <s-input-number label="Значение" [showClearButton]="true" [(ngModel)]="propertyValue" />
+      <s-input-number label="Значение" [showClearButton]="true" [decimal]="true" [(ngModel)]="propertyValue" />
     }
     @case ('boolean') {
       <mat-radio-group [(ngModel)]="propertyValue">

@@ -14,6 +14,7 @@ import {
   IExportFrameDef,
   IExportScene,
   IExportSceneEventsGround,
+  IExportSceneLayer,
   IExportSprite,
   IExportSpriteLayer,
   IExportTilesGrid,
@@ -232,44 +233,37 @@ export class ExportHelper {
   }
 
   static sceneToDefinition(scene: IScene): IExportScene {
-    const sceneDef = SUJsonHelper.clone(scene);
-    sceneDef.id = undefined;
-    sceneDef.projectId = undefined;
-    sceneDef.params = {
-      width: sceneDef.width,
-      height: sceneDef.height,
-      offsetX: sceneDef.offsetX,
-      offsetY: sceneDef.offsetY,
-    };
-    sceneDef.width = undefined;
-    sceneDef.height = undefined;
-    sceneDef.offsetX = undefined;
-    sceneDef.offsetY = undefined;
-    sceneDef.layers = scene.layers
-      .filter((layer: ISceneLayer) => [SceneLayerTypeEnum.Grids, SceneLayerTypeEnum.Sprites].includes(layer.type))
-      .map((layer: ISceneLayer) => ({
-        ...layer,
-        name: undefined,
-        properties:
-          layer.properties && !UtilsHelper.isEmptyObject(layer.properties)
-            ? TransformHelper.propertiesToFlat(layer.properties)
-            : null,
-        objects: layer.objects.map((object: SceneObjectType) => ({
-          ...object,
-          name: undefined,
+    return {
+      name: scene.name,
+      events: scene.layers
+        .filter((layer: ISceneLayer) => layer.type === SceneLayerTypeEnum.Events)
+        .reduce(reduceEventsGround, []),
+      grounds: scene.layers
+        .filter((layer: ISceneLayer) => layer.type === SceneLayerTypeEnum.Grounds)
+        .reduce(reduceEventsGround, []),
+      properties:
+        scene.properties && !UtilsHelper.isEmptyObject(scene.properties)
+          ? TransformHelper.propertiesToFlat(scene.properties)
+          : null,
+      layers: scene.layers
+        .filter((layer: ISceneLayer) =>
+          [SceneLayerTypeEnum.Frames, SceneLayerTypeEnum.Grids, SceneLayerTypeEnum.Sprites].includes(layer.type),
+        )
+        .map((layer: ISceneLayer) => ({
+          ...layer,
           properties:
-            object.properties && !UtilsHelper.isEmptyObject(object.properties)
-              ? TransformHelper.propertiesToFlat(object.properties)
+            layer.properties && !UtilsHelper.isEmptyObject(layer.properties)
+              ? TransformHelper.propertiesToFlat(layer.properties)
               : null,
-        })),
-      }));
-    sceneDef.events = scene.layers
-      .filter((layer: ISceneLayer) => layer.type === SceneLayerTypeEnum.Events)
-      .reduce(reduceEventsGround, []);
-    sceneDef.grounds = scene.layers
-      .filter((layer: ISceneLayer) => layer.type === SceneLayerTypeEnum.Grounds)
-      .reduce(reduceEventsGround, []);
-    return sceneDef;
+          objects: layer.objects.map((object: SceneObjectType) => ({
+            ...object,
+            properties:
+              object.properties && !UtilsHelper.isEmptyObject(object.properties)
+                ? TransformHelper.propertiesToFlat(object.properties)
+                : null,
+          })),
+        })) as unknown as IExportSceneLayer[],
+    };
   }
 
   static async getFramesDefinitionInfo(framesList: IFrame[], errorsLog: string[] = []): Promise<IExportFrameDef[]> {

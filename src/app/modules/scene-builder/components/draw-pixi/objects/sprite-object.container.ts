@@ -1,18 +1,12 @@
-import { ISUCoords } from '@selax/utils';
-import { Container, DestroyOptions } from 'pixi.js';
+import { DestroyOptions, FederatedPointerEvent } from 'pixi.js';
 
 import { ISceneObjectSprite, ISpriteAnimation, ISpriteAnimationLayer } from '~core/interfaces';
 
-import { SBDrawSceneService } from '../../services';
-import { ISceneDragObject } from './interfaces';
+import { BaseObjectContainer } from '../base-object.container';
 import { SpriteLayerContainer } from './sprite-layer.container';
 
-export class SpriteContainer extends Container implements ISceneDragObject {
+export class SpriteObjectContainer extends BaseObjectContainer {
   onPlayChanged: ((guidObject: string, playing: boolean) => void) | null = null;
-
-  onObjectMouseMove: ((guidObject: string, object: SpriteContainer) => void) | null = null;
-
-  onObjectMouseLeave: (() => void) | null = null;
 
   private readonly layers = new Map<string, SpriteLayerContainer>();
 
@@ -22,12 +16,7 @@ export class SpriteContainer extends Container implements ISceneDragObject {
 
   private playingLayers: Record<string, boolean> = {};
 
-  constructor(
-    readonly guidObject: string,
-    private readonly drawSceneService: SBDrawSceneService,
-  ) {
-    super();
-  }
+  private isInitialized = false;
 
   override destroy(options?: DestroyOptions): void {
     for (const layer of this.layers.values()) {
@@ -37,31 +26,27 @@ export class SpriteContainer extends Container implements ISceneDragObject {
     super.destroy(options);
   }
 
-  getX(): number {
-    return this.x;
-  }
-
-  getY(): number {
-    return this.y;
-  }
-
-  getWidth(): number {
-    return this.width;
-  }
-
-  getHeight(): number {
-    return this.height;
-  }
-
-  objectSetXY(coords: ISUCoords): void {
-    this.x = coords.x;
-    this.y = coords.y;
-  }
-
-  selectedObject(selected: boolean): void {
+  override selectObject(selected: boolean): void {
     for (const layerContainer of this.layers.values()) {
       layerContainer.selectedSprite(selected);
     }
+  }
+
+  override async drawObject(objectInfo: ISceneObjectSprite): Promise<void> {
+    if (this.isInitialized) {
+      this.updateSprite(objectInfo);
+    } else if (objectInfo.referenceId) {
+      await this.initialize(objectInfo.referenceId, objectInfo);
+    }
+  }
+
+  override getObjectAtCursor(e: FederatedPointerEvent): BaseObjectContainer | null {
+    for (const layerContainer of this.layers.values()) {
+      if (layerContainer.visible && layerContainer.isHitTest(e)) {
+        return this;
+      }
+    }
+    return null;
   }
 
   isPlaying(): boolean {
@@ -103,11 +88,23 @@ export class SpriteContainer extends Container implements ISceneDragObject {
     }
   }
 
-  async updateSprite(spriteInfo: ISceneObjectSprite): Promise<void> {
-    this.visible = spriteInfo.visible;
-    this.x = spriteInfo.x;
-    this.y = spriteInfo.y;
-    this.zIndex = spriteInfo.zIndex;
+  private async initialize(referenceId: number, objectInfo: ISceneObjectSprite): Promise<void> {
+    const spriteInfo = await this.drawSceneService!.fetchSpriteById(referenceId);
+    this.animationsList = spriteInfo.animations;
+    for (const layer of spriteInfo.layers) {
+      const layerContainer = new SpriteLayerContainer(this.drawSceneService!);
+      layerContainer.onAnimationComplete = (layerGuid: string) => this.layerAnimationComplete(layerGuid);
+      this.layers.set(layer.guid, layerContainer);
+      this.addChild(layerContainer);
+      layerContainer.zIndex = layer.zIndex ?? 0;
+      layerContainer.visible = false;
+      await layerContainer.drawLayer(layer, spriteInfo.width, spriteInfo.height);
+    }
+    this.isInitialized = true;
+    this.updateSprite(objectInfo);
+  }
+
+  private updateSprite(spriteInfo: ISceneObjectSprite): void {
     if (this.lastAnimationGuid !== spriteInfo.animationGuid) {
       this.lastAnimationGuid = spriteInfo.animationGuid;
       const animation = this.animationsList.find((item: ISpriteAnimation) => item.guid === this.lastAnimationGuid);
@@ -122,24 +119,13 @@ export class SpriteContainer extends Container implements ISceneDragObject {
     }
   }
 
-  async initSprite(sceneSpriteInfo: ISceneObjectSprite): Promise<void> {
-    if (!sceneSpriteInfo.referenceId) {
-      return;
+  private layerAnimationComplete(layerGuid: string): void {
+    if (this.playingLayers[layerGuid]) {
+      this.playingLayers[layerGuid] = false;
     }
-    const spriteInfo = await this.drawSceneService.fetchSpriteById(sceneSpriteInfo.referenceId);
-    this.animationsList = spriteInfo.animations;
-    for (const layer of spriteInfo.layers) {
-      const layerContainer = new SpriteLayerContainer(this.drawSceneService);
-      layerContainer.onAnimationComplete = (layerGuid: string) => this.layerAnimationComplete(layerGuid);
-      layerContainer.onObjectMouseMove = () => this.sendObjectMouseMove();
-      layerContainer.onObjectMouseLeave = () => this.sendObjectMouseLeave();
-      this.layers.set(layer.guid, layerContainer);
-      this.addChild(layerContainer);
-      layerContainer.zIndex = layer.zIndex ?? 0;
-      layerContainer.visible = false;
-      await layerContainer.drawLayer(layer, spriteInfo.width, spriteInfo.height);
+    if (!Object.values(this.playingLayers).some((i: boolean) => i)) {
+      this.stop();
     }
-    this.updateSprite(sceneSpriteInfo);
   }
 
   private setAnimationLayers(layers: ISpriteAnimationLayer[]): void {
@@ -157,27 +143,6 @@ export class SpriteContainer extends Container implements ISceneDragObject {
   private hideAllSpriteLayers(): void {
     for (const spriteLayer of this.layers.values()) {
       spriteLayer.visible = false;
-    }
-  }
-
-  private layerAnimationComplete(layerGuid: string): void {
-    if (this.playingLayers[layerGuid]) {
-      this.playingLayers[layerGuid] = false;
-    }
-    if (!Object.values(this.playingLayers).some((i: boolean) => i)) {
-      this.stop();
-    }
-  }
-
-  private sendObjectMouseMove(): void {
-    if (typeof this.onObjectMouseMove === 'function') {
-      this.onObjectMouseMove(this.guidObject, this);
-    }
-  }
-
-  private sendObjectMouseLeave(): void {
-    if (typeof this.onObjectMouseLeave === 'function') {
-      this.onObjectMouseLeave();
     }
   }
 }

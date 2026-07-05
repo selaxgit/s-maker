@@ -95,7 +95,6 @@ export class SpritesRepository {
       fileWidth: sprite.width,
       fileHeight: sprite.height,
       used: usedSpritesIds.includes(sprite.id),
-      selected: false,
     };
   }
 

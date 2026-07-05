@@ -17,7 +17,7 @@
           <mat-tree-node
             *matTreeNodeDef="let node"
             matTreeNodePadding
-            matTreeNodePaddingIndent="22"
+            matTreeNodePaddingIndent="14"
             smcDropTreeNode
             [smcDrag]="{ type: dragType.TreeNode, value: node }"
             [class.selected]="node.id === treeStore.selectedNode()?.id"
@@ -48,7 +48,7 @@
           <mat-tree-node
             *matTreeNodeDef="let node; when: hasChild"
             matTreeNodePadding
-            matTreeNodePaddingIndent="22"
+            matTreeNodePaddingIndent="14"
             smcDropTreeNode
             [smcDrag]="{ type: dragType.TreeNode, value: node }"
             [cdkTreeNodeTypeaheadLabel]="node.name"

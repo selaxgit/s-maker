@@ -1,13 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  effect,
-  ElementRef,
-  inject,
-  input,
-  viewChild,
-  viewChildren,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, input, viewChild, viewChildren } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatAccordion, MatExpansionModule, MatExpansionPanel } from '@angular/material/expansion';
 import { SSlidePanelContainerComponent, SSlidePanelExtendClass } from '@selax/ui';
@@ -41,15 +32,6 @@ export class SMCChoiceFramesPanel extends SSlidePanelExtendClass {
 
   readonly framesStore = inject(FramesStore);
 
-  constructor() {
-    super();
-
-    effect(() => {
-      const selectedTiles = this.selectedTiles();
-      this.framesStore.setSelectedByIds(selectedTiles);
-    });
-  }
-
   getTreeObjects(treeId: number | null = null): IViewTile[] {
     return this.framesStore.getFilteredTiles(treeId);
   }
@@ -63,7 +45,7 @@ export class SMCChoiceFramesPanel extends SSlidePanelExtendClass {
   }
 
   hasSelectedTile(tree: IViewTile[]): boolean {
-    return tree.some((i: IViewTile) => i.selected);
+    return tree.some((i: IViewTile) => this.selectedTiles().includes(i.id));
   }
 
   handleApply(): void {

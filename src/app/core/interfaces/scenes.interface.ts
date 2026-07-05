@@ -47,9 +47,6 @@ export interface IScene {
   id: number;
   projectId: number;
   name: string;
-  width: number | null;
-  height: number | null;
-  offsetX: number | null;
-  offsetY: number | null;
   layers: ISceneLayer[];
+  properties: PropertiesType | null;
 }

@@ -37,7 +37,7 @@
               <mat-icon>{{ backgroundIcon() }}</mat-icon>
             </div>
           }
-          @if (useCheckbox() && tile.selected) {
+          @if (useCheckbox() && selectedTiles().includes(tile.id)) {
             <mat-icon class="checkbox">task_alt</mat-icon>
           }
         </div>

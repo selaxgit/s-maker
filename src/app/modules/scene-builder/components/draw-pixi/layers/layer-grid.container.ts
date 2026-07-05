@@ -1,24 +1,24 @@
-import { Container, DestroyOptions, Graphics, Sprite, Texture } from 'pixi.js';
+import { DestroyOptions, Graphics, Sprite, Texture } from 'pixi.js';
 
 import { SceneLayerTypeEnum } from '~core/constants';
-import { ITilesGrid, ITilesGridItem } from '~core/interfaces';
+import { ISceneLayer, ITilesGrid, ITilesGridItem } from '~core/interfaces';
 
-import { SBDrawSceneService } from '../../services';
-import { ILayerGrid, IPixiSceneLayer } from './interfaces';
+import { SBDrawSceneService } from '../../../services';
+import { BaseLayerContainer } from '../base-layer.container';
 
-export class LayerGridContainer extends Container implements IPixiSceneLayer {
-  typeLayer: SceneLayerTypeEnum | null = null;
-
-  guidLayer: string | null = null;
-
+export class LayerGridContainer extends BaseLayerContainer {
   private gridSprite: Sprite | null = null;
 
   private gridLines = new Graphics();
 
   private hasGridLines = false;
 
-  constructor(private readonly drawSceneService: SBDrawSceneService) {
-    super();
+  constructor(
+    override readonly typeLayer: SceneLayerTypeEnum,
+    override readonly guidLayer: string,
+    protected override readonly drawSceneService: SBDrawSceneService | null = null,
+  ) {
+    super(typeLayer, guidLayer, drawSceneService);
     this.gridLines.zIndex = 10;
     this.addChild(this.gridLines);
   }
@@ -30,28 +30,22 @@ export class LayerGridContainer extends Container implements IPixiSceneLayer {
     super.destroy(options);
   }
 
-  async drawGridLines(referenceGridId?: number, visibleGridLines?: boolean): Promise<void> {
-    if (referenceGridId && !this.hasGridLines) {
-      const gridInfo = await this.drawSceneService.fetchGridById(referenceGridId);
-      if (!gridInfo) {
-        console.error(`Сетка не найдена по id: ${referenceGridId}`);
-      } else {
-        await this.initGridLines(gridInfo);
-      }
+  override async drawLayer(layerInfo: ISceneLayer): Promise<void> {
+    if (this.hasGridLines) {
+      this.gridLines.visible = layerInfo.visibleGridLines ?? false;
     }
-    this.gridLines.visible = visibleGridLines ?? false;
-  }
-
-  async drawObjects(objectsInfo: ILayerGrid): Promise<void> {
-    if (this.gridSprite) {
+    if (this.gridSprite || !layerInfo.referenceGridId) {
       return;
     }
-    const gridInfo = await this.drawSceneService.fetchGridById(objectsInfo.referenceGridId);
+    const gridInfo = await this.drawSceneService?.fetchGridById(layerInfo.referenceGridId);
     if (!gridInfo) {
-      console.error(`Сетка не найдена по id: ${objectsInfo.referenceGridId}`);
+      console.error(`Сетка не найдена по id: ${layerInfo.referenceGridId}`);
       return;
     }
-    await this.initGridLines(gridInfo);
+    if (!this.hasGridLines) {
+      await this.initGridLines(gridInfo);
+      this.gridLines.visible = layerInfo.visibleGridLines ?? false;
+    }
     const gridCanvas = document.createElement('canvas');
     gridCanvas.width = gridInfo.mapInfo.width * gridInfo.tileInfo.width;
     gridCanvas.height = gridInfo.mapInfo.height * gridInfo.tileInfo.height;
@@ -60,7 +54,6 @@ export class LayerGridContainer extends Container implements IPixiSceneLayer {
       console.error('Ошибка при получении getContext');
       return;
     }
-    // Single reusable offscreen canvas
     const offscreenCanvas = document.createElement('canvas');
     const ctxOffscreen = offscreenCanvas.getContext('2d');
     if (!ctxOffscreen) {
@@ -71,7 +64,7 @@ export class LayerGridContainer extends Container implements IPixiSceneLayer {
     const items = [...gridInfo.items];
     items.sort((a: ITilesGridItem, b: ITilesGridItem) => a.zIndex - b.zIndex);
     for (const item of items) {
-      const canvasCache = await this.drawSceneService.getFrameCanvasCache(item.frameId);
+      const canvasCache = await this.drawSceneService?.getFrameCanvasCache(item.frameId);
       let canvasCopy: HTMLCanvasElement | undefined;
       if (item.flipHorizontal && item.flipVertical) {
         canvasCopy = canvasCache?.canvasFlipHV;
@@ -91,8 +84,6 @@ export class LayerGridContainer extends Container implements IPixiSceneLayer {
         width = gridInfo.tileInfo.width;
         height = gridInfo.tileInfo.height;
       }
-
-      // Only prepare offscreen rendering if necessary
       if (offscreenCanvas.width !== width || offscreenCanvas.height !== height) {
         offscreenCanvas.width = width;
         offscreenCanvas.height = height;

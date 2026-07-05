@@ -12,7 +12,7 @@ export class LayerTypeToStrPipe implements PipeTransform {
       case SceneLayerTypeEnum.Events:
         return 'слой событий';
       case SceneLayerTypeEnum.Grids:
-        return 'слой сетки';
+        return 'слой сетки тайлов';
       case SceneLayerTypeEnum.Grounds:
         return 'слой земли';
       case SceneLayerTypeEnum.Sprites:

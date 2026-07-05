@@ -36,6 +36,8 @@ export class SMCTilesList {
 
   readonly withBlackout = input(true);
 
+  readonly selectedTiles = input<number[]>([]);
+
   readonly dragType = input<SMCDragTypeEnum>(SMCDragTypeEnum.None);
 
   readonly removeEvent = output<IViewTile>();
@@ -49,12 +51,19 @@ export class SMCTilesList {
   handleClick(tile: IViewTile): void {
     if (this.useCheckbox()) {
       if (!this.useCheckboxMulti()) {
-        this.tiles().forEach((i: IViewTile) => (i.selected = false));
-        tile.selected = !tile.selected;
         this.selectedEvent.emit(tile);
       } else {
-        tile.selected = !tile.selected;
-        this.selectedEvent.emit(this.tiles().filter((i: IViewTile) => i.selected));
+        const tiles = this.selectedTiles();
+        const idx = tiles.findIndex((i: number) => i === tile.id);
+        if (idx < 0) {
+          tiles.push(tile.id);
+        } else {
+          tiles.splice(idx, 1);
+        }
+        const selectedTiles = tiles
+          .map((id: number) => this.tiles().find((i: IViewTile) => i.id === id))
+          .filter((tile: IViewTile | undefined): tile is IViewTile => tile !== undefined);
+        this.selectedEvent.emit(selectedTiles);
       }
     } else {
       this.clickEvent.emit(tile);

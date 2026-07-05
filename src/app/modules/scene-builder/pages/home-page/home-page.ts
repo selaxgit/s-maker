@@ -73,7 +73,8 @@ export class SBHomePage extends BaseProjectPageDirective implements OnInit {
   override ngOnInit(): void {
     this.breadcrumbsStore.resetPage();
     this.breadcrumbsStore.setModule(SCENE_BUILDER_MODULE.name);
-    this.editSceneStore.setStatusbarText(null);
+    this.editSceneStore.setStatusbarCoords(null);
+    this.editSceneStore.setStatusbarWidthHeight(null);
     this.editSceneStore.setToolbarState(AppPixiStateEnum.Move);
     this.editSceneStore.setCurrent(null);
     super.ngOnInit();
