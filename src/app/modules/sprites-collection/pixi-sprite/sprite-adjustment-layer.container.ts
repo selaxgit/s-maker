@@ -54,6 +54,14 @@ export class SpriteAdjustmentLayerContainer extends Container {
       this.layerRectFillColor = layer.bgColor ? SUColorHelper.hex2hexadecimal(layer.bgColor) : null;
       this.drawLayerRect();
     }
+    // Удаление фреймов, которых нет в новом списке
+    const framesGuids = layer.frames.map((l: ISpriteFrame) => l.guid);
+    for (const [frameGuid, adjFrame] of this.layersFrames.entries()) {
+      if (!framesGuids.includes(frameGuid)) {
+        this.layersFrames.delete(frameGuid);
+        adjFrame.destroy();
+      }
+    }
     // Инициализация новых фреймов
     const noInitFrames: ISpriteFrame[] = [];
     for (const frame of layer.frames) {

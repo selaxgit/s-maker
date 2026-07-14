@@ -25,6 +25,16 @@
             <mat-expansion-panel [expanded]="hasSelectedTile(rootObjects)">
               <mat-expansion-panel-header>
                 <mat-panel-title> Корень дерева </mat-panel-title>
+                @if (multiple()) {
+                  <mat-panel-description class="flex-row flex-end">
+                    <button matButton color="primary" (click)="handleSelectSection($event, rootObjects, true)">
+                      Выбрать все
+                    </button>
+                    <button matButton color="primary" (click)="handleSelectSection($event, rootObjects, false)">
+                      Очистить все
+                    </button>
+                  </mat-panel-description>
+                }
               </mat-expansion-panel-header>
               <smc-tiles-list
                 [withBlackout]="false"
@@ -33,7 +43,7 @@
                 [tiles]="rootObjects"
                 [useCheckbox]="true"
                 [useCheckboxMulti]="multiple()"
-                [selectedTiles]="selectedTiles()"
+                [selectedTiles]="panelSelectedTiles()"
                 (selectedEvent)="handleSelectTile($event)"
               />
             </mat-expansion-panel>
@@ -44,6 +54,16 @@
               <mat-expansion-panel [expanded]="hasSelectedTile(treeObjects)">
                 <mat-expansion-panel-header>
                   <mat-panel-title> {{ tree.name }} </mat-panel-title>
+                  @if (multiple()) {
+                    <mat-panel-description class="flex-row flex-end">
+                      <button matButton color="primary" (click)="handleSelectSection($event, treeObjects, true)">
+                        Выбрать все
+                      </button>
+                      <button matButton color="primary" (click)="handleSelectSection($event, treeObjects, false)">
+                        Очистить все
+                      </button>
+                    </mat-panel-description>
+                  }
                 </mat-expansion-panel-header>
                 <smc-tiles-list
                   [withBlackout]="false"
@@ -52,7 +72,7 @@
                   [tiles]="treeObjects"
                   [useCheckbox]="true"
                   [useCheckboxMulti]="multiple()"
-                  [selectedTiles]="selectedTiles()"
+                  [selectedTiles]="panelSelectedTiles()"
                   (selectedEvent)="handleSelectTile($event)"
                 />
               </mat-expansion-panel>

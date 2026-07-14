@@ -11,7 +11,13 @@
   } @else {
     <button matIconButton disabled>&nbsp;</button>
   }
-  <div class="items-edit-list-title" role="button" tabindex="0" (click)="handleSelectLayer()">
+  <div
+    class="items-edit-list-title"
+    role="button"
+    tabindex="0"
+    [matContextMenuTriggerFor]="contextMenu"
+    (click)="handleSelectLayer()"
+  >
     {{ layer().name }}
   </div>
   <button matIconButton color="primary" [matMenuTriggerFor]="addFramesMenu">
@@ -31,6 +37,30 @@
 <mat-menu #addFramesMenu>
   <button mat-menu-item (click)="handleAddFrames('file')">Добавить фрейм из файла</button>
   <button mat-menu-item (click)="handleAddFrames('collection')">Добавить фрейм из коллекции</button>
+</mat-menu>
+
+<mat-menu #contextMenu>
+  <button mat-menu-item [matMenuTriggerFor]="addFramesMenu">
+    <mat-icon>add</mat-icon>
+    <span>Добавить фреймы</span>
+  </button>
+  <button mat-menu-item (click)="handleEditLayer()">
+    <mat-icon>edit</mat-icon>
+    <span>Редактировать слой</span>
+  </button>
+  <button mat-menu-item (click)="handleToggleVisibleLayer()">
+    <mat-icon>{{ layer().visible ? 'visibility' : 'visibility_off' }}</mat-icon>
+    <span>Видимость слоя</span>
+  </button>
+  <button mat-menu-item [disabled]="layer().frames.length === 0" (click)="handleSetFramesToSpriteCenter()">
+    <mat-icon>center_focus_weak</mat-icon>
+    <span>Установить все фреймы по центру спрайта</span>
+  </button>
+  <mat-divider></mat-divider>
+  <button mat-menu-item (click)="handleRemoveLayer()">
+    <mat-icon class="text-danger">highlight_off</mat-icon>
+    <span class="text-danger">Удалить слой</span>
+  </button>
 </mat-menu>
 
 @if (layer().frames.length > 0 && visibleAccordionFrames()) {

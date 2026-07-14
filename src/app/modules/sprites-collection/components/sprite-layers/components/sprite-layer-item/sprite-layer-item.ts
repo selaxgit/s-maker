@@ -2,6 +2,7 @@ import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-
 import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { SDialogService, SSlidePanelService } from '@selax/ui';
@@ -19,7 +20,7 @@ import { SCSpriteFrameItem } from '../sprite-frame-item';
 
 @Component({
   selector: 'sc-sprite-layer-item',
-  imports: [MatButtonModule, MatIconModule, MatMenuModule, DragDropModule, SCSpriteFrameItem],
+  imports: [MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule, DragDropModule, SCSpriteFrameItem],
   templateUrl: './sprite-layer-item.html',
   styleUrl: './sprite-layer-item.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -48,6 +49,17 @@ export class SCSpriteLayerItem {
     effect(() => {
       this.visibleAccordionFrames.set(this.expandedLayer());
     });
+  }
+
+  handleSetFramesToSpriteCenter(): void {
+    const params = this.editSpriteStore.params();
+    if (params) {
+      for (const frame of this.layer().frames) {
+        const x = (params.width - frame.width) / 2;
+        const y = (params.height - frame.height) / 2;
+        this.editSpriteStore.updateFrame(this.layer().guid, frame.guid, { x, y });
+      }
+    }
   }
 
   handleDropFrame(event: CdkDragDrop<ISpriteFrame[]>): void {
